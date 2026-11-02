@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LCMS · Kết quả video tương tác</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../lcms.css">
+<style>
+  .vhead { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; padding: 14px 16px; }
+  .vhead .lc-vid { width: 168px; flex: none; border-radius: 10px; }
+  .vhead .lc-vid .play { width: 40px; height: 40px; font-size: 16px; }
+  .vhead h2 { font-size: 18px; font-weight: 600; color: var(--lc-text-strong); }
+  .tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+  .tile { background: #fff; border-radius: 14px; box-shadow: var(--lc-sh-card); padding: 14px 16px; }
+  .tile .lbl { font-size: 13px; color: var(--lc-text-secondary); }
+  .tile .val { font-size: 28px; font-weight: 600; color: var(--lc-text-strong); line-height: 1.3; }
+  .tile .sub { font-size: 12px; color: var(--lc-text-secondary); }
+  .charts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 16px; margin-top: 16px; }
+  .card-h { display: flex; align-items: baseline; gap: 10px; padding: 14px 16px 6px; }
+  .card-h b { font-size: 15px; }
+  .hbar { padding: 8px 16px 16px; display: grid; gap: 12px; }
+  .hbar__row { display: grid; grid-template-columns: 150px minmax(0, 1fr) 44px; gap: 10px; align-items: center; font-size: 13px; }
+  .hbar__row .lb { color: var(--lc-text-secondary); line-height: 1.3; }
+  .hbar__row .lb b { display: block; color: var(--lc-text-strong); font-weight: 600; }
+  .hbar__track { height: 18px; border-left: 1px solid var(--lc-divider); }
+  .hbar__fill { height: 100%; background: var(--lc-primary); border-radius: 0 4px 4px 0; transition: filter .15s; }
+  .hbar__row:hover .hbar__fill, .hbar__row:focus .hbar__fill { filter: brightness(1.15); }
+  .hbar__row .v { font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+  .line-wrap { position: relative; padding: 4px 16px 12px; }
+  .line-wrap svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .line-wrap text { font: 11px var(--lc-font); fill: var(--lc-text-secondary); }
+  .tip { position: fixed; z-index: 3000; pointer-events: none; padding: 6px 10px; border-radius: 8px; background: #fff; box-shadow: var(--lc-sh-modal); font-size: 12px; line-height: 1.4; }
+  .tip b { display: block; font-size: 14px; color: var(--lc-text-strong); }
+  .tbar { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--lc-divider); }
+  .lc-table td, .lc-table th { padding: 10px 12px; }
+  .prog { display: flex; align-items: center; gap: 8px; min-width: 150px; }
+  .prog .m { flex: 1; height: 8px; border-radius: 4px; background: var(--lc-primary-soft); overflow: hidden; }
+  .prog .m span { display: block; height: 100%; background: var(--lc-primary); }
+  .prog small { width: 36px; text-align: right; font-variant-numeric: tabular-nums; }
+  .ans { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; font-size: 12px; font-weight: 700; }
+  .ans.ok { background: var(--lc-success-2-bg); color: var(--lc-success-2); }
+  .ans.no { background: var(--lc-danger-bg); color: var(--lc-danger); }
+  .ans.na { background: #f0f2f5; color: var(--lc-text-placeholder); }
+  .th-sort { cursor: pointer; user-select: none; }
+  @media (max-width: 1100px) { .tiles { grid-template-columns: repeat(2, 1fr); } .charts { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="lc-layout">
+  <aside class="lc-sider">
+    <div class="lc-sider__logo"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></div>
+    <nav class="lc-menu" data-demo-menu="video"></nav>
+  </aside>
+  <div class="lc-main">
+    <header class="lc-header">
+      <button class="lc-burger" data-lc-collapse aria-label="Thu gọn menu"><img src="../assets/icons/menu.svg" alt=""></button>
+      <h1 class="lc-page-title">Kết quả video tương tác</h1>
+      <div class="lc-header__actions" style="margin-left:auto">
+        <div class="lc-user"><img class="lc-avatar" src="../assets/default-avatar.jpg" alt=""><div><b>Đặng Thu Trang</b><span>Giáo viên Tiếng Anh · THPT Demo số 1</span></div></div>
+      </div>
+    </header>
+    <main class="lc-content lc-content--soft">
+      <section class="lc-card vhead">
+        <div class="lc-vid"><span class="play">▶</span><span class="dur">06:40</span></div>
+        <div style="flex:1;min-width:240px"><h2>Video 1: A phone call at the hotel</h2><p class="lc-caption" style="font-size:13px;margin-top:4px">Lesson 1.1.1 · Giao cho lớp 10A1 lúc 07:00 01/11/2026 · 3 bài tập (4 câu hỏi) · 2 tài liệu chèn theo mốc thời gian</p></div>
+        <a class="lc-btn lc-btn--outline lc-btn--sm" href="08-video-script.html"><i data-lucide="pencil" style="width:15px"></i>Sửa kịch bản</a>
+        <a class="lc-btn lc-btn--outline lc-btn--sm" href="../../design-system/templates/08-video-lesson.html" target="_blank"><i data-lucide="eye" style="width:15px"></i>Xem như học sinh</a>
+      </section>
+      <div class="tiles" id="tiles"></div>
+      <div class="charts">
+        <section class="lc-card"><div class="card-h"><b>Tỉ lệ trả lời đúng theo câu hỏi</b><span class="lc-caption">% học sinh đúng, trên số đã trả lời</span></div><div class="hbar" id="qchart" role="list"></div></section>
+        <section class="lc-card"><div class="card-h"><b>Học sinh còn đang xem theo thời điểm</b><span class="lc-caption">% học sinh đã mở video · vạch dọc là mốc tương tác</span></div><div class="line-wrap" id="lineWrap"></div></section>
+      </div>
+      <section class="lc-card" style="margin-top:16px">
+        <div class="tbar"><b class="lc-h3" style="font-size:15px">Kết quả từng học sinh</b><span class="lc-caption" id="nRows"></span><span class="lc-spacer"></span>
+          <select class="lc-select lc-select--sm" id="fStatus" style="width:170px" aria-label="Lọc"><option value="all">Tất cả học sinh</option><option value="done">Đã xem hết</option><option value="partial">Xem dở</option><option value="none">Chưa xem</option></select>
+          <div class="lc-search--round" style="width:220px"><input id="q" placeholder="Tìm học sinh…" aria-label="Tìm học sinh"><button aria-label="Tìm"><i data-lucide="search" style="width:16px"></i></button></div>
+          <button class="lc-btn lc-btn--outline lc-btn--sm" data-act="export"><i data-lucide="download" style="width:15px"></i>Xuất Excel</button></div>
+        <div class="lc-table-wrap" style="border:0;border-radius:0 0 20px 20px"><table class="lc-table lc-table--plain"><thead id="thead"></thead><tbody id="rows"></tbody></table></div>
+      </section>
+    </main>
+  </div>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../lcms.js"></script>
+<script src="../lcms-demo.js"></script>
+<script>
+(function () {
+  var D = LcDemo, esc = D.esc, $ = function (id) { return document.getElementById(id); };
+  // Câu hỏi đúng như kịch bản ở template 08 (LCMS) / 08-video-lesson (TVET)
+  var QS = [['Bài tập 1 · 01:30', 'Lễ tân chào khách', 90], ['Bài tập 2 · 02:50', 'Điền từ vào chỗ trống', 170], ['Bài tập 3a · 05:35', 'Đúng/Sai: tên người gọi', 335], ['Bài tập 3b · 05:35', 'Đúng/Sai: Mr Brown đang họp', 335]];
+  var DUR = 400;
+  var NAMES = ['Nguyễn Minh Anh', 'Trần Đức Bình', 'Lê Thu Châu', 'Phạm Gia Huy', 'Hoàng Khánh Linh', 'Vũ Quốc Nam', 'Đỗ Bảo Ngọc', 'Bùi Tuấn Phong', 'Ngô Thanh Quý', 'Đinh Hà Trang', 'Lý Minh Tuấn', 'Mai Phương Uyên', 'Cao Minh Đức', 'Tạ Ngọc Hân', 'Lương Gia Bảo', 'Kiều Thanh Mai'];
+  // Dữ liệu mô phỏng có quy luật cố định (không ngẫu nhiên giữa các lần mở)
+  var ROWS = NAMES.map(function (n, i) {
+    var watched = [100, 100, 100, 100, 62, 100, 100, 18, 100, 85, 100, 0, 100, 100, 41, 100][i];
+    var reach = watched / 100 * DUR;
+    var ans = QS.map(function (q, k) { if (q[2] > reach) return null; return ((i * 7 + k * 3) % 10) < [8, 7, 9, 6][k] ? 1 : 0; });
+    var answered = ans.filter(function (a) { return a !== null; });
+    return { name: n, watched: watched, ans: ans, score: answered.length ? +(answered.filter(Boolean).length / QS.length * 10).toFixed(1) : null, views: watched ? 1 + (i % 3 === 0 ? 1 : 0) : 0, time: Math.round(reach * (1 + (i % 4) * .08)) };
+  });
+  var sortKey = null, sortDir = 1;
+  function mmss(s) { return D.pad(Math.floor(s / 60)) + ':' + D.pad(s % 60); }
+  function fmt(n) { return String(n).replace('.', ','); }
+
+  function renderTiles() {
+    var opened = ROWS.filter(function (r) { return r.watched > 0; }), full = ROWS.filter(function (r) { return r.watched === 100; });
+    var scored = ROWS.filter(function (r) { return r.score !== null; });
+    var avg = scored.reduce(function (a, r) { return a + r.score; }, 0) / scored.length;
+    var avgT = Math.round(opened.reduce(function (a, r) { return a + r.time; }, 0) / opened.length);
+    $('tiles').innerHTML = [['Đã mở video', opened.length + '/' + ROWS.length, Math.round(opened.length / ROWS.length * 100) + '% học sinh được giao'], ['Xem hết video', full.length, (opened.length - full.length) + ' học sinh xem dở'], ['Điểm trung bình câu hỏi', fmt(avg.toFixed(1)), 'Thang 10, tính trên ' + scored.length + ' học sinh'], ['Thời gian xem trung bình', mmss(avgT), 'Video dài 06:40']]
+      .map(function (t) { return '<div class="tile"><div class="lbl">' + t[0] + '</div><div class="val">' + t[1] + '</div><div class="sub">' + t[2] + '</div></div>'; }).join('');
+  }
+  function renderQChart() {
+    $('qchart').innerHTML = QS.map(function (q, k) {
+      var got = ROWS.map(function (r) { return r.ans[k]; }).filter(function (a) { return a !== null; });
+      var pct = Math.round(got.filter(Boolean).length / got.length * 100);
+      return '<div class="hbar__row" role="listitem" tabindex="0" data-tip="' + pct + '%|' + esc(q[1]) + ' · ' + got.filter(Boolean).length + '/' + got.length + ' học sinh đúng"><span class="lb"><b>' + q[0] + '</b>' + esc(q[1]) + '</span><div class="hbar__track"><div class="hbar__fill" style="width:' + pct + '%"></div></div><span class="v">' + pct + '%</span></div>';
+    }).join('');
+  }
+  // Đường "còn đang xem": 2px, vùng tô 10%, lưới mảnh, crosshair + tooltip
+  function renderLine() {
+    var opened = ROWS.filter(function (r) { return r.watched > 0; });
+    var pts = []; for (var s = 0; s <= DUR; s += 10) pts.push([s, Math.round(opened.filter(function (r) { return r.watched / 100 * DUR >= s; }).length / opened.length * 100)]);
+    var W = 600, H = 200, L = 34, B = 22, x = function (s) { return L + s / DUR * (W - L - 8); }, y = function (p) { return 8 + (100 - p) / 100 * (H - B - 8); };
+    var path = pts.map(function (p, i) { return (i ? 'L' : 'M') + x(p[0]).toFixed(1) + ' ' + y(p[1]).toFixed(1); }).join(' ');
+    var grid = [0, 50, 100].map(function (p) { return '<line x1="' + L + '" x2="' + (W - 8) + '" y1="' + y(p) + '" y2="' + y(p) + '" stroke="#e8edf3"/><text x="' + (L - 6) + '" y="' + (y(p) + 4) + '" text-anchor="end">' + p + '%</text>'; }).join('');
+    var ticks = [0, 100, 200, 300, 400].map(function (s) { return '<text x="' + x(s) + '" y="' + (H - 4) + '" text-anchor="middle">' + mmss(s) + '</text>'; }).join('');
+    var marks = [90, 170, 250, 335].map(function (s) { return '<line x1="' + x(s) + '" x2="' + x(s) + '" y1="8" y2="' + (H - B) + '" stroke="#bfbfbf" stroke-width="1"/>'; }).join('');
+    var last = pts[pts.length - 1];
+    $('lineWrap').innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Tỉ lệ học sinh còn đang xem theo thời điểm">' + grid + marks + ticks +
+      '<path d="' + path + ' L' + x(DUR) + ' ' + y(0) + ' L' + x(0) + ' ' + y(0) + 'Z" fill="#1579ad" opacity=".1"/><path d="' + path + '" fill="none" stroke="#1579ad" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>' +
+      '<circle cx="' + x(last[0]) + '" cy="' + y(last[1]) + '" r="4.5" fill="#1579ad" stroke="#fff" stroke-width="2"/><text x="' + (x(last[0]) - 8) + '" y="' + (y(last[1]) - 10) + '" text-anchor="end" style="font-weight:600;fill:rgba(0,0,0,.88)">' + last[1] + '% xem hết</text>' +
+      '<line id="cross" y1="8" y2="' + (H - B) + '" stroke="#5c636c" stroke-width="1" visibility="hidden"/><circle id="crossDot" r="4.5" fill="#1579ad" stroke="#fff" stroke-width="2" visibility="hidden"/>' +
+      '<rect id="hit" x="' + L + '" y="0" width="' + (W - L - 8) + '" height="' + (H - B) + '" fill="transparent"/></svg>';
+    var svg = $('lineWrap').querySelector('svg'), hit = $('hit');
+    hit.addEventListener('pointermove', function (e) {
+      var r = svg.getBoundingClientRect(), sx = (e.clientX - r.left) / r.width * W;
+      var s = Math.max(0, Math.min(DUR, Math.round((sx - L) / (W - L - 8) * DUR / 10) * 10)), p = pts[s / 10];
+      ['cross', 'crossDot'].forEach(function (id) { $(id).setAttribute('visibility', 'visible'); });
+      $('cross').setAttribute('x1', x(s)); $('cross').setAttribute('x2', x(s)); $('crossDot').setAttribute('cx', x(s)); $('crossDot').setAttribute('cy', y(p[1]));
+      var q = QS.find(function (qq) { return Math.abs(qq[2] - s) <= 5; });
+      tip(p[1] + '%', 'Phút ' + mmss(s) + (q ? ' · ' + q[0] : ''), e.clientX, e.clientY);
+    });
+    hit.addEventListener('pointerleave', function () { ['cross', 'crossDot'].forEach(function (id) { $(id).setAttribute('visibility', 'hidden'); }); $('tip').hidden = true; });
+  }
+  function tip(val, label, cx, cy) {
+    var t = $('tip'); t.innerHTML = ''; var b = document.createElement('b'); b.textContent = val; t.appendChild(b); t.appendChild(document.createTextNode(label));
+    t.hidden = false; t.style.left = Math.min(cx + 12, innerWidth - 240) + 'px'; t.style.top = (cy + 12) + 'px';
+  }
+
+  function renderTable() {
+    var f = $('fStatus').value, q = $('q').value.trim().toLowerCase();
+    var list = ROWS.filter(function (r) { return (f === 'all' || (f === 'done' && r.watched === 100) || (f === 'partial' && r.watched > 0 && r.watched < 100) || (f === 'none' && !r.watched)) && (!q || r.name.toLowerCase().indexOf(q) >= 0); });
+    if (sortKey) list.sort(function (a, b) { return ((a[sortKey] == null ? -1 : a[sortKey]) - (b[sortKey] == null ? -1 : b[sortKey])) * sortDir; });
+    var arrow = function (k) { return sortKey === k ? (sortDir > 0 ? ' ↑' : ' ↓') : ''; };
+    $('thead').innerHTML = '<tr><th>Học sinh</th><th class="th-sort" data-sort="watched">Tiến độ xem' + arrow('watched') + '</th>' + QS.map(function (q, k) { return '<th class="c" title="' + esc(q[1]) + '">' + q[0].split(' · ')[0].replace('Bài tập ', 'BT') + '</th>'; }).join('') + '<th class="c th-sort" data-sort="score">Điểm' + arrow('score') + '</th><th class="c">Lượt xem</th><th class="c th-sort" data-sort="time">Thời gian' + arrow('time') + '</th></tr>';
+    $('rows').innerHTML = list.map(function (r) {
+      return '<tr><td><b>' + esc(r.name) + '</b></td><td><div class="prog"><div class="m"><span style="width:' + r.watched + '%"></span></div><small>' + r.watched + '%</small></div></td>' +
+        r.ans.map(function (a) { return '<td class="c"><span class="ans ' + (a === null ? 'na' : a ? 'ok' : 'no') + '" title="' + (a === null ? 'Chưa tới mốc' : a ? 'Đúng' : 'Sai') + '">' + (a === null ? '–' : a ? '✓' : '✗') + '</span></td>'; }).join('') +
+        '<td class="c"><b>' + (r.score === null ? '–' : fmt(r.score)) + '</b></td><td class="c">' + r.views + '</td><td class="c">' + (r.time ? mmss(r.time) : '–') + '</td></tr>';
+    }).join('') || '<tr><td colspan="9" class="c lc-muted">Không có học sinh phù hợp.</td></tr>';
+    $('nRows').textContent = list.length + '/' + ROWS.length + ' học sinh';
+  }
+
+  document.addEventListener('pointermove', function (e) { var el = e.target.closest('.hbar__row'); if (el) { var p = el.dataset.tip.split('|'); tip(p[0], p[1], e.clientX, e.clientY); } else if (!e.target.closest('#hit')) $('tip').hidden = true; });
+  document.addEventListener('focusin', function (e) { var el = e.target.closest('.hbar__row'); if (el) { var r = el.getBoundingClientRect(), p = el.dataset.tip.split('|'); tip(p[0], p[1], r.right - 200, r.bottom); } });
+  document.addEventListener('click', function (e) {
+    var el;
+    if ((el = e.target.closest('[data-sort]'))) { var k = el.dataset.sort; sortDir = sortKey === k ? -sortDir : -1; sortKey = k; return renderTable(); }
+    if (e.target.closest('[data-act=export]')) {
+      var csv = '﻿Học sinh,Tiến độ xem (%),' + QS.map(function (q) { return q[0]; }).join(',') + ',Điểm,Lượt xem,Thời gian\n' + ROWS.map(function (r) { return [r.name, r.watched].concat(r.ans.map(function (a) { return a === null ? '' : a ? 'Đúng' : 'Sai'; }), [r.score === null ? '' : r.score, r.views, r.time ? mmss(r.time) : '']).join(','); }).join('\n');
+      var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'ket-qua-video-10A1.csv'; a.click();
+      D.toast('Đã xuất kết quả 16 học sinh');
+    }
+  });
+  $('fStatus').onchange = renderTable;
+  $('q').addEventListener('input', renderTable);
+  renderTiles(); renderQChart(); renderLine(); renderTable(); D.icons();
+})();
+</script>
+</body>
+</html>

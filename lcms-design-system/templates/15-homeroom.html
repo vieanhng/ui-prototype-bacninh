@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LCMS · Lớp chủ nhiệm</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../lcms.css">
+<style>
+  .tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+  .tile { background: #fff; border-radius: 14px; box-shadow: var(--lc-sh-card); padding: 14px 16px; }
+  .tile .lbl { font-size: 13px; color: var(--lc-text-secondary); }
+  .tile .val { font-size: 28px; font-weight: 600; color: var(--lc-text-strong); line-height: 1.3; }
+  .tile .sub { font-size: 12px; color: var(--lc-text-secondary); }
+  .meter { height: 8px; border-radius: 4px; background: var(--lc-primary-soft); overflow: hidden; margin-top: 8px; }
+  .meter span { display: block; height: 100%; background: var(--lc-primary); border-radius: 0 4px 4px 0; }
+  .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px; margin-top: 16px; align-items: start; }
+  .card-h { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--lc-divider); }
+  .card-h b { font-size: 15px; }
+  /* Biểu đồ thanh ngang (một chuỗi) */
+  .hbar { padding: 12px 16px 16px; display: grid; gap: 10px; }
+  .hbar__row { display: grid; grid-template-columns: 78px minmax(0, 1fr) 44px; gap: 10px; align-items: center; font-size: 13px; position: relative; }
+  .hbar__track { height: 18px; position: relative; border-left: 1px solid var(--lc-divider); }
+  .hbar__fill { height: 100%; background: var(--lc-primary); border-radius: 0 4px 4px 0; transition: filter .15s; }
+  .hbar__row:hover .hbar__fill, .hbar__row:focus .hbar__fill { filter: brightness(1.15); }
+  .hbar__row .v { font-variant-numeric: tabular-nums; color: var(--lc-text-strong); font-weight: 600; text-align: right; }
+  .hbar__row .lb { color: var(--lc-text-secondary); }
+  .tip { position: fixed; z-index: 3000; pointer-events: none; padding: 6px 10px; border-radius: 8px; background: #fff; box-shadow: var(--lc-sh-modal); font-size: 12px; line-height: 1.4; }
+  .tip b { display: block; font-size: 14px; color: var(--lc-text-strong); }
+  .flt { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--lc-divider); }
+  .flt button { height: 30px; padding: 0 12px; border-radius: 15px; border: 1px solid var(--lc-border); background: #fff; font: 600 13px var(--lc-font); color: var(--lc-text-tertiary); cursor: pointer; }
+  .flt button.is-on { border-color: var(--lc-primary); background: var(--lc-primary-soft); color: var(--lc-primary); }
+  .lc-table td, .lc-table th { padding: 10px 12px; }
+  .lc-table tbody tr { cursor: pointer; }
+  .lc-table tr.multi td:first-child { box-shadow: inset 3px 0 0 var(--lc-danger); }
+  .st { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; }
+  .st svg { width: 14px; height: 14px; }
+  .st.none { color: var(--lc-danger); }
+  .st.late { color: #d46b08; }
+  .cnt { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; font-size: 12px; font-weight: 700; background: var(--lc-danger-bg); color: var(--lc-danger); }
+  .parent { display: flex; gap: 12px; align-items: center; padding: 12px 14px; border: 1px solid var(--lc-divider); border-radius: 12px; }
+  .parent b { display: block; }
+  .acct { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; background: var(--lc-bg-soft); }
+  .pw { font-family: ui-monospace, Menlo, monospace; font-size: 18px; font-weight: 700; letter-spacing: .08em; padding: 10px 14px; border-radius: 8px; background: var(--lc-bg-soft); text-align: center; }
+  @media (max-width: 1100px) { .tiles { grid-template-columns: repeat(2, 1fr); } .two { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="lc-layout">
+  <aside class="lc-sider">
+    <div class="lc-sider__logo"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></div>
+    <nav class="lc-menu" data-demo-menu="chunhiem"></nav>
+  </aside>
+  <div class="lc-main">
+    <header class="lc-header">
+      <button class="lc-burger" data-lc-collapse aria-label="Thu gọn menu"><img src="../assets/icons/menu.svg" alt=""></button>
+      <h1 class="lc-page-title">Lớp chủ nhiệm <em>10A1</em></h1>
+      <div class="lc-header__actions" style="margin-left:auto;display:flex;gap:14px;align-items:center">
+        <select class="lc-select lc-select--sm" style="width:170px" aria-label="Khoảng thời gian"><option>4 tuần gần nhất</option><option>Học kỳ I</option><option>Tuần này</option></select>
+        <div class="lc-user"><img class="lc-avatar" src="../assets/default-avatar.jpg" alt=""><div><b>Nguyễn Văn Hùng</b><span>GVCN 10A1 · THPT Demo số 1</span></div></div>
+      </div>
+    </header>
+    <main class="lc-content lc-content--soft">
+      <div class="tiles" id="tiles"></div>
+      <div class="two">
+        <section class="lc-card"><div class="card-h"><b>Nộp bài đúng hạn theo môn</b><span class="lc-caption">4 tuần gần nhất · % bài nộp đúng hạn</span></div><div class="hbar" id="chart" role="list"></div></section>
+        <section class="lc-card">
+          <div class="card-h"><i data-lucide="bell-ring" style="width:18px;color:var(--lc-danger)"></i><b>Cảnh báo tự động</b><span class="lc-caption">Tổng hợp từ các lớp bộ môn, cập nhật khi quá hạn nộp</span></div>
+          <div class="flt" id="flt"></div>
+          <div class="lc-table-wrap" style="border:0;border-radius:0"><table class="lc-table lc-table--plain"><thead><tr><th>Học sinh</th><th>Môn · Giáo viên</th><th>Bài tập</th><th>Hạn</th><th>Tình trạng</th></tr></thead><tbody id="alerts"></tbody></table></div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+<div id="drawerRoot"></div>
+<div class="lc-overlay" id="mPw" hidden>
+  <div class="lc-modal" role="dialog" aria-labelledby="mPwTitle">
+    <div class="lc-modal__head"><h3 id="mPwTitle"></h3><button class="lc-modal__close" data-lc-close aria-label="Đóng">×</button></div>
+    <div class="lc-modal__body lc-stack" id="mPwBody" style="gap:12px"></div>
+    <div class="lc-modal__foot" id="mPwFoot"></div>
+  </div>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../lcms.js"></script>
+<script src="../lcms-demo.js"></script>
+<script>
+(function () {
+  var D = LcDemo, esc = D.esc, $ = function (id) { return document.getElementById(id); };
+  var SUBJ = [['Toán', 91, 'Nguyễn Thị Lan'], ['Ngữ văn', 86, 'Trịnh Hải Yến'], ['Tiếng Anh', 78, 'Đặng Thu Trang'], ['Vật lí', 88, 'Lê Quang Minh'], ['Hoá học', 82, 'Hoàng Mai'], ['Lịch sử', 95, 'Phan Văn Toàn']];
+  var STU = {
+    phong: { name: 'Bùi Tuấn Phong', code: 'HS10A1-04', dob: '12/03/2010', parent: ['Bùi Văn Hải', 'Bố', '0912 345 678', 'buivanhai@gmail.com'], account: 'active', done: [72, 60, 55, 70, 64, 80] },
+    uyen: { name: 'Mai Phương Uyên', code: 'HS10A1-31', dob: '05/09/2010', parent: ['Trần Thị Hoa', 'Mẹ', '0987 222 111', 'tranhoa.mpu@gmail.com'], account: 'locked', done: [90, 85, 72, 88, 80, 96] },
+    binh: { name: 'Trần Đức Bình', code: 'HS10A1-09', dob: '21/01/2010', parent: ['Trần Văn Lực', 'Bố', '0903 456 789', ''], account: 'active', done: [88, 90, 70, 92, 85, 100] },
+    linh: { name: 'Hoàng Khánh Linh', code: 'HS10A1-15', dob: '30/11/2010', parent: ['Hoàng Văn Sơn', 'Bố', '0934 567 890', 'hvson@gmail.com'], account: 'active', done: [80, 75, 68, 85, 79, 92] },
+    nam: { name: 'Vũ Quốc Nam', code: 'HS10A1-22', dob: '14/06/2010', parent: ['Nguyễn Thị Thu', 'Mẹ', '0977 111 222', ''], account: 'active', done: [95, 88, 90, 90, 92, 100] },
+    tuan: { name: 'Lý Minh Tuấn', code: 'HS10A1-27', dob: '02/02/2010', parent: ['Lý Văn Đông', 'Bố', '0919 888 777', ''], account: 'active', done: [93, 92, 80, 88, 85, 100] }
+  };
+  var ALERTS = [
+    ['phong', 'Toán', 'Phiếu bài tập: Hàm số bậc hai', '05/11', 'none'], ['phong', 'Tiếng Anh', 'Reading: Family life', '08/11', 'none'], ['phong', 'Hoá học', 'Bài tập Chương 1', '03/11', 'late'], ['phong', 'Toán', 'Kiểm tra 15 phút', '29/10', 'none'],
+    ['uyen', 'Ngữ văn', 'Đọc hiểu: Thần trụ trời', '06/11', 'none'], ['uyen', 'Tiếng Anh', 'Bài tập ngữ pháp Unit 1', '04/11', 'late'],
+    ['binh', 'Tiếng Anh', 'Reading: Family life', '08/11', 'late'], ['linh', 'Vật lí', 'Thí nghiệm ảo: Chuyển động thẳng', '02/11', 'none'],
+    ['linh', 'Toán', 'Phiếu bài tập: Hàm số bậc hai', '05/11', 'late'], ['nam', 'Ngữ văn', 'Viết đoạn văn nghị luận', '07/11', 'late'], ['tuan', 'Hoá học', 'Bài tập Chương 1', '03/11', 'none']
+  ];
+  var subjF = 'all', typeF = 'all', drawer = null;
+  function teacher(s) { return SUBJ.find(function (x) { return x[0] === s; })[2]; }
+  function countFor(k) { return ALERTS.filter(function (a) { return a[0] === k; }).length; }
+
+  function render() {
+    var stuWarn = Object.keys(STU).filter(function (k) { return countFor(k); }).length;
+    $('tiles').innerHTML =
+      '<div class="tile"><div class="lbl">Sĩ số</div><div class="val">38</div><div class="sub">18 nam · 20 nữ · 0 nghỉ học hôm nay</div></div>' +
+      '<div class="tile"><div class="lbl">Hoàn thành tiêu chí học tập</div><div class="val">84%</div><div class="meter"><span style="width:84%"></span></div><div class="sub" style="margin-top:6px">32/38 học sinh đạt tiêu chí của học kỳ</div></div>' +
+      '<div class="tile"><div class="lbl">Bài chưa nộp hoặc quá hạn</div><div class="val">' + ALERTS.length + '</div><div class="sub">' + ALERTS.filter(function (a) { return a[4] === 'none'; }).length + ' không nộp · ' + ALERTS.filter(function (a) { return a[4] === 'late'; }).length + ' nộp quá hạn</div></div>' +
+      '<div class="tile"><div class="lbl">Học sinh có cảnh báo</div><div class="val">' + stuWarn + '</div><div class="sub">1 học sinh có cảnh báo ở 3 môn</div></div>';
+    $('chart').innerHTML = SUBJ.map(function (s) { return '<div class="hbar__row" role="listitem" tabindex="0" data-tip="' + esc(s[0]) + '|' + s[1] + '|' + esc(s[2]) + '"><span class="lb">' + esc(s[0]) + '</span><div class="hbar__track"><div class="hbar__fill" style="width:' + s[1] + '%"></div></div><span class="v">' + s[1] + '%</span></div>'; }).join('');
+    var subs = ['all'].concat(SUBJ.map(function (s) { return s[0]; }).filter(function (s) { return ALERTS.some(function (a) { return a[1] === s; }); }));
+    $('flt').innerHTML = subs.map(function (s) { return '<button class="' + (subjF === s ? 'is-on' : '') + '" data-subj="' + s + '">' + (s === 'all' ? 'Tất cả môn' : s) + '</button>'; }).join('') + '<span style="width:12px"></span>' +
+      [['all', 'Mọi tình trạng'], ['none', 'Không nộp'], ['late', 'Nộp quá hạn']].map(function (t) { return '<button class="' + (typeF === t[0] ? 'is-on' : '') + '" data-type="' + t[0] + '">' + t[1] + '</button>'; }).join('');
+    var list = ALERTS.filter(function (a) { return (subjF === 'all' || a[1] === subjF) && (typeF === 'all' || a[4] === typeF); })
+      .sort(function (a, b) { return countFor(b[0]) - countFor(a[0]); });
+    $('alerts').innerHTML = list.map(function (a) {
+      var s = STU[a[0]], n = countFor(a[0]);
+      return '<tr class="' + (n >= 3 ? 'multi' : '') + '" data-stu="' + a[0] + '"><td><b>' + esc(s.name) + '</b>' + (n >= 2 ? ' <span class="cnt" title="Số cảnh báo">' + n + '</span>' : '') + '</td><td>' + a[1] + '<div class="lc-caption">' + esc(teacher(a[1])) + '</div></td><td>' + esc(a[2]) + '</td><td>' + a[3] + '</td>' +
+        '<td><span class="st ' + a[4] + '"><i data-lucide="' + (a[4] === 'none' ? 'circle-x' : 'clock-alert') + '"></i>' + (a[4] === 'none' ? 'Không nộp' : 'Nộp quá hạn') + '</span></td></tr>';
+    }).join('') || '<tr><td colspan="5" class="c lc-muted">Không có cảnh báo phù hợp.</td></tr>';
+    D.icons();
+  }
+
+  function renderDrawer() {
+    var k = drawer, s = STU[k], mine = ALERTS.filter(function (a) { return a[0] === k; }), locked = s.account === 'locked';
+    $('drawerRoot').innerHTML = '<div class="lc-drawer-mask" data-act="close"></div><aside class="lc-drawer" role="dialog" aria-label="Thông tin học sinh">' +
+      '<div class="lc-drawer__head"><img class="lc-avatar" src="../assets/default-avatar.jpg" alt=""><div style="flex:1"><h3>' + esc(s.name) + '</h3><div class="lc-caption">' + s.code + ' · Lớp 10A1 · Sinh ngày ' + s.dob + '</div></div><button class="lc-modal__close" data-act="close" aria-label="Đóng">×</button></div>' +
+      '<div class="lc-drawer__body lc-stack">' +
+      '<div><div class="lc-sec-title" style="margin-top:0">Phụ huynh</div><div class="parent"><i data-lucide="user-round" style="width:28px;height:28px;color:var(--lc-primary)"></i><div style="flex:1"><b>' + esc(s.parent[0]) + ' (' + s.parent[1] + ')</b><span class="lc-caption">' + s.parent[2] + (s.parent[3] ? ' · ' + esc(s.parent[3]) : '') + '</span></div>' +
+        '<a class="lc-btn lc-btn--outline lc-btn--sm" href="tel:' + s.parent[2].replace(/\s/g, '') + '"><i data-lucide="phone" style="width:15px"></i>Gọi</a></div></div>' +
+      '<div><div class="lc-sec-title">Cảnh báo (' + mine.length + ')</div><ul class="lc-tl">' + mine.map(function (a) { return '<li class="no"><b>' + a[1] + ':</b> ' + esc(a[2]) + '<small>' + (a[4] === 'none' ? 'Không nộp' : 'Nộp quá hạn') + ' · hạn ' + a[3] + ' · GV ' + esc(teacher(a[1])) + '</small></li>'; }).join('') + '</ul></div>' +
+      '<div><div class="lc-sec-title">Tỉ lệ hoàn thành theo môn</div><div class="hbar" style="padding:0">' + SUBJ.map(function (x, i) { return '<div class="hbar__row" tabindex="0" data-tip="' + x[0] + '|' + s.done[i] + '|' + esc(s.name) + '"><span class="lb">' + x[0] + '</span><div class="hbar__track"><div class="hbar__fill" style="width:' + s.done[i] + '%"></div></div><span class="v">' + s.done[i] + '%</span></div>'; }).join('') + '</div></div>' +
+      '<div><div class="lc-sec-title">Tài khoản</div><div class="acct"><i data-lucide="' + (locked ? 'lock' : 'shield-check') + '" style="width:22px;color:' + (locked ? 'var(--lc-danger)' : 'var(--lc-success-2)') + '"></i><div style="flex:1"><b>' + s.code.toLowerCase() + '@bacninh.edu.vn</b><div class="lc-caption">' + (locked ? 'Bị khoá do nhập sai mật khẩu 5 lần lúc 21:40 31/10/2026' : 'Đang hoạt động · đăng nhập gần nhất 20:15 31/10/2026') + '</div></div></div>' +
+        '<div class="lc-row" style="margin-top:10px;gap:8px"><button class="lc-btn lc-btn--outline lc-btn--sm" data-act="resetPw"><i data-lucide="key-round" style="width:15px"></i>Đặt lại mật khẩu</button>' + (locked ? '<button class="lc-btn lc-btn--primary lc-btn--sm" data-act="unlock"><i data-lucide="lock-open" style="width:15px"></i>Kích hoạt lại tài khoản</button>' : '') + '</div></div>' +
+      '</div></aside>';
+    D.icons();
+  }
+
+  function showTip(el, e) {
+    var p = el.dataset.tip.split('|'), tip = $('tip');
+    tip.innerHTML = ''; var b = document.createElement('b'); b.textContent = p[1] + '%'; tip.appendChild(b);
+    tip.appendChild(document.createTextNode(p[0] + ' · ' + p[2]));
+    tip.hidden = false;
+    var r = el.getBoundingClientRect(), x = e && e.clientX ? e.clientX + 12 : r.right - 120, y = e && e.clientY ? e.clientY + 12 : r.bottom + 4;
+    tip.style.left = Math.min(x, innerWidth - 220) + 'px'; tip.style.top = y + 'px';
+  }
+  document.addEventListener('pointermove', function (e) { var el = e.target.closest('[data-tip]'); if (el) showTip(el, e); else $('tip').hidden = true; });
+  document.addEventListener('focusin', function (e) { var el = e.target.closest('[data-tip]'); if (el) showTip(el); else $('tip').hidden = true; });
+
+  document.addEventListener('click', function (e) {
+    var el;
+    if ((el = e.target.closest('[data-subj]'))) { subjF = el.dataset.subj; return render(); }
+    if ((el = e.target.closest('[data-type]'))) { typeF = el.dataset.type; return render(); }
+    if ((el = e.target.closest('[data-stu]'))) { drawer = el.dataset.stu; return renderDrawer(); }
+    if ((el = e.target.closest('[data-act]'))) {
+      var a = el.dataset.act, s = drawer && STU[drawer];
+      if (a === 'close') { drawer = null; $('drawerRoot').innerHTML = ''; }
+      if (a === 'resetPw') {
+        $('mPwTitle').innerHTML = 'Đặt lại mật khẩu · <em>' + esc(s.name) + '</em>';
+        $('mPwBody').innerHTML = '<p>Mật khẩu tạm thời mới sẽ có hiệu lực ngay. Học sinh phải đổi mật khẩu ở lần đăng nhập tiếp theo.</p><label class="lc-check"><input type="checkbox" checked> Gửi mật khẩu tạm cho phụ huynh qua tin nhắn</label>';
+        $('mPwFoot').innerHTML = '<button class="lc-btn lc-btn--outline" data-lc-close>Huỷ</button><button class="lc-btn lc-btn--primary" data-act="doReset">Đặt lại</button>';
+        $('mPw').hidden = false;
+      }
+      if (a === 'doReset') {
+        var pw = 'BN' + Math.random().toString(36).slice(2, 6).toUpperCase() + '#' + Math.floor(Math.random() * 90 + 10);
+        $('mPwBody').innerHTML = '<p>Mật khẩu tạm thời:</p><div class="pw">' + pw + '</div><p class="lc-caption">Đã gửi cho phụ huynh ' + esc(s.parent[0]) + '. Thao tác được ghi vào nhật ký.</p>';
+        $('mPwFoot').innerHTML = '<button class="lc-btn lc-btn--primary" data-lc-close>Xong</button>';
+      }
+      if (a === 'unlock') { s.account = 'active'; D.toast('Đã kích hoạt lại tài khoản của ' + esc(s.name)); renderDrawer(); }
+    }
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && drawer && $('mPw').hidden) { drawer = null; $('drawerRoot').innerHTML = ''; } });
+  render();
+})();
+</script>
+</body>
+</html>

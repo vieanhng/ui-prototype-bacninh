@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LCMS · Chi tiết khoá học</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../lcms.css">
+<style>
+  .detail { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 28px; align-items: start; margin-top: 18px; }
+  .detail.is-wide { grid-template-columns: minmax(0, 1fr) 0; }
+  .detail.is-wide .side { display: none; }
+  .side { position: sticky; top: 0; min-height: 700px; background: var(--lc-bg-soft); border-radius: 20px 0 0 0; padding: 12px 0 24px 12px; }
+  .side__toggle { position: absolute; left: -16px; top: 280px; }
+  .side__body { padding: 24px 16px; text-align: center; font-size: 16px; font-weight: 600; color: var(--lc-text-strong); }
+  /* Bài tập giao cho học sinh, nằm ngay dưới bài giảng trong chương */
+  .lc-lesson.task { padding-left: 14px; background: var(--lc-bg-soft); }
+  .lc-lesson.task .lc-num { width: 30px; height: 30px; font-size: 11px; }
+  .lc-lesson.task .lc-lesson__body b::before { content: attr(data-kind); margin-right: 8px; padding: 1px 8px; border-radius: 4px; background: var(--lc-primary-soft); color: var(--lc-primary); font-size: 12px; }
+  .task-st { flex: none; text-align: right; font-size: 12px; color: var(--lc-text-secondary); }
+  .task-st .lc-tag { margin-bottom: 4px; }
+  .add-menu { position: absolute; left: 0; right: 0; top: 46px; z-index: 5; }
+  .add-menu a, .add-menu button { text-align: left; }
+  @media (max-width: 1100px) { .detail { grid-template-columns: 1fr; } .side__toggle { display: none; } }
+</style>
+</head>
+<body>
+<div class="lc-layout">
+  <aside class="lc-sider">
+    <div class="lc-sider__logo"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></div>
+    <nav class="lc-menu" data-demo-menu="khoahoc"></nav>
+  </aside>
+
+  <div class="lc-main">
+    <header class="lc-header">
+      <button class="lc-burger" data-lc-collapse aria-label="Thu gọn menu"><img src="../assets/icons/menu.svg" alt=""></button>
+      <h1 class="lc-page-title">Toán 10 – Lớp 10A1</h1>
+      <img class="lc-avatar" src="../assets/default-avatar.jpg" alt="">
+    </header>
+
+    <main class="lc-content" style="padding-right:0">
+      <div style="padding-right:24px"><div class="lc-tabs lc-tabs--full" id="cTabs"><a href="#" class="is-active" data-pane="program">Chương trình học</a><a href="#" data-pane="tasks">Bài tập giao (7)</a><a href="18-course-results.html">Tiến độ học</a><a href="#">Tài liệu (6)</a><a href="05-form-settings.html">Cài đặt khoá học</a></div></div>
+
+      <div class="detail" id="paneTasks" hidden style="display:block;padding-right:24px"></div>
+      <div class="detail" id="detail">
+        <div class="lc-stack">
+          <!-- Chương đang mở -->
+          <section class="lc-chapter is-open">
+            <div class="lc-chapter__head">
+              <svg class="toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 6 6 6-6 6M12 6l6 6-6 6"/></svg>
+              <div><div class="lc-chapter__title">Chương IV. Hệ thức lượng trong tam giác</div><div class="lc-chapter__meta">2 Video - 4 Tài liệu - 2 Bài tập</div><div class="lc-chapter__date">Phát hành: 07:00 26/10/2026</div></div>
+              <div style="margin-left:auto;position:relative">
+                <button class="lc-icon-btn lc-icon-btn--ghost" data-lc-toggle="chMenu" aria-label="Tuỳ chọn chương"><img src="../assets/icons/three-dots-vertical.svg" alt=""></button>
+                <div class="lc-dropdown" id="chMenu" data-lc-pop hidden style="position:absolute;right:0;top:36px;z-index:5"><button>Chỉnh sửa</button><button>Ẩn chương</button><button class="danger">Xoá</button></div>
+              </div>
+            </div>
+            <ul class="lc-lessons">
+              <li class="lc-lesson"><span class="lc-num">01</span><span class="lc-lesson__type"></span><div class="lc-lesson__body"><b>Bài 1. Giá trị lượng giác của một góc từ 0° đến 180°</b><span>1 Video / 1 Tài liệu / 10 Câu hỏi</span><small>Phát hành: 07:00 26/10/2026</small></div></li>
+              <li class="lc-lesson"><span class="lc-num">02</span><span class="lc-lesson__type"></span><div class="lc-lesson__body"><b>Bài 2. Định lí côsin và định lí sin</b><span>1 Video / 2 Tài liệu / 12 Câu hỏi</span><small>Phát hành: 07:00 02/11/2026</small></div></li>
+              <li class="lc-lesson task"><span class="lc-num lc-num--outline">BT</span><div class="lc-lesson__body"><b data-kind="Bài tập">Bài tập: Định lí côsin và định lí sin</b><span>10 câu · 2 lần làm · giao 10A1, 10A2, 10A5</span><small>Mở 07:00 03/11 · Hạn 22:00 06/11/2026</small></div><div class="task-st"><span class="lc-tag lc-tag--sm lc-tag--info">Đang mở</span><br>27/42 đã nộp (10A1)<br><a href="18-course-results.html#tasks" style="font-weight:600">Xem kết quả →</a></div></li>
+              <li class="lc-lesson"><span class="lc-num">03</span><span class="lc-lesson__type"></span><div class="lc-lesson__body"><b>Bài 3. Giải tam giác và ứng dụng thực tế</b><span>1 Tài liệu / 8 Câu hỏi</span><small>Phát hành: 07:00 09/11/2026</small></div></li>
+              <li class="lc-lesson task"><span class="lc-num lc-num--outline">BT</span><div class="lc-lesson__body"><b data-kind="Bài tập">Phiếu bài tập: Giải tam giác</b><span>4 trang · nộp ảnh bài làm · giao 10A1, 10A2, 10A5</span><small>Mở cùng bài học 09/11 · Hạn 22:00 13/11/2026</small></div><div class="task-st"><span class="lc-tag lc-tag--sm lc-tag--neutral">Sắp mở</span></div></li>
+            </ul>
+            <a class="lc-collapse-link" href="#">Rút gọn</a>
+            <div class="lc-lessons"><div class="lc-add-row"><span class="lc-num">04</span><div style="flex:1;position:relative;display:flex"><button class="lc-add-btn" data-lc-toggle="addMenu">+ Thêm nội dung</button>
+              <div class="lc-dropdown add-menu" id="addMenu" data-lc-pop hidden><a href="06-editor-split.html">Bài giảng</a><a href="14-assignment.html?lop=10A1">Bài tập cho học sinh</a><a href="14-assignment.html?lop=10A1">Bài kiểm tra</a></div></div></div></div>
+          </section>
+
+          <section class="lc-chapter">
+            <div class="lc-chapter__head"><svg class="toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 6 6 6-6 6M12 6l6 6-6 6"/></svg><div><div class="lc-chapter__title">Chương V. Vectơ</div><div class="lc-chapter__meta">0 Video - 0 Tài liệu</div><div class="lc-chapter__date">Chưa phát hành</div></div><button class="lc-icon-btn lc-icon-btn--ghost"><img src="../assets/icons/three-dots-vertical.svg" alt=""></button></div>
+          </section>
+          <section class="lc-chapter">
+            <div class="lc-chapter__head"><svg class="toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 6 6 6-6 6M12 6l6 6-6 6"/></svg><div><div class="lc-chapter__title">Chương III. Hàm số bậc hai và đồ thị</div><div class="lc-chapter__meta">3 Video - 5 Tài liệu - 2 Bài tập</div><div class="lc-chapter__date">Phát hành: 07:00 05/10/2026</div></div><button class="lc-icon-btn lc-icon-btn--ghost"><img src="../assets/icons/three-dots-vertical.svg" alt=""></button></div>
+          </section>
+        </div>
+
+        <!-- Panel phải -->
+        <aside class="side">
+          <button class="lc-icon-btn lc-icon-btn--shadow side__toggle" onclick="document.getElementById('detail').classList.toggle('is-wide')" aria-label="Thu gọn panel">›</button>
+          <div class="lc-pills" id="sidePills"><button class="is-active" data-lc-panel="pMota">Mô tả</button><button data-lc-panel="pDoc">Tài liệu</button><button data-lc-panel="pCmt">Bình luận</button></div>
+          <div class="side__body" id="pMota" data-lc-panel-group="sidePills" style="text-align:left;font-weight:400;font-size:14px">Toán 10 cho lớp 10A1, năm học 2026–2027, học kì I. Giáo viên: Cô Nguyễn Thị Lan.</div>
+          <div class="side__body" id="pDoc" data-lc-panel-group="sidePills" hidden><div class="lc-empty" style="padding:24px 0;font-size:14px;font-weight:400"><img src="../assets/icons/documentIcon.svg" alt="" style="width:48px">Chưa có tài liệu</div></div>
+          <div class="side__body" id="pCmt" data-lc-panel-group="sidePills" hidden style="text-align:left;font-weight:400;font-size:14px">
+            <div class="lc-row" style="align-items:flex-start"><img class="lc-avatar" style="width:32px;height:32px" src="../assets/default-avatar.jpg" alt=""><div><b>Nguyễn Minh Anh · 10A1</b> <span class="lc-caption">2 giờ trước</span><p>Cô ơi, Ví dụ 1 Bài 2 dùng định lí côsin hay định lí sin ạ?</p></div></div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="lc-footer"><a class="lc-btn lc-btn--outline" href="02-list-grid-table.html">Quay lại danh sách khoá học</a><a class="lc-btn lc-btn--primary" href="06-editor-split.html">Chỉnh sửa</a></footer>
+  </div>
+</div>
+<script src="../lcms.js"></script>
+<script src="../lcms-demo.js"></script>
+<script>
+(function () {
+  // Bài tập đã giao trong khoá (khớp màn tiến độ 18). st: open | closed | soon
+  var TASKS = [
+    ['Chương I', 'Bài 1. Mệnh đề', 'Bài tập: Mệnh đề', 'Bài tập', '15/09', '20/09', 'closed', '41/42'],
+    ['Chương I', 'Bài 2. Tập hợp và các phép toán', 'Kiểm tra 15 phút: Tập hợp', 'Kiểm tra', '27/09', '27/09', 'closed', '41/42'],
+    ['Chương III', 'Bài 6. Hàm số bậc hai', 'Phiếu bài tập: Hàm số bậc hai', 'Bài tập', '06/10', '11/10', 'closed', '41/42'],
+    ['Chương III', 'Bài 6. Hàm số bậc hai', 'Kiểm tra 15 phút: Hàm số bậc hai', 'Kiểm tra', '18/10', '18/10', 'closed', '38/42'],
+    ['Chương I–III', 'Cả khoá (học kỳ I)', 'Kiểm tra giữa kỳ I (phòng máy)', 'Kiểm tra', '28/10', '28/10', 'closed', '40/42'],
+    ['Chương IV', 'Bài 2. Định lí côsin và định lí sin', 'Bài tập: Định lí côsin và định lí sin', 'Bài tập', '03/11', '06/11', 'open', '27/42'],
+    ['Chương IV', 'Bài 3. Giải tam giác và ứng dụng thực tế', 'Phiếu bài tập: Giải tam giác', 'Bài tập', '09/11', '13/11', 'soon', '—']
+  ];
+  var ST = { open: ['Đang mở', 'info'], closed: ['Đã đóng', 'neutral'], soon: ['Sắp mở', 'warning'] };
+  var esc = LcDemo.esc;
+  document.getElementById('paneTasks').innerHTML =
+    '<div class="lc-row" style="margin:4px 0 14px;flex-wrap:wrap"><p class="lc-secondary" style="margin:0;flex:1;min-width:240px">Bài tập và bài kiểm tra giao cho học sinh trong khoá, gắn với bài giảng hoặc chương. Học sinh thấy trong <b>Bài tập của tôi</b> trên LMS.</p>' +
+    '<a class="lc-btn lc-btn--outline" href="18-course-results.html#tasks">Xem kết quả bài tập</a><a class="lc-btn lc-btn--primary" href="14-assignment.html?lop=10A1">+ Giao bài tập</a></div>' +
+    '<div class="lc-table-wrap"><table class="lc-table lc-table--plain"><thead><tr><th>Bài tập</th><th>Gắn với</th><th class="c">Loại</th><th class="c">Mở</th><th class="c">Hạn nộp</th><th class="c">Đã nộp (10A1)</th><th class="c">Trạng thái</th><th class="c"></th></tr></thead><tbody>' +
+    TASKS.map(function (t) {
+      return '<tr><td><b style="font-weight:600">' + esc(t[2]) + '</b><div class="lc-caption">Giao 10A1, 10A2, 10A5</div></td><td>' + esc(t[1]) + '<div class="lc-caption">' + esc(t[0]) + '</div></td><td class="c">' + t[3] + '</td><td class="c">' + t[4] + '</td><td class="c">' + t[5] + '</td><td class="c">' + t[7] + '</td>' +
+        '<td class="c"><span class="lc-tag lc-tag--sm lc-tag--' + ST[t[6]][1] + '">' + ST[t[6]][0] + '</span></td><td class="c">' + (t[6] === 'soon' ? '' : '<a href="18-course-results.html#tasks" style="font-weight:600;white-space:nowrap">Kết quả</a>') + '</td></tr>';
+    }).join('') + '</tbody></table></div>';
+  document.getElementById('cTabs').addEventListener('click', function (e) {
+    var a = e.target.closest('[data-pane]'); if (!a) return;
+    e.preventDefault();
+    document.querySelectorAll('#cTabs a').forEach(function (x) { x.classList.toggle('is-active', x === a); });
+    var tasks = a.dataset.pane === 'tasks';
+    document.getElementById('paneTasks').hidden = !tasks; document.getElementById('detail').hidden = tasks;
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QLĐT · Dashboard các cấp quản lý</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../qldt.css">
+<style>
+.dash-filter { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--qd-divider); }
+.chart svg { width: 100%; height: auto; display: block; font-family: var(--qd-font); }
+.chart { position: relative; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; padding: 0 0 8px; }
+.chart-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.chart-legend span::before { content: ""; width: 10px; height: 10px; border-radius: 2px; background: var(--c); }
+.chart-tip { position: absolute; pointer-events: none; background: #fff; border: 1px solid #ddd; border-radius: 4px; box-shadow: var(--qd-sh-drop); padding: 8px 10px; font-size: 13px; min-width: 180px; z-index: 5; }
+.chart-tip b { display: block; margin-bottom: 4px; }
+.chart-tip div { display: flex; justify-content: space-between; gap: 12px; }
+.chart-tip i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; }
+.panel-tools { margin-left: auto; }
+.drill { cursor: pointer; }
+.drill:hover td { background: #eef4fc !important; }
+.scope-note { font-size: 13px; color: var(--qd-text-muted); }
+</style>
+</head>
+<body>
+<header class="qd-header">
+  <div class="qd-container qd-header__in">
+    <a class="qd-brand" href="02-home-modules.html">
+      <span class="qd-brand__logo"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></span>
+      <span><span class="qd-brand__name">Sở Giáo dục và Đào tạo Bắc Ninh</span><br><span class="qd-brand__sub">Hệ thống quản trị đào tạo trực tuyến</span></span>
+    </a>
+    <div class="qd-header__right">
+      <div class="qd-header__tools">
+        <button class="qd-hicon" aria-label="Lịch"><svg class="qd-i "><use href="#qd-calendar"/></svg></button>
+        <button class="qd-hicon" aria-label="Cài đặt"><svg class="qd-i "><use href="#qd-settings"/></svg></button>
+        <button class="qd-lang">VI</button>
+        <span class="qd-vsep"></span>
+        <button class="qd-hicon" aria-label="Việc cần làm"><svg class="qd-i "><use href="#qd-clipboard"/></svg></button>
+        <button class="qd-hicon qd-hicon--bell" aria-label="Thông báo"><svg class="qd-i "><use href="#qd-bell"/></svg><span class="qd-hicon__badge">6</span></button>
+        <button class="qd-user"><img src="../assets/default-avatar.jpg" alt=""><span>Nguyễn Văn Sơn</span><svg class="qd-i "><use href="#qd-chevron-down"/></svg></button>
+      </div>
+      <div class="qd-week">Năm học <b>2026-2027</b> · Tuần <b>9</b> (Học kỳ <b>I</b>): <a href="#">02/11 - 07/11</a></div>
+    </div>
+  </div>
+</header>
+<nav class="qd-nav">
+  <div class="qd-container qd-nav__in">
+      <div class="qd-nav__item is-active" data-nav="dashboard"><a class="qd-nav__link" href="08-management-dashboard.html">Dashboard</a></div>
+      <div class="qd-nav__item" data-nav="tong-quan"><a class="qd-nav__link" href="09-executive-report.html#tong-quan">Tổng quan</a></div>
+      <div class="qd-nav__item" data-nav="nguoi-dung"><button class="qd-nav__link">Người dùng</button><div class="qd-menu"><a href="09-executive-report.html#nguoi-dung">Hoạt động người dùng</a><a href="09-executive-report.html#khao-sat">Khảo sát người dùng</a></div></div>
+      <div class="qd-nav__item" data-nav="day-hoc"><button class="qd-nav__link">Dạy và học</button><div class="qd-menu"><a href="09-executive-report.html#day-hoc">Hoạt động dạy và học</a><a href="09-executive-report.html#chat-luong">Chất lượng dạy và học</a></div></div>
+      <div class="qd-nav__item" data-nav="tan-suat"><button class="qd-nav__link">Tần suất</button><div class="qd-menu"><a href="09-executive-report.html#tan-suat-hs">Tần suất học tập của học sinh</a><a href="09-executive-report.html#tan-suat-gv">Giảng dạy online của giáo viên</a></div></div>
+      <div class="qd-nav__item" data-nav="ky-thi"><a class="qd-nav__link" href="09-executive-report.html#ky-thi">Kỳ thi chung</a></div>
+      <div class="qd-nav__item" data-nav="hoc-lieu"><a class="qd-nav__link" href="09-executive-report.html#hoc-lieu">Học liệu</a></div>
+      <div class="qd-nav__item" data-nav="ha-tang"><a class="qd-nav__link" href="09-executive-report.html#ha-tang">Hạ tầng</a></div>
+      <div class="qd-nav__item" data-nav="xep-hang"><a class="qd-nav__link" href="09-executive-report.html#xep-hang">Xếp hạng</a></div>
+    <div class="qd-nav__right">
+      <div class="qd-role">
+        <button class="qd-role__btn"><span>Quản lý Sở</span></button>
+        <div class="qd-role__menu">
+          <small>Sở Giáo dục và Đào tạo Bắc Ninh</small>
+          <a href="#" data-short="Lãnh đạo Sở">Lãnh đạo Sở</a>
+          <a href="#" class="is-selected" data-short="Quản lý Sở">Chuyên viên Phòng GD Trung học</a>
+          <small>UBND Phường Kinh Bắc</small>
+          <a href="#" data-short="Quản lý phường">Cán bộ phụ trách giáo dục</a>
+          <small>Trường THPT Hàn Thuyên</small>
+          <a href="#" data-short="Hiệu trưởng">Hiệu trưởng</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<main class="qd-wrap">
+  <div class="qd-tabs">
+    <a href="#" class="is-active">Tổng quan</a><a href="#">Quy mô trường, lớp</a><a href="#">Chất lượng giáo dục</a><a href="#">Đội ngũ</a><a href="#">Cơ sở vật chất</a>
+    <div class="qd-tabs__right"><a href="#">Export</a><a href="#" onclick="window.print();return false">In báo cáo</a></div>
+  </div>
+  <div class="dash-filter">
+    <span class="qd-filter-tag"><svg class="qd-i "><use href="#qd-funnel"/></svg> Phạm vi</span>
+    <div class="qd-seg" role="tablist" aria-label="Cấp quản lý">
+      <button class="is-active" data-level="province">Cấp Sở</button><button data-level="commune">Cấp xã/phường</button><button data-level="school">Cấp trường</button>
+    </div>
+    <select class="qd-select-native" id="commune-sel" aria-label="Xã/phường" hidden></select>
+    <select class="qd-select-native" id="school-sel" aria-label="Trường" hidden></select>
+    <select class="qd-select-native" aria-label="Năm học"><option>2026-2027</option><option>2025-2026</option></select>
+    <select class="qd-select-native" aria-label="Kỳ"><option>Học kỳ I</option><option>Cả năm</option></select>
+    <button class="qd-btn qd-btn--success qd-btn--icon" aria-label="Làm mới" data-qd-loading="700"><svg class="qd-i "><use href="#qd-refresh"/></svg></button>
+  </div>
+  <nav class="qd-crumb" id="crumb" aria-label="Phạm vi đang xem"></nav>
+  <p class="scope-note" id="scope-note"></p>
+  <div class="qd-stats-row" id="stats"></div>
+  <div class="qd-dash-grid">
+    <div class="qd-panel">
+      <div class="qd-panel__head qd-row"><span id="c1-title"></span><button class="qd-btn qd-btn--link qd-btn--sm panel-tools" data-table="c1">Xem dạng bảng</button></div>
+      <div class="qd-panel__body"><div class="chart" id="c1"></div><div id="c1-table" hidden></div></div>
+    </div>
+    <div class="qd-panel">
+      <div class="qd-panel__head qd-row"><span id="c2-title"></span><button class="qd-btn qd-btn--link qd-btn--sm panel-tools" data-table="c2">Xem dạng bảng</button></div>
+      <div class="qd-panel__body">
+        <div class="chart-legend" id="c2-legend"></div>
+        <div class="chart" id="c2"></div><div id="c2-table" hidden></div>
+      </div>
+    </div>
+    <div class="qd-panel wide">
+      <div class="qd-panel__head qd-row"><span id="t-title"></span><span class="panel-tools qd-muted" style="font-size:13px" id="t-hint"></span></div>
+      <div class="qd-table-wrap" style="border:0"><table class="qd-table" id="t"></table></div>
+    </div>
+    <div class="qd-panel wide">
+      <div class="qd-panel__head">Tiến độ nộp báo cáo, kế hoạch</div>
+      <div class="qd-panel__body" id="progress"></div>
+    </div>
+  </div>
+</main>
+<footer class="qd-footer">
+  <h4>Hệ thống do Sở Giáo dục và Đào tạo Bắc Ninh vận hành</h4>
+</footer>
+<script src="../qldt.js"></script>
+<script>
+// Dữ liệu minh hoạ. Cấp xã/phường quản lý MN, TH, THCS; Sở quản lý THPT, GDTX (mô hình chính quyền 2 cấp).
+var KQ = [['Tốt', '#0B3C7A'], ['Khá', '#2566BF'], ['Đạt', '#7FA8DE'], ['Chưa đạt', '#C9D9F0']];
+var DATA = {
+  province: {
+    name: 'Toàn tỉnh Bắc Ninh', note: 'Số liệu tổng hợp toàn tỉnh: các cấp học do Sở và UBND cấp xã quản lý.',
+    stats: [['Trường học', 1642, '+6 so với năm trước', 'up'], ['Lớp học', 33480, '+412', 'up'], ['Học sinh', 1012500, '+2,1%', 'up'], ['Giáo viên', 52300, 'thiếu 1.180 so với định mức', 'down'], ['HS bình quân/lớp', 30.2, 'chuẩn ≤ 35 (THCS, THPT ≤ 45)', ''], ['Trường đạt chuẩn QG', '78,4%', '+3,2 điểm %', 'up']],
+    c1: ['Học sinh theo cấp học', [['Mầm non', 312400], ['Tiểu học', 345200], ['THCS', 236800], ['THPT', 108600], ['GDTX', 9500]]],
+    c2: ['Kết quả học tập HK gần nhất theo cấp học (%)', [['Tiểu học', [62, 30, 7.5, .5]], ['THCS', [38, 41, 18.6, 2.4]], ['THPT', [41, 43, 14.8, 1.2]]]],
+    table: { title: 'Xã/phường cần chú ý', hint: 'Bấm một dòng để xem cấp xã/phường', child: 'commune',
+      head: ['Xã/phường', 'Số trường', 'Học sinh', 'Nộp KHGD', 'Chuyên cần', 'HS chưa đạt', 'Thiếu GV'],
+      rows: [['Phường Kinh Bắc', 18, 14820, 100, 97.8, 1.1, 4], ['Phường Từ Sơn', 22, 19640, 86, 96.9, 2.0, 11], ['Xã Gia Bình', 14, 9120, 71, 95.2, 3.4, 9], ['Xã Lương Tài', 13, 8650, 77, 94.6, 3.9, 12], ['Phường Bắc Giang', 24, 21300, 100, 97.5, 1.4, 3]] },
+    progress: [['Báo cáo số liệu đầu năm', 94], ['Kế hoạch giáo dục nhà trường', 88], ['Tự đánh giá kiểm định', 61], ['Đăng ký dự thi HSG cấp tỉnh', 100]]
+  },
+  commune: {
+    'Phường Kinh Bắc': {
+      note: 'UBND phường quản lý trường mầm non, tiểu học, THCS trên địa bàn. Trường THPT do Sở quản lý, không tính ở đây.',
+      stats: [['Trường học', 18, 'MN 7 · TH 6 · THCS 5', ''], ['Lớp học', 412, '+9', 'up'], ['Học sinh', 14820, '+1,6%', 'up'], ['Giáo viên', 720, 'thiếu 4', 'down'], ['HS bình quân/lớp', 36.0, 'vượt chuẩn ở 3 trường TH', 'down'], ['Trường đạt chuẩn QG', '88,9%', '16/18 trường', 'up']],
+      c1: ['Học sinh theo trường', [['THCS Nguyễn Đăng Đạo', 1180], ['THCS Kinh Bắc', 1040], ['TH Kinh Bắc', 1420], ['TH Thị Cầu', 1265], ['MN Hoa Sen', 610]]],
+      c2: ['Kết quả học tập HK gần nhất (%)', [['Tiểu học', [65, 29, 5.6, .4]], ['THCS', [44, 39, 15.4, 1.6]]]],
+      table: { title: 'Trường trên địa bàn', hint: 'Bấm một dòng để xem cấp trường', child: 'school',
+        head: ['Trường', 'Cấp học', 'Học sinh', 'Nộp KHGD', 'Chuyên cần', 'HS chưa đạt', 'Thiếu GV'],
+        rows: [['THCS Nguyễn Đăng Đạo', 'THCS', 1180, 100, 98.4, 0.6, 0], ['THCS Kinh Bắc', 'THCS', 1040, 100, 97.1, 2.2, 1], ['TH Kinh Bắc', 'Tiểu học', 1420, 100, 98.0, 0.3, 2], ['TH Thị Cầu', 'Tiểu học', 1265, 0, 96.7, 0.8, 1], ['MN Hoa Sen', 'Mầm non', 610, 100, 95.9, 0, 0]] },
+      progress: [['Báo cáo số liệu đầu năm', 100], ['Kế hoạch giáo dục nhà trường', 94], ['Tự đánh giá kiểm định', 72], ['Kế hoạch bán trú', 83]]
+    },
+    'Phường Từ Sơn': null, 'Xã Gia Bình': null, 'Xã Lương Tài': null, 'Phường Bắc Giang': null
+  },
+  school: {
+    'THCS Nguyễn Đăng Đạo': {
+      note: 'Số liệu của một trường: theo khối và theo lớp.',
+      stats: [['Lớp học', 28, '7 lớp/khối', ''], ['Học sinh', 1180, '+24', 'up'], ['Giáo viên', 62, 'đủ định mức', 'up'], ['Chuyên cần tuần này', '98,4%', '19 lượt vắng', ''], ['HS chưa đạt HK I', 7, '0,6%', 'up'], ['Sổ điểm đã khoá', '82%', 'hạn 05/01/2027', '']],
+      c1: ['Học sinh theo khối', [['Khối 6', 302], ['Khối 7', 296], ['Khối 8', 291], ['Khối 9', 291]]],
+      c2: ['Kết quả học tập HK gần nhất theo khối (%)', [['Khối 6', [48, 38, 13.2, .8]], ['Khối 7', [45, 40, 14.4, .6]], ['Khối 8', [43, 41, 15.5, .5]], ['Khối 9', [50, 37, 12.5, .5]]]],
+      table: { title: 'Lớp cần chú ý', hint: '', child: null,
+        head: ['Lớp', 'GVCN', 'Sĩ số', 'Sổ điểm', 'Chuyên cần', 'HS chưa đạt', 'Vắng tuần này'],
+        rows: [['6A3', 'Nguyễn Thị Thu Hằng', 44, 100, 99.1, 0, 2], ['7A5', 'Trần Văn Đức', 43, 70, 96.2, 2, 6], ['8A1', 'Đỗ Thị Lan Anh', 42, 100, 98.8, 0, 1], ['9A2', 'Phạm Văn Hải', 41, 55, 97.0, 1, 4]] },
+      progress: [['Kế hoạch giáo dục giáo viên', 100], ['Sổ điểm học kỳ I', 82], ['Đề kiểm tra giữa kỳ', 93], ['Hồ sơ tự đánh giá', 64]]
+    }
+  }
+};
+// Xã/trường chưa có dữ liệu riêng: dùng chung bộ mẫu
+Object.keys(DATA.commune).forEach(function (k) { if (!DATA.commune[k]) DATA.commune[k] = DATA.commune['Phường Kinh Bắc']; });
+['THCS Kinh Bắc', 'TH Kinh Bắc', 'TH Thị Cầu', 'MN Hoa Sen'].forEach(function (k) { DATA.school[k] = DATA.school['THCS Nguyễn Đăng Đạo']; });
+
+var state = { level: 'province', commune: 'Phường Kinh Bắc', school: 'THCS Nguyễn Đăng Đạo' };
+var fmt = function (n) { return typeof n === 'number' ? n.toLocaleString('vi-VN') : n; };
+var $ = function (id) { return document.getElementById(id); };
+var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+
+function current() {
+  if (state.level === 'province') return DATA.province;
+  if (state.level === 'commune') return DATA.commune[state.commune];
+  return DATA.school[state.school];
+}
+
+function tipFor(box, html, e) {
+  var tip = box.querySelector('.chart-tip'), r = box.getBoundingClientRect();
+  tip.innerHTML = html; tip.hidden = false;
+  tip.style.left = Math.min(e.clientX - r.left + 14, r.width - 200) + 'px';
+  tip.style.top = (e.clientY - r.top + 14) + 'px';
+}
+function bindTip(box, fn) {
+  box.onmousemove = function (e) { var g = e.target.closest('[data-i]'); if (!g) { box.querySelector('.chart-tip').hidden = true; return; } tipFor(box, fn(+g.dataset.i), e); };
+  box.onmouseleave = function () { box.querySelector('.chart-tip').hidden = true; };
+}
+
+// Cột ngang 1 chuỗi: tiêu đề panel gọi tên số liệu nên không cần chú thích
+function hbar(box, rows) {
+  var W = Math.max(box.clientWidth, 300), L = W < 480 ? 120 : 170, R = 70, rowH = 34, barH = 18, T = 4, H = T + rows.length * rowH + 4;
+  var max = Math.max.apply(null, rows.map(function (r) { return r[1]; }));
+  var x = function (v) { return L + v / max * (W - L - R); };
+  var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img">';
+  rows.forEach(function (r, i) {
+    var y = T + i * rowH + (rowH - barH) / 2, x1 = x(r[1]), rr = Math.min(4, x1 - L);
+    s += '<g data-i="' + i + '"><rect x="0" y="' + (T + i * rowH) + '" width="' + W + '" height="' + rowH + '" fill="transparent"/>';
+    s += '<text x="' + (L - 10) + '" y="' + (y + 13) + '" font-size="13" fill="#333" text-anchor="end">' + esc(r[0]) + '</text>';
+    s += '<path d="M' + L + ' ' + y + 'H' + (x1 - rr) + 'Q' + x1 + ' ' + y + ' ' + x1 + ' ' + (y + rr) + 'V' + (y + barH - rr) + 'Q' + x1 + ' ' + (y + barH) + ' ' + (x1 - rr) + ' ' + (y + barH) + 'H' + L + 'Z" fill="#2566BF"/>';
+    s += '<text x="' + (x1 + 6) + '" y="' + (y + 13) + '" font-size="12" fill="#555">' + fmt(r[1]) + '</text></g>';
+  });
+  box.innerHTML = s + '</svg><div class="chart-tip" hidden></div>';
+  bindTip(box, function (i) { return '<b>' + esc(rows[i][0]) + '</b><div><span>Học sinh</span><span>' + fmt(rows[i][1]) + '</span></div>'; });
+}
+
+// Cột chồng 100%: thang thứ bậc Tốt → Chưa đạt dùng một sắc xanh đậm → nhạt, khe 2px giữa các đoạn
+function stack100(box, rows) {
+  var W = Math.max(box.clientWidth, 300), L = 80, R = 10, rowH = 36, barH = 20, T = 4, H = T + rows.length * rowH + 24;
+  var x = function (v) { return L + v / 100 * (W - L - R); };
+  var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img">';
+  [0, 25, 50, 75, 100].forEach(function (g) { s += '<line x1="' + x(g) + '" x2="' + x(g) + '" y1="' + T + '" y2="' + (H - 20) + '" stroke="#e5e5e5"/><text x="' + x(g) + '" y="' + (H - 6) + '" font-size="11" fill="#777" text-anchor="middle">' + g + '%</text>'; });
+  rows.forEach(function (r, i) {
+    var y = T + i * rowH + (rowH - barH) / 2, acc = 0;
+    s += '<g data-i="' + i + '"><rect x="0" y="' + (T + i * rowH) + '" width="' + W + '" height="' + rowH + '" fill="transparent"/>';
+    s += '<text x="' + (L - 10) + '" y="' + (y + 14) + '" font-size="13" fill="#333" text-anchor="end">' + esc(r[0]) + '</text>';
+    r[1].forEach(function (v, j) {
+      var x0 = x(acc) + (j ? 1 : 0); acc += v; var x1 = x(acc) - (j < 3 ? 1 : 0);
+      if (x1 > x0) s += '<rect x="' + x0 + '" y="' + y + '" width="' + (x1 - x0) + '" height="' + barH + '" fill="' + KQ[j][1] + '"' + (j === 0 ? ' rx="0"' : '') + '/>';
+    });
+    s += '</g>';
+  });
+  box.innerHTML = s + '</svg><div class="chart-tip" hidden></div>';
+  bindTip(box, function (i) { return '<b>' + esc(rows[i][0]) + '</b>' + KQ.map(function (k, j) { return '<div><span><i style="background:' + k[1] + '"></i>' + k[0] + '</span><span>' + fmt(rows[i][1][j]) + '%</span></div>'; }).join(''); });
+}
+
+function smallTable(head, rows) {
+  return '<table class="qd-table"><thead><tr>' + head.map(function (h, i) { return '<th' + (i ? ' class="num"' : '') + '>' + h + '</th>'; }).join('') + '</tr></thead><tbody>' +
+    rows.map(function (r) { return '<tr>' + r.map(function (c, i) { return '<td' + (i ? ' class="num"' : '') + '>' + esc(fmt(c)) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table>';
+}
+
+// Ngưỡng cảnh báo: nộp KHGD < 90%, chuyên cần < 96%, chưa đạt > 2%, thiếu GV > 5 (cấp trường: sổ điểm < 80%, vắng > 3)
+function flag(col, v, level) {
+  var bad = { 3: v < (level === 'school' ? 80 : 90), 4: v < 96, 5: level === 'school' ? v > 1 : v > 2, 6: v > (level === 'school' ? 3 : 5) }[col];
+  var txt = col === 3 || col === 4 ? fmt(v) + '%' : (col === 5 && level !== 'school' ? fmt(v) + '%' : fmt(v));
+  return bad ? '<span class="qd-flag"><svg class="qd-i"><use href="#qd-warning"/></svg>' + txt + '</span>' : txt;
+}
+
+function render() {
+  var d = current(), lv = state.level;
+  // breadcrumb
+  var c = ['<a href="#" data-go="province">Toàn tỉnh Bắc Ninh</a>'];
+  if (lv !== 'province') c.push('<svg class="qd-i"><use href="#qd-chevron-right"/></svg>' + (lv === 'commune' ? '<b>' + esc(state.commune) + '</b>' : '<a href="#" data-go="commune">' + esc(state.commune) + '</a>'));
+  if (lv === 'school') c.push('<svg class="qd-i"><use href="#qd-chevron-right"/></svg><b>' + esc(state.school) + '</b>');
+  if (lv === 'province') c[0] = '<b>Toàn tỉnh Bắc Ninh</b>';
+  $('crumb').innerHTML = c.join(' ');
+  $('scope-note').textContent = d.note;
+  $('stats').innerHTML = d.stats.map(function (s) { return '<div class="qd-stat"><span>' + s[0] + '</span><b>' + fmt(s[1]) + '</b><small class="' + s[3] + '">' + s[2] + '</small></div>'; }).join('');
+  $('c1-title').textContent = d.c1[0]; hbar($('c1'), d.c1[1]);
+  $('c1-table').innerHTML = smallTable(['', 'Học sinh'], d.c1[1]);
+  $('c2-title').textContent = d.c2[0]; stack100($('c2'), d.c2[1]);
+  $('c2-legend').innerHTML = KQ.map(function (k) { return '<span style="--c:' + k[1] + '">' + k[0] + '</span>'; }).join('');
+  $('c2-table').innerHTML = smallTable([''].concat(KQ.map(function (k) { return k[0] + ' (%)'; })), d.c2[1].map(function (r) { return [r[0]].concat(r[1]); }));
+  var t = d.table;
+  $('t-title').textContent = t.title; $('t-hint').textContent = t.hint;
+  $('t').innerHTML = '<thead><tr><th>STT</th>' + t.head.map(function (h, i) { return '<th' + (i > 1 || (i === 1 && typeof t.rows[0][1] === 'number') ? ' class="num"' : '') + '>' + h + '</th>'; }).join('') + '</tr></thead><tbody>' +
+    t.rows.map(function (r, i) {
+      return '<tr' + (t.child ? ' class="drill" data-child="' + t.child + '" data-name="' + esc(r[0]) + '" tabindex="0"' : '') + '><td>' + (i + 1) + '</td>' + r.map(function (v, j) {
+        var num = j > 1 || (j === 1 && typeof v === 'number');
+        var cell = j === 0 ? (t.child ? '<a href="#">' + esc(v) + '</a>' : '<b>' + esc(v) + '</b>') : (j >= 3 ? flag(j, v, lv) : esc(fmt(v)));
+        return '<td' + (num ? ' class="num"' : '') + '>' + cell + '</td>';
+      }).join('') + '</tr>';
+    }).join('') + '</tbody>';
+  $('progress').innerHTML = d.progress.map(function (p) { return '<div class="qd-progress"><span>' + p[0] + '</span><div class="qd-progress__bar"><i style="width:' + p[1] + '%"' + (p[1] < 70 ? ' class="is-low"' : '') + '></i></div><b>' + p[1] + '%</b></div>'; }).join('');
+  // bộ chọn
+  document.querySelectorAll('.qd-seg button').forEach(function (b) { b.classList.toggle('is-active', b.dataset.level === lv); });
+  $('commune-sel').hidden = lv === 'province';
+  $('school-sel').hidden = lv !== 'school';
+  $('commune-sel').value = state.commune; $('school-sel').value = state.school;
+}
+
+$('commune-sel').innerHTML = Object.keys(DATA.commune).map(function (k) { return '<option>' + k + '</option>'; }).join('');
+$('school-sel').innerHTML = Object.keys(DATA.school).map(function (k) { return '<option>' + k + '</option>'; }).join('');
+$('commune-sel').onchange = function () { state.commune = this.value; render(); };
+$('school-sel').onchange = function () { state.school = this.value; render(); };
+document.querySelector('.qd-seg').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) { state.level = b.dataset.level; render(); } });
+document.addEventListener('click', function (e) {
+  var go = e.target.closest('[data-go]');
+  if (go) { e.preventDefault(); state.level = go.dataset.go; render(); return; }
+  var row = e.target.closest('.drill');
+  if (row) { e.preventDefault(); state[row.dataset.child] = row.dataset.name; state.level = row.dataset.child; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  var tb = e.target.closest('[data-table]');
+  if (tb) { var id = tb.dataset.table, tbl = $(id + '-table'), show = tbl.hidden; tbl.hidden = !show; $(id).hidden = show; tb.textContent = show ? 'Xem dạng biểu đồ' : 'Xem dạng bảng'; }
+});
+document.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.classList.contains('drill')) e.target.click(); });
+window.addEventListener('resize', function () { var d = current(); hbar($('c1'), d.c1[1]); stack100($('c2'), d.c2[1]); });
+render();
+</script>
+</body>
+</html>

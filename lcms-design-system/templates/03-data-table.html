@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LCMS · Danh mục combo</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../lcms.css">
+</head>
+<body>
+<div class="lc-layout">
+  <aside class="lc-sider">
+    <div class="lc-sider__logo"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></div>
+    <nav class="lc-menu" data-demo-menu=""></nav>
+  </aside>
+
+  <div class="lc-main">
+    <header class="lc-header">
+      <button class="lc-burger" data-lc-collapse aria-label="Thu gọn menu"><img src="../assets/icons/menu.svg" alt=""></button>
+      <h1 class="lc-page-title">Danh mục combo</h1>
+      <img class="lc-avatar" src="../assets/default-avatar.jpg" alt="">
+    </header>
+
+    <main class="lc-content">
+      <!-- Biến thể 1: bảng kẻ ô, có checkbox, mã, link mở ngoài -->
+      <div class="lc-listbar"><div class="lc-tabs"><a href="#">Tất cả (143)</a><a href="#" class="is-active">Công khai (12)</a><a href="#">Riêng tư (78)</a><a href="#">Đang chờ (7)</a><a href="#">Qr Sale (39)</a><a href="#">Đã xoá (46)</a></div></div>
+      <div class="lc-table-wrap"><table class="lc-table">
+        <thead><tr><th class="c"><input type="checkbox" aria-label="Chọn tất cả"></th><th class="c">Mã</th><th>Tên danh mục</th><th class="c">Loại</th><th class="c">Thứ tự gia<br>hạn</th><th class="c">Giá gốc<br>(VNĐ)</th><th class="c">Giá bán<br>(VNĐ)</th><th class="c">Thời lượng học<br>(Ngày)</th><th class="c">Trạng thái</th><th class="c">Hành<br>động</th></tr></thead>
+        <tbody>
+          <tr><td class="c"><input type="checkbox"></td><td class="c"><b>S27</b></td><td><div class="lc-row" style="justify-content:space-between"><a class="u" href="#">COMBO PRO3M VÀ PRO3M PLUS 2027</a><img src="../assets/icons/arrow-open-link.svg" alt="" style="width:22px"></div></td><td class="c">Pro,Plus</td><td class="c">-1</td><td class="c">3.035.000</td><td class="c">2.985.000</td><td class="c">0</td><td class="c"><span class="lc-tag lc-tag--success">Công<br>khai</span></td><td class="c"><span class="lc-action"><img src="../assets/icons/edit-action.svg" alt="Sửa"><img src="../assets/icons/delete-action.svg" alt="Xoá"></span></td></tr>
+          <tr><td class="c"><input type="checkbox"></td><td class="c"><b>M27</b></td><td><div class="lc-row" style="justify-content:space-between"><a class="u" href="#">PRO3M - MỤC TIÊU 8+ (2027)</a><img src="../assets/icons/arrow-open-link.svg" alt="" style="width:22px"></div></td><td class="c">Pro</td><td class="c">2027</td><td class="c">2.000.000</td><td class="c">1.950.000</td><td class="c">0</td><td class="c"><span class="lc-tag lc-tag--success">Công<br>khai</span></td><td class="c"><span class="lc-action"><img src="../assets/icons/edit-action.svg" alt="Sửa"><img src="../assets/icons/delete-action.svg" alt="Xoá"></span></td></tr>
+          <tr><td class="c"><input type="checkbox"></td><td class="c"></td><td><div class="lc-row" style="justify-content:space-between"><a class="u" href="#">TIẾNG ANH CĂN BẢN</a><img src="../assets/icons/arrow-open-link.svg" alt="" style="width:22px"></div></td><td class="c"></td><td class="c"></td><td class="c">1.050.000</td><td class="c">1.000.000</td><td class="c">0</td><td class="c"><span class="lc-tag lc-tag--warning">Đang<br>chờ</span></td><td class="c"><span class="lc-action"><img src="../assets/icons/edit-action.svg" alt="Sửa"><img src="../assets/icons/delete-action.svg" alt="Xoá"></span></td></tr>
+          <tr><td class="c"><input type="checkbox"></td><td class="c"><b>P27</b></td><td><div class="lc-row" style="justify-content:space-between"><a class="u" href="#">PRO3M PLUS - MỤC TIÊU 9+ (2027)</a><img src="../assets/icons/arrow-open-link.svg" alt="" style="width:22px"></div></td><td class="c">Plus</td><td class="c">-1</td><td class="c">2.100.000</td><td class="c">2.050.000</td><td class="c">0</td><td class="c"><span class="lc-tag lc-tag--neutral">Riêng<br>tư</span></td><td class="c"><span class="lc-action"><img src="../assets/icons/edit-action.svg" alt="Sửa"><img src="../assets/icons/delete-action.svg" alt="Xoá"></span></td></tr>
+        </tbody></table></div>
+      <ul class="lc-pagination"><li class="is-disabled">‹</li><li class="is-active">1</li><li>2</li><li>›</li><li><select class="lc-select lc-select--pill" style="width:180px"><option>Hiển thị 10 dòng/trang</option></select></li></ul>
+
+      <!-- Biến thể 2: bảng không kẻ dọc (Sự kiện), có segmented tab -->
+      <h2 id="events" class="lc-h3" style="margin:40px 0 16px">Biến thể: bảng Sự kiện</h2>
+      <div class="lc-listbar"><div class="lc-tabs"><a href="#" class="is-active">Quản lý sự kiện</a><a href="#">Quản lý form</a></div></div>
+      <div class="lc-table-wrap" style="border:0"><table class="lc-table lc-table--plain">
+        <thead><tr><th>STT</th><th>Tên sự kiện</th><th>Ngày bắt đầu</th><th>Ngày kết thúc</th><th class="c">Trạng thái</th><th>Hành động</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><a class="u" href="#">su kien 5</a></td><td>20/11/2025</td><td>21/11/2025</td><td class="c"><span class="lc-tag lc-tag--danger">Đã kết thúc</span></td><td><span class="lc-action"><img src="../assets/icons/edit-action.svg" alt="Sửa"><img src="../assets/icons/delete-action.svg" alt="Xoá"></span></td></tr>
+          <tr><td>2</td><td><a class="u" href="#">Khảo sát chất lượng Care Team (nhóm kín Zalo) - Tháng 11/2025</a></td><td>20/11/2025</td><td>20/11/2025</td><td class="c"><span class="lc-tag lc-tag--danger">Đã kết thúc</span></td><td><span class="lc-action"><img src="../assets/icons/edit-action.svg" alt="Sửa"><img src="../assets/icons/delete-action.svg" alt="Xoá"></span></td></tr>
+          <tr><td>3</td><td><a class="u" href="#">Thi thử vào 10 - đợt 2</a></td><td>01/12/2026</td><td>15/12/2026</td><td class="c"><span class="lc-tag lc-tag--success">Đang diễn ra</span></td><td><span class="lc-action"><img src="../assets/icons/edit-action.svg" alt="Sửa"><img src="../assets/icons/delete-action.svg" alt="Xoá"></span></td></tr>
+        </tbody></table></div>
+    </main>
+
+    <footer class="lc-footer"><button class="lc-btn lc-btn--primary">+ Tạo danh mục mới</button></footer>
+  </div>
+</div>
+<script src="../lcms.js"></script>
+<script src="../lcms-demo.js"></script>
+</body>
+</html>

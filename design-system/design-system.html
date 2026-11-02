@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Học viên Design System</title>
+<link rel="stylesheet" href="tvet.css">
+<style>
+  /* ---- chỉ dùng cho trang tài liệu ---- */
+  .ds { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+  .ds-nav { position: sticky; top: 0; height: 100vh; overflow: auto; background: var(--tv-surface); box-shadow: var(--tv-sh-sidebar); border-radius: 0 40px 0 0; padding: 20px 0; }
+  .ds-nav .tv-logo { padding: 0 24px 16px; }
+  .ds-nav a { display: block; margin: 2px 12px; padding: 8px 14px; border-radius: 160px; color: var(--tv-text-subtle); font-size: 14px; font-weight: 600; }
+  .ds-nav a:hover { background: var(--tv-primary-soft); color: var(--tv-primary); }
+  .ds-nav small { display: block; padding: 16px 26px 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--tv-text-muted); }
+  .ds-main { padding: 32px 40px 80px; max-width: 1200px; }
+  .ds-sec { margin-top: 56px; scroll-margin-top: 24px; }
+  .ds-sec > h2 { font-size: 24px; font-weight: 700; color: var(--tv-heading); }
+  .ds-sec > p.ds-intro { margin-top: 6px; color: var(--tv-text-muted); max-width: 760px; }
+  .ds-block { margin-top: 20px; background: var(--tv-surface); border-radius: var(--tv-r-xl); padding: 24px; box-shadow: var(--tv-sh-xs); }
+  .ds-block.on-bg { background: var(--tv-bg); border: 1px dashed var(--tv-border); box-shadow: none; }
+  .ds-block h3 { font-size: 14px; font-weight: 600; color: var(--tv-text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 16px; }
+  .ds-swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+  .ds-sw { border-radius: 12px; overflow: hidden; border: 1px solid var(--tv-divider); background: var(--tv-surface); }
+  .ds-sw div { height: 64px; }
+  .ds-sw p { padding: 8px 10px; font-size: 12px; line-height: 1.4; }
+  .ds-sw b { display: block; font-size: 13px; color: var(--tv-text); }
+  .ds-sw code { color: var(--tv-text-muted); }
+  .ds-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+  .ds-spec { display: grid; grid-template-columns: 200px 1fr; gap: 12px 24px; align-items: center; }
+  .ds-spec code, .ds-code { font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--tv-text-muted); }
+  .ds-box { width: 96px; height: 64px; background: var(--tv-surface); display: grid; place-items: center; font-size: 12px; color: var(--tv-text-muted); border: 1px solid var(--tv-divider); }
+  .ds-shadow { width: 150px; height: 80px; background: var(--tv-surface); border-radius: 12px; display: grid; place-items: center; font-size: 12px; text-align: center; color: var(--tv-text-muted); padding: 6px; }
+  .ds-tpl { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+  .ds-tpl a { display: block; background: var(--tv-surface); border-radius: 16px; overflow: hidden; box-shadow: var(--tv-sh-card); color: var(--tv-text); }
+  .ds-tpl div { padding: 12px 14px; }
+  .ds-tpl b { display: block; color: var(--tv-heading); }
+  .ds-tpl span { font-size: 13px; color: var(--tv-text-muted); }
+  .ds-hero { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+  .ds-pre { background: #0f172a; color: #e2e8f0; border-radius: 12px; padding: 16px; overflow: auto; font: 12px/1.6 ui-monospace, Menlo, monospace; margin-top: 12px; }
+  @media (max-width: 900px) { .ds { grid-template-columns: 1fr; } .ds-nav { display: none; } .ds-main { padding: 24px 16px 60px; } .ds-spec { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="ds">
+  <nav class="ds-nav">
+    <a class="tv-logo" href="#top" style="background:none;margin:0"><img src="assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></a>
+    <small>Nền tảng</small>
+    <a href="#colors">Màu sắc</a>
+    <a href="#type">Typography</a>
+    <a href="#shape">Spacing · Radius · Shadow</a>
+    <small>Components</small>
+    <a href="#buttons">Buttons</a>
+    <a href="#forms">Form controls</a>
+    <a href="#badges">Badge · Chip · Trạng thái</a>
+    <a href="#cards">Cards</a>
+    <a href="#data">KPI · Progress · Chart</a>
+    <a href="#nav">Header · Breadcrumb · Menu</a>
+    <a href="#lists">Accordion · Timeline</a>
+    <a href="#tables">Table · Pagination</a>
+    <a href="#quiz">Quiz / Bài thi</a>
+    <a href="#overlay">Modal · Empty · FAB</a>
+    <small>Pattern</small>
+    <a href="#layouts">Layout trang</a>
+    <a href="#templates">Template mẫu</a>
+  </nav>
+
+  <main class="ds-main" id="top">
+    <div class="ds-hero">
+      <div>
+        <span class="tv-badge">v1 · 10/2026</span>
+        <h1 class="tv-display" style="margin-top:12px">Học viên <span class="tv-accent">Design System</span></h1>
+        <p class="tv-lead" style="max-width:720px">Bộ token và component cho giao diện học viên, học sinh (Next.js + MUI). Mọi giá trị đều đo từ computed style của trang thật. Thêm <code>tvet.css</code> và <code>tvet.js</code> để dựng trang mới đồng bộ giao diện.</p>
+      </div>
+      <button class="tv-icon-btn" data-tv-theme-toggle style="width:40px;height:40px"></button>
+    </div>
+
+    <div class="ds-block" style="margin-top:24px">
+      <h3>Nguyên tắc nhận diện</h3>
+      <div class="tv-grid tv-grid-3">
+        <div><b style="color:var(--tv-heading)">Xanh dương là trục chính</b><p class="tv-small tv-muted">Primary <code>#0B6CFC</code> cho mọi hành động, trạng thái active, số thứ tự. Tiêu đề dùng navy <code>#17426A</code>.</p></div>
+        <div><b style="color:var(--tv-heading)">Bo tròn mềm, dạng viên thuốc</b><p class="tv-small tv-muted">Button, input, select đều bo <code>999px</code>. Card bo 16–20px. Footer và sidebar có góc bo lớn 40–64px.</p></div>
+        <div><b style="color:var(--tv-heading)">Card trắng trên nền xám-xanh</b><p class="tv-small tv-muted">Nền app <code>#F0F4F9</code>, card trắng, shadow rất nhẹ. Trang landing dùng nền trắng và họa tiết đường cong.</p></div>
+      </div>
+    </div>
+
+    <!-- ============ COLORS ============ -->
+    <section class="ds-sec" id="colors">
+      <h2>Màu sắc</h2>
+      <p class="ds-intro">Token CSS nằm trong <code>:root</code> của <code>tvet.css</code>. Dark mode ghi đè cùng tên biến qua <code>[data-theme="dark"]</code>.</p>
+      <div class="ds-block"><h3>Brand &amp; Action</h3><div class="ds-swatches">
+        <div class="ds-sw"><div style="background:#0b6cfc"></div><p><b>Primary</b><code>--tv-primary · #0B6CFC</code></p></div>
+        <div class="ds-sw"><div style="background:#0a5ad6"></div><p><b>Primary hover</b><code>--tv-primary-hover</code></p></div>
+        <div class="ds-sw"><div style="background:#e8f6ff"></div><p><b>Primary soft</b><code>--tv-primary-soft · #E8F6FF</code></p></div>
+        <div class="ds-sw"><div style="background:#a6c8fb"></div><p><b>Primary tint</b><code>--tv-primary-tint · #A6C8FB</code></p></div>
+        <div class="ds-sw"><div style="background:#0c93f4"></div><p><b>Sky</b><code>--tv-sky · #0C93F4</code></p></div>
+        <div class="ds-sw"><div style="background:#ff6a97"></div><p><b>Pink</b><code>--tv-pink · #FF6A97</code></p></div>
+        <div class="ds-sw"><div style="background:#1482c0"></div><p><b>Info</b><code>--tv-info · #1482C0</code></p></div>
+      </div></div>
+      <div class="ds-block"><h3>Text</h3><div class="ds-swatches">
+        <div class="ds-sw"><div style="background:#17426a"></div><p><b>Heading (navy)</b><code>--tv-heading · #17426A</code></p></div>
+        <div class="ds-sw"><div style="background:#000"></div><p><b>Text</b><code>--tv-text · #000</code></p></div>
+        <div class="ds-sw"><div style="background:#667989"></div><p><b>Muted</b><code>--tv-text-muted · #667989</code></p></div>
+        <div class="ds-sw"><div style="background:#62646a"></div><p><b>Subtle (sidebar)</b><code>--tv-text-subtle · #62646A</code></p></div>
+        <div class="ds-sw"><div style="background:#003eb3"></div><p><b>Link deep</b><code>--tv-link-deep · #003EB3</code></p></div>
+      </div></div>
+      <div class="ds-block"><h3>Surface &amp; Border</h3><div class="ds-swatches">
+        <div class="ds-sw"><div style="background:#f0f4f9"></div><p><b>App background</b><code>--tv-bg · #F0F4F9</code></p></div>
+        <div class="ds-sw"><div style="background:#fff"></div><p><b>Surface</b><code>--tv-surface · #FFF</code></p></div>
+        <div class="ds-sw"><div style="background:#f8fbff"></div><p><b>Surface alt</b><code>--tv-surface-alt · #F8FBFF</code></p></div>
+        <div class="ds-sw"><div style="background:#d9dde3"></div><p><b>Border</b><code>--tv-border · #D9DDE3</code></p></div>
+        <div class="ds-sw"><div style="background:#d0dcf0"></div><p><b>Border input</b><code>--tv-border-input · #D0DCF0</code></p></div>
+        <div class="ds-sw"><div style="background:#fbe9e9"></div><p><b>Table head (dict)</b><code>--tv-table-head · #FBE9E9</code></p></div>
+      </div></div>
+      <div class="ds-block"><h3>Trạng thái &amp; màu biểu đồ</h3><div class="ds-swatches">
+        <div class="ds-sw"><div style="background:#039855"></div><p><b>Success</b><code>#039855 / bg #ECFDF3</code></p></div>
+        <div class="ds-sw"><div style="background:#d92d20"></div><p><b>Danger</b><code>#D92D20 / bg #FFF0F4</code></p></div>
+        <div class="ds-sw"><div style="background:#ff8a00"></div><p><b>Warning</b><code>--tv-warning · chuông</code></p></div>
+        <div class="ds-sw"><div style="background:#00ac45"></div><p><b>c1 · Đã thuộc</b><code>#00AC45</code></p></div>
+        <div class="ds-sw"><div style="background:#7166ff"></div><p><b>c2 · Chưa thuộc</b><code>#7166FF</code></p></div>
+        <div class="ds-sw"><div style="background:#f55a8a"></div><p><b>c3 · Chưa học</b><code>#F55A8A</code></p></div>
+        <div class="ds-sw"><div style="background:#0a71bf"></div><p><b>c4 · Level 1</b><code>#0A71BF</code></p></div>
+        <div class="ds-sw"><div style="background:#0c7a82"></div><p><b>c5 · Level 2</b><code>#0C7A82</code></p></div>
+        <div class="ds-sw"><div style="background:#e76001"></div><p><b>c6 · Level 3</b><code>#E76001</code></p></div>
+      </div></div>
+      <div class="ds-block"><h3>Dark mode</h3><div class="ds-swatches">
+        <div class="ds-sw"><div style="background:#191f3b"></div><p><b>Background</b><code>#191F3B</code></p></div>
+        <div class="ds-sw"><div style="background:#202642"></div><p><b>Surface</b><code>#202642</code></p></div>
+        <div class="ds-sw"><div style="background:#111745"></div><p><b>Surface soft</b><code>#111745</code></p></div>
+        <div class="ds-sw"><div style="background:#304164"></div><p><b>Border</b><code>#304164</code></p></div>
+        <div class="ds-sw"><div style="background:#e1e1e1"></div><p><b>Muted text</b><code>#E1E1E1</code></p></div>
+      </div></div>
+    </section>
+
+    <!-- ============ TYPE ============ -->
+    <section class="ds-sec" id="type">
+      <h2>Typography</h2>
+      <p class="ds-intro">Ba họ font: <b>Inter</b> cho nội dung, <b>Be Vietnam Pro</b> cho tiêu đề hero/section, <b>SVN-Poppins</b> cho tiêu đề widget bên phải (dùng Poppins trên Google Fonts thay thế).</p>
+      <div class="ds-block ds-spec">
+        <code>.tv-display<br>Be Vietnam Pro 34/51 · 700 · -0.25</code><div class="tv-display">Lĩnh vực <span class="tv-accent">Nghề nghiệp</span></div>
+        <code>.tv-h1<br>Inter 24 · 600</code><div class="tv-h1">Tất cả khóa học (9 Khoá học)</div>
+        <code>.tv-widget-title<br>Poppins 20/30 · 600</code><div class="tv-widget-title">Tiến độ học tập</div>
+        <code>.tv-h2<br>Inter 20 · 600</code><div class="tv-h2">Bài kiểm tra gần đây</div>
+        <code>.tv-h3<br>Inter 18 · 700</code><div class="tv-h3" style="color:var(--tv-primary)">Bài kiểm tra đầu vào</div>
+        <code>body<br>Inter 16/24 · 400</code><div>Lesson 1.1.1: Who’s calling, please?</div>
+        <code>.tv-small<br>Inter 14/21 · 400 · muted</code><div class="tv-small tv-muted">Phát triển tiếng Anh sử dụng trong du lịch, dịch vụ khách sạn và môi trường làm việc.</div>
+        <code>.tv-caption<br>Inter 12 · muted</code><div class="tv-caption">10:27 - 30/10/2026</div>
+      </div>
+    </section>
+
+    <!-- ============ SHAPE ============ -->
+    <section class="ds-sec" id="shape">
+      <h2>Spacing · Radius · Shadow</h2>
+      <div class="ds-block"><h3>Radius</h3><div class="ds-row">
+        <div class="ds-box" style="border-radius:4px">4 · chip</div>
+        <div class="ds-box" style="border-radius:12px">12 · widget</div>
+        <div class="ds-box" style="border-radius:16px">16 · card</div>
+        <div class="ds-box" style="border-radius:18px">18 · course</div>
+        <div class="ds-box" style="border-radius:20px">20 · panel</div>
+        <div class="ds-box" style="border-radius:40px">40 · sidebar</div>
+        <div class="ds-box" style="border-radius:999px">999 · pill</div>
+      </div></div>
+      <div class="ds-block on-bg"><h3>Shadow</h3><div class="ds-row">
+        <div class="ds-shadow" style="box-shadow:var(--tv-sh-xs)">--tv-sh-xs<br>panel</div>
+        <div class="ds-shadow" style="box-shadow:var(--tv-sh-card)">--tv-sh-card<br>header, course</div>
+        <div class="ds-shadow" style="box-shadow:var(--tv-sh-widget)">--tv-sh-widget</div>
+        <div class="ds-shadow" style="box-shadow:var(--tv-sh-raised)">--tv-sh-raised<br>card landing</div>
+        <div class="ds-shadow" style="box-shadow:var(--tv-sh-chapter)">--tv-sh-chapter</div>
+        <div class="ds-shadow" style="box-shadow:var(--tv-sh-pop)">--tv-sh-pop<br>menu, modal</div>
+      </div></div>
+      <div class="ds-block"><h3>Spacing &amp; layout</h3>
+        <div class="ds-spec">
+          <code>Thang spacing</code><div class="ds-code">4 · 8 · 12 · 16 · 20 · 24 · 32 · 48 px (gap mặc định 24)</div>
+          <code>Header</code><div class="ds-code">cao 80px, nền surface, shadow card, sticky</div>
+          <code>Container</code><div class="ds-code">1122px (canh giữa, gutter 16px)</div>
+          <code>Cột phải (widget)</code><div class="ds-code">363px trang chi tiết khóa học · 262px trang bài học/bài thi</div>
+          <code>Cột trái (profile)</code><div class="ds-code">448px trang báo cáo học tập · 342px trang cá nhân</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ BUTTONS ============ -->
+    <section class="ds-sec" id="buttons">
+      <h2>Buttons</h2>
+      <p class="ds-intro">Mọi nút đều dạng pill. Primary dùng cho hành động chính, outline cho hành động phụ đặt cạnh, soft cho trạng thái được chọn.</p>
+      <div class="ds-block">
+        <h3>Biến thể</h3>
+        <div class="ds-row">
+          <button class="tv-btn tv-btn--primary tv-btn--lg">Tiếp tục bài đang học <i data-lucide="chevron-right"></i></button>
+          <button class="tv-btn tv-btn--outline tv-btn--lg">Xem thống kê học tập <i data-lucide="chevron-right"></i></button>
+          <button class="tv-btn tv-btn--primary"><i data-lucide="mail"></i> Nhắn tin</button>
+          <button class="tv-btn tv-btn--outline"><i data-lucide="rotate-ccw"></i> Xem lại bài</button>
+          <button class="tv-btn tv-btn--soft">Tất cả khoá học</button>
+          <button class="tv-btn tv-btn--pink">Tra cứu ngay</button>
+          <button class="tv-btn tv-btn--sky">Thêm từ mới</button>
+          <button class="tv-btn tv-btn--ghost">Huỷ</button>
+          <button class="tv-btn tv-btn--white"><img src="https://www.google.com/favicon.ico" width="18" height="18" alt=""> Đăng nhập với Google</button>
+          <button class="tv-btn tv-btn--primary" disabled>Disabled</button>
+        </div>
+        <h3 style="margin-top:24px">Kích thước</h3>
+        <div class="ds-row">
+          <button class="tv-btn tv-btn--primary tv-btn--sm">Small 32</button>
+          <button class="tv-btn tv-btn--primary">Default 40</button>
+          <button class="tv-btn tv-btn--primary tv-btn--lg">Large 50</button>
+          <span class="tv-icon-btn"><i data-lucide="sun"></i></span>
+          <span class="tv-icon-btn tv-icon-btn--warn"><i data-lucide="bell"></i></span>
+          <a class="tv-link" href="#">Xem khóa học <i data-lucide="chevron-right"></i></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FORMS ============ -->
+    <section class="ds-sec" id="forms">
+      <h2>Form controls</h2>
+      <div class="ds-block tv-grid tv-grid-2">
+        <div class="tv-field"><label class="tv-label">Ô nhập có icon</label><div class="tv-input"><i data-lucide="user-round"></i><input placeholder="Tài khoản đăng nhập"></div></div>
+        <div class="tv-field"><label class="tv-label">Mật khẩu</label><div class="tv-input"><i data-lucide="lock"></i><input type="password" placeholder="Mật khẩu"></div></div>
+        <div class="tv-field"><label class="tv-label">Search header (32px)</label><div class="tv-input tv-input--search" style="max-width:190px"><i data-lucide="search"></i><input placeholder="Tìm kiếm..."></div></div>
+        <div class="tv-field"><label class="tv-label">Search lớn (44px)</label><div class="tv-input tv-input--lg"><i data-lucide="search"></i><input placeholder="Nhập từ cần tìm tại đây..."></div></div>
+        <div class="tv-field"><label class="tv-label">Select</label><select class="tv-select" style="width:160px"><option>Chọn unit</option><option>Unit 1</option></select></div>
+        <div class="tv-field"><label class="tv-label">Bộ lọc khoảng ngày</label><div><button class="tv-date-btn"><i data-lucide="calendar-days"></i> 25/10/2026 - 31/10/2026 <i data-lucide="chevron-down" style="color:var(--tv-text)"></i></button></div></div>
+      </div>
+    </section>
+
+    <!-- ============ BADGES ============ -->
+    <section class="ds-sec" id="badges">
+      <h2>Badge · Chip · Trạng thái</h2>
+      <div class="ds-block ds-row">
+        <span class="tv-badge">Đề án quốc gia · Giáo dục nghề nghiệp</span>
+        <span class="tv-chip tv-chip--danger">Khoá học đã đóng</span>
+        <span class="tv-chip tv-chip--success">Đã hoàn thành</span>
+        <span class="tv-chip tv-chip--info">Đang học</span>
+        <span class="tv-pill-outline tv-pill-outline--success"><i data-lucide="trending-up" style="width:14px"></i> 00h:39m</span>
+        <span class="tv-pill-outline tv-pill-outline--danger">● Chưa trả lời</span>
+        <span class="tv-score">2/42<small>câu đúng</small></span>
+        <span class="tv-progress-chip"><span class="ok"><i data-lucide="check" style="width:14px"></i></span>0% tiến độ</span>
+        <span class="tv-progress-chip is-done"><span class="ok"><i data-lucide="check" style="width:14px"></i></span>100% tiến độ</span>
+        <span class="tv-num">01</span>
+        <span class="tv-dot-status tv-dot-status--done"><i data-lucide="check" style="width:14px"></i></span>
+      </div>
+    </section>
+
+    <!-- ============ CARDS ============ -->
+    <section class="ds-sec" id="cards">
+      <h2>Cards</h2>
+      <div class="ds-block on-bg">
+        <h3>Course card · app (.tv-course) và landing (.tv-card-lg)</h3>
+        <div class="tv-grid tv-grid-4">
+          <a class="tv-course" href="#">
+            <div class="tv-course__thumb"><img src="assets/course-1.png" alt=""></div>
+            <div class="tv-course__title">English for Skills Series: Vocational English for Tourism</div>
+            <div class="tv-course__meta"><i data-lucide="signal"></i><span>Trình độ đào tạo: <b>Pre-A1, A1, A2</b></span></div>
+            <div class="tv-course__meta"><i data-lucide="users"></i><span>Học viên trong khóa: <b>38 học viên</b></span></div>
+          </a>
+          <a class="tv-course" href="#">
+            <div class="tv-course__thumb"><img src="assets/course-3.png" alt=""></div>
+            <div class="tv-course__title">Khóa học test 2</div>
+            <div><span class="tv-chip tv-chip--danger">Khoá học đã đóng</span></div>
+            <div class="tv-course__meta"><i data-lucide="signal"></i><span>Trình độ đào tạo: <b>A1</b></span></div>
+          </a>
+          <div class="tv-card-lg" style="grid-column: span 2">
+            <div class="tv-card-lg__thumb"><img src="assets/course-2.png" alt=""></div>
+            <div class="tv-card-lg__title">English for Skills Series: Vocational English for Logistics</div>
+            <p class="tv-card-lg__desc">Phát triển tiếng Anh sử dụng trong logistics, vận tải, quản lý chuỗi cung ứng và môi trường làm việc trong ngành logistics.</p>
+            <a class="tv-link" href="#">Xem khóa học <i data-lucide="chevron-right"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="ds-block on-bg tv-grid tv-grid-2">
+        <div class="tv-stack" style="gap:12px">
+          <div class="tv-feature is-active"><span class="tv-feature__icon"><i data-lucide="play"></i></span><div><h4>Nâng cao trình độ phát âm</h4><p>Phản hồi ngay sau mỗi lần luyện nói, đánh giá chính xác cách phát âm của bạn.</p></div></div>
+          <div class="tv-feature"><span class="tv-feature__icon"><i data-lucide="play"></i></span><div><h4>Lộ trình hóa học tập cá nhân</h4><p>Gợi ý nội dung học phù hợp dựa trên kết quả và tiến độ học tập của bạn.</p></div></div>
+        </div>
+        <div class="tv-panel tv-panel--outline">
+          <h3 class="tv-h3" style="color:var(--tv-primary)">Bài kiểm tra đầu vào</h3>
+          <p class="tv-small tv-muted" style="margin:10px 0 16px">Xác định trình độ để mở khoá lộ trình học phù hợp. Bạn có thể làm lại bài kiểm tra này bất cứ lúc nào.</p>
+          <button class="tv-btn tv-btn--primary tv-btn--block" style="height:44px">Bắt đầu làm bài <i data-lucide="chevron-right"></i></button>
+        </div>
+      </div>
+      <div class="ds-block on-bg">
+        <h3>Thanh thống kê (.tv-stats)</h3>
+        <div class="tv-stats">
+          <div class="tv-stats__item"><span class="tv-stats__icon"><i data-lucide="monitor-play"></i></span><div><div class="tv-stats__num">5</div><div class="tv-stats__lbl">lĩnh vực ưu tiên</div></div></div>
+          <div class="tv-stats__item"><span class="tv-stats__icon"><i data-lucide="presentation"></i></span><div><div class="tv-stats__num">8</div><div class="tv-stats__lbl">khóa bồi dưỡng chuyên sâu</div></div></div>
+          <div class="tv-stats__item"><span class="tv-stats__icon"><i data-lucide="graduation-cap"></i></span><div><div class="tv-stats__num">+320</div><div class="tv-stats__lbl">học viên tham gia</div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DATA ============ -->
+    <section class="ds-sec" id="data">
+      <h2>KPI · Progress · Chart</h2>
+      <div class="ds-block on-bg tv-grid tv-grid-3">
+        <div class="tv-kpi"><div class="tv-kpi__label">Tổng thời lượng online</div><div class="tv-kpi__value">00h:39m</div><div class="tv-kpi__foot"><span class="tv-pill-outline tv-pill-outline--success">↗ 00h:39m</span> so với 7 ngày trước</div></div>
+        <div class="tv-kpi"><div class="tv-kpi__label">Ngày học tập tốt nhất</div><div class="tv-kpi__value">30/10 - 00h:30m</div><div class="tv-kpi__foot">(Tính trong khoảng thời gian của bộ lọc)</div></div>
+        <div class="tv-stat-tile"><div class="tv-stat-tile__label">Số câu đúng</div><div class="tv-stat-tile__value"><i style="background:var(--tv-success-solid)"><i data-lucide="help-circle"></i></i>2/42</div></div>
+        <div class="tv-panel tv-panel--widget" style="text-align:center">
+          <div class="tv-widget-title" style="text-align:left">Tiến độ học tập</div>
+          <p class="tv-small tv-muted" style="text-align:left;margin-bottom:16px">Dựa trên số bài học đã hoàn thành</p>
+          <div class="tv-ring" style="--p:35"><div><b>35%</b><span>Tiến độ học</span></div></div>
+        </div>
+        <div class="tv-panel">
+          <div class="tv-small" style="margin-bottom:8px">Độ khó các câu hỏi trong bài thi</div>
+          <div style="display:flex;gap:4px"><div class="tv-bar" style="flex:29"><span style="width:100%"></span></div><div class="tv-bar" style="flex:40"><span style="width:100%"></span></div><div class="tv-bar" style="flex:31"><span style="width:100%"></span></div></div>
+          <div class="tv-small" style="margin-top:16px">Tiến độ đơn</div>
+          <div class="tv-bar" style="margin-top:6px"><span style="width:62%;background:var(--tv-primary)"></span></div>
+        </div>
+        <div class="tv-panel">
+          <div class="tv-small" style="font-weight:600;margin-bottom:10px">Legend biểu đồ</div>
+          <div class="tv-small tv-row" style="justify-content:space-between"><span class="tv-row" style="gap:8px"><i style="width:22px;height:8px;border-radius:9px;background:var(--tv-c1)"></i>Đã hoàn thành</span>14</div>
+          <div class="tv-small tv-row" style="justify-content:space-between;margin-top:8px"><span class="tv-row" style="gap:8px"><i style="width:22px;height:8px;border-radius:9px;background:var(--tv-c2)"></i>Đang làm</span>3</div>
+          <div class="tv-small tv-row" style="justify-content:space-between;margin-top:8px"><span class="tv-row" style="gap:8px"><i style="width:22px;height:8px;border-radius:9px;background:var(--tv-c3)"></i>Chưa làm</span>15</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV ============ -->
+    <section class="ds-sec" id="nav">
+      <h2>Header · Breadcrumb · Menu</h2>
+      <div class="ds-block on-bg" style="padding:0;overflow:hidden">
+        <header class="tv-header" style="position:relative">
+          <div class="tv-container tv-header__inner">
+            <a class="tv-logo" href="#"><img src="assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></a>
+            <div class="tv-input tv-input--search" style="width:190px"><i data-lucide="search"></i><input placeholder="Tìm kiếm..." aria-label="Tìm kiếm"></div>
+            <nav class="tv-nav"><a class="is-active" href="#">Học tập</a><a href="#">Bài tập</a><a href="#">Thư viện</a></nav>
+            <div class="tv-header__actions"><span class="tv-icon-btn"><i data-lucide="sun"></i></span><span class="tv-icon-btn tv-icon-btn--warn"><i data-lucide="bell"></i></span><img class="tv-avatar" src="assets/default-avatar.jpg" alt=""></div>
+          </div>
+        </header>
+        <div class="tv-container"><div class="tv-breadcrumb"><a href="#">Trang chủ</a><i data-lucide="chevron-right"></i><a href="#">Học tập</a><i data-lucide="chevron-right"></i><span class="is-current">Tiếng Anh 10</span></div></div>
+        <div style="display:flex;gap:32px;padding:24px;align-items:flex-start;flex-wrap:wrap">
+          <div class="tv-menu">
+            <div class="tv-menu__head"><img class="tv-avatar" src="assets/default-avatar.jpg" alt=""><div><b>Nguyễn Minh Anh</b><span>Lớp 10A1 · THPT Demo số 1</span></div></div>
+            <a href="#"><i data-lucide="circle-user-round"></i>Trang cá nhân</a>
+            <a href="#"><i data-lucide="book-open"></i>Môn học của tôi</a>
+            <a href="#"><i data-lucide="file-bar-chart"></i>Báo cáo học tập</a>
+            <a href="#"><i data-lucide="log-out"></i>Đăng xuất</a>
+          </div>
+          <div class="tv-vtabs" style="width:270px"><a class="is-active" href="#">Tất cả tin tức</a><a href="#">Listening</a><a href="#">Reading</a></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LISTS ============ -->
+    <section class="ds-sec" id="lists">
+      <h2>Accordion chương/unit · Timeline</h2>
+      <div class="ds-block on-bg tv-grid tv-grid-2">
+        <div class="tv-stack" style="gap:16px">
+          <div class="tv-chapter"><h3>Chapter 1: Foundation</h3><select class="tv-select"><option>Chọn unit</option></select><span class="tv-icon-btn"><i data-lucide="chevron-up"></i></span></div>
+          <div class="tv-unit">
+            <div class="tv-unit__head" data-tv-accordion style="cursor:pointer"><i data-lucide="chevrons-down"></i><div><b>Unit 1: Basic information</b><span>5 Bài giảng</span></div><span class="tv-progress-chip"><span class="ok"><i data-lucide="check" style="width:14px"></i></span>0% tiến độ</span></div>
+            <ul class="tv-timeline">
+              <li><span class="tv-num">01</span><div class="t"><b>Lesson 1.1.1: Who’s calling, please?</b><span>2 Bài giảng/1 Bài tập</span></div>-</li>
+              <li><span class="tv-num">02</span><div class="t"><b>Lesson 1.1.2: I’ll pass on the message.</b><span>2 Bài giảng/1 Bài tập</span></div><span class="tv-dot-status tv-dot-status--done"><i data-lucide="check" style="width:14px"></i></span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="tv-panel">
+          <div class="tv-panel__title" style="margin-bottom:16px"><i data-lucide="history"></i>Hoạt động gần đây</div>
+          <div class="tv-activity">
+            <div class="tv-activity__item"><div class="tv-activity__time">10:27 30/10/2026</div><div class="tv-activity__box">Bạn đã làm bài thi: <a href="#" style="text-decoration:underline">BÀI THI 1</a><div style="color:var(--tv-success);margin-top:4px">● Đúng: 2/42</div></div></div>
+            <div class="tv-activity__item"><div class="tv-activity__time">10:30 29/10/2026</div><div class="tv-activity__box">Bạn đã làm bài thi: <a href="#" style="text-decoration:underline">BÀI THI 1</a><div style="color:var(--tv-success);margin-top:4px">● Đúng: 12/42</div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TABLES ============ -->
+    <section class="ds-sec" id="tables">
+      <h2>Table · Pagination · Bộ lọc chữ cái</h2>
+      <div class="ds-block on-bg tv-stack" style="gap:20px">
+        <div class="tv-letters"><button class="is-active">A</button><button>B</button><button>C</button><button>D</button><button>E</button><button>F</button><button style="width:auto;padding:0 4px">ALL</button></div>
+        <div class="tv-table-wrap"><table class="tv-table tv-table--dict"><thead><tr><th style="border-top-left-radius:10px">Headword</th><th>Noun</th><th>Adj</th><th>Adv</th><th>Verb</th></tr></thead><tbody><tr><td>abandon</td><td>abandonment</td><td>abandoned</td><td></td><td>abandon</td></tr><tr><td>able</td><td>disability, ability</td><td>disabled, able</td><td></td><td>enable</td></tr></tbody></table></div>
+        <div class="tv-table-wrap"><table class="tv-table"><thead><tr><th>Tên</th><th>Ngày thực hiện</th><th>Kết quả</th></tr></thead><tbody><tr><td><a href="#" style="color:var(--tv-danger-solid);text-decoration:underline">BÀI THI 1</a></td><td class="tv-muted">30/10/2026</td><td><b>2/42</b></td></tr></tbody></table></div>
+        <div class="tv-row" style="justify-content:center;gap:24px"><div class="tv-pagination"><button><i data-lucide="chevrons-left"></i></button><button><i data-lucide="chevron-left"></i></button><button class="is-active">1</button><button>2</button><button>3</button><button>…</button><button>35</button><button><i data-lucide="chevron-right"></i></button></div><select class="tv-select" style="height:42px"><option>Hiển thị 10 dòng/trang</option></select></div>
+      </div>
+    </section>
+
+    <!-- ============ QUIZ ============ -->
+    <section class="ds-sec" id="quiz">
+      <h2>Quiz / Bài thi</h2>
+      <div class="ds-block on-bg tv-stack" style="gap:16px">
+        <div class="tv-panel">
+          <div class="tv-row" style="margin-bottom:16px"><i data-lucide="circle-help" style="color:var(--tv-heading)"></i><b>Question 1-2</b></div>
+          <p style="font-weight:600;margin-bottom:12px">1. Sau một giờ tắt đèn, nước ta tiết kiệm được lượng điện năng khoảng 45·10⁴ kWh.</p>
+          <label class="tv-check"><span class="dot"></span>Sai</label>
+          <label class="tv-check is-correct"><span class="dot"><i data-lucide="check"></i></span>Đúng</label>
+          <label class="tv-check is-wrong" style="margin-top:8px"><span class="dot"><i data-lucide="x"></i></span>Sai (đáp án bạn chọn)</label>
+        </div>
+        <div class="tv-qnav" style="border-radius:12px"><button class="is-correct is-current">1</button><button class="is-wrong">2</button><button>3</button><button>4</button><button>5</button><button class="is-correct">6</button><button>7</button><button>8</button></div>
+      </div>
+    </section>
+
+    <!-- ============ OVERLAY ============ -->
+    <section class="ds-sec" id="overlay">
+      <h2>Modal · Empty state · FAB</h2>
+      <div class="ds-block on-bg" style="position:relative;display:grid;place-items:center;padding:40px 16px;background:rgba(0,0,0,.45)">
+        <div class="tv-modal">
+          <span class="tv-icon-btn tv-modal__close" style="color:var(--tv-text)"><i data-lucide="x"></i></span>
+          <h2>Đăng nhập</h2>
+          <p class="tv-lead">Khóa học được tổ chức dành cho người học thuộc các cơ sở tham gia chương trình. Vui lòng đăng nhập để xem các khóa học.</p>
+          <div class="tv-stack" style="gap:12px;margin-top:24px;text-align:left"><div class="tv-input"><i data-lucide="user-round"></i><input placeholder="Tài khoản đăng nhập"></div><div class="tv-input"><i data-lucide="lock"></i><input placeholder="Mật khẩu" type="password"></div><a href="#" style="font-weight:600">Quên mật khẩu</a></div>
+          <button class="tv-btn tv-btn--primary tv-btn--lg" style="width:272px;margin-top:24px">Đăng nhập</button>
+        </div>
+      </div>
+      <div class="ds-block tv-grid tv-grid-3">
+        <div class="tv-empty">Chưa có bài tập dịch nào</div>
+        <div class="tv-dashed"><i data-lucide="plus"></i> Tạo chủ đề mới</div>
+        <div class="tv-row" style="justify-content:center"><span class="tv-fab__label">Hỗ trợ</span><span class="tv-fab__btn"><i data-lucide="messages-square"></i></span></div>
+      </div>
+    </section>
+
+    <!-- ============ LAYOUTS ============ -->
+    <section class="ds-sec" id="layouts">
+      <h2>Layout trang</h2>
+      <p class="ds-intro">Site dùng 4 khung trang. Chọn khung trước khi dựng trang mới.</p>
+      <div class="ds-block ds-spec">
+        <code>A · Landing</code><div class="tv-small">Nền trắng, header ngang 80px, hero 2 cột + họa tiết đường cong, các section canh giữa với <code>.tv-display</code>, footer bo góc 64px. <i>(Trang chủ, Hướng dẫn)</i></div>
+        <code>B · Header + lưới</code><div class="tv-small">Header ngang (logo, search, menu Học tập · Bài tập · Thư viện, thông báo, avatar), nội dung trong <code>.tv-container</code>. Phía học sinh không dùng sidebar. <i>(Góc học tập, Bảng từ vựng)</i></div>
+        <code>C · Header + 2 cột</code><div class="tv-small">Header ngang, breadcrumb, nội dung trái + cột widget phải 363px/262px (Tiến độ, Tiện ích). <i>(Chi tiết môn học, Bài học, Bài thi)</i></div>
+        <code>D · Dashboard</code><div class="tv-small">Cột profile trái 448px + panel dữ liệu bên phải (KPI, chart, danh sách). <i>(Báo cáo học tập, Trang cá nhân)</i></div>
+        <code>E · Full-screen tool</code><div class="tv-small">Không header site; thanh công cụ trên + thanh điều hướng câu hỏi dưới. <i>(Làm bài / xem lại bài thi)</i></div>
+      </div>
+    </section>
+
+    <!-- ============ TEMPLATES ============ -->
+    <section class="ds-sec" id="templates">
+      <h2>Template mẫu</h2>
+      <p class="ds-intro">Mỗi template là một file HTML độc lập trong <code>templates/</code>, dùng chung <code>tvet.css</code>.</p>
+      <div class="ds-tpl">
+        <a href="templates/01-landing.html"><div><b>01 · Landing</b><span>Hero, stats, lưới phân hệ, đối tượng sử dụng, footer</span></div></a>
+        <a href="templates/02-app-sidebar-list.html"><div><b>02 · Góc học tập (K12)</b><span>Bài sắp đến hạn, thư viện, lưới môn học</span></div></a>
+        <a href="templates/03-detail-two-column.html"><div><b>03 · Chi tiết môn học</b><span>Unit accordion theo SGK + widget phải</span></div></a>
+        <a href="templates/04-dashboard-report.html"><div><b>04 · Dashboard báo cáo</b><span>Profile, KPI, chart, timeline hoạt động</span></div></a>
+        <a href="templates/05-table-list.html"><div><b>05 · Bảng dữ liệu</b><span>Tìm kiếm, lọc chữ cái, bảng, phân trang</span></div></a>
+        <a href="templates/06-exam.html"><div><b>06 · Kết quả + xem lại bài thi</b><span>Gauge điểm, stat tile, câu hỏi, điều hướng</span></div></a>
+        <a href="templates/07-form-modal.html"><div><b>07 · Thông tin tài khoản</b><span>Form thông tin học sinh; modal đăng nhập (mở bằng #dang-nhap)</span></div></a>
+      </div>
+    </section>
+  </main>
+</div>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="tvet.js"></script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Báo cáo học tập</title>
+<link rel="stylesheet" href="../tvet.css">
+<style>
+  .chart { width: 100%; height: 340px; }
+  .chart text { fill: var(--tv-text); font: 14px var(--tv-font); }
+  .chart .grid { stroke: var(--tv-divider); }
+</style>
+</head>
+<body>
+
+<!-- Header dạng "trang công cụ": nút Home + tiêu đề + search -->
+<header class="tv-header" style="height:72px">
+  <div class="tv-header__inner" style="padding:0 24px">
+    <a class="tv-icon-btn" href="01-landing.html" style="width:38px;height:38px;color:var(--tv-danger-solid)"><i data-lucide="house"></i></a>
+    <h1 style="font-size:24px;font-weight:600">Báo cáo học tập</h1>
+    <div class="tv-input" style="width:282px;height:38px"><i data-lucide="search"></i><input placeholder="Tìm theo id, email, số điện thoại" style="font-style:normal"></div>
+    <div class="tv-header__actions" style="margin-left:auto">
+      <button class="tv-icon-btn" data-tv-theme-toggle></button>
+      <span class="tv-icon-btn tv-icon-btn--warn"><i data-lucide="bell"></i></span>
+      <img class="tv-avatar" src="../assets/default-avatar.jpg" alt="">
+    </div>
+  </div>
+</header>
+
+<main style="padding:16px 24px 0">
+  <div class="tv-split tv-split--left">
+    <!-- Cột trái -->
+    <div class="tv-stack">
+      <div class="tv-panel" style="text-align:center">
+        <img class="tv-avatar tv-avatar--lg" style="margin:0 auto" src="../assets/default-avatar.jpg" alt="">
+        <div style="font-weight:600;margin-top:16px">Nguyễn Văn A</div>
+        <div class="tv-small tv-muted">testlbn@gmail.com</div>
+        <button class="tv-btn tv-btn--primary" style="width:248px;height:41px;font-size:16px;margin-top:16px"><i data-lucide="mail"></i> Nhắn tin</button>
+      </div>
+      <div class="tv-panel"><div class="tv-panel__title"><i data-lucide="book-open"></i>Khóa học đã đăng ký (1)</div>
+        <div class="tv-row" style="margin-top:16px"><img src="../assets/course-3.png" alt="" style="width:70px;height:40px;object-fit:cover;border-radius:4px"><b style="font-size:14px">Khoá test LBN</b></div>
+      </div>
+      <div class="tv-panel">
+        <div class="tv-panel__title" style="margin-bottom:16px"><i data-lucide="history"></i>Hoạt động gần đây</div>
+        <button class="tv-date-btn" style="width:100%;margin-bottom:20px"><i data-lucide="calendar-days"></i> 25/10/2026 - 31/10/2026 <i data-lucide="chevron-down" style="margin-left:auto;color:var(--tv-text)"></i></button>
+        <div class="tv-activity">
+          <div class="tv-activity__item"><div class="tv-activity__time">10:27 30/10/2026</div><div class="tv-activity__box">Bạn đã làm bài thi: <a href="06-exam.html" style="text-decoration:underline">BÀI THI 1</a><div style="color:var(--tv-success);margin-top:4px">● Đúng: 2/42</div></div></div>
+          <div class="tv-activity__item"><div class="tv-activity__time">10:30 29/10/2026</div><div class="tv-activity__box">Bạn đã làm bài thi: <a href="06-exam.html" style="text-decoration:underline">BÀI THI 1</a><div style="color:var(--tv-success);margin-top:4px">● Đúng: 12/42</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cột phải -->
+    <div class="tv-stack">
+      <section class="tv-panel">
+        <div class="tv-panel__head"><div class="tv-panel__title"><i data-lucide="circle-play"></i>Thời lượng online</div><button class="tv-date-btn"><i data-lucide="calendar-days"></i>25/10/2026 - 31/10/2026<i data-lucide="chevron-down" style="color:var(--tv-text)"></i></button></div>
+        <div class="tv-grid tv-grid-3" style="gap:16px">
+          <div class="tv-kpi"><div class="tv-kpi__label">Tổng thời lượng online</div><div class="tv-kpi__value">00h:39m</div><div class="tv-kpi__foot"><span class="tv-pill-outline tv-pill-outline--success">↗ 00h:39m</span> so với 7 ngày trước</div></div>
+          <div class="tv-kpi"><div class="tv-kpi__label">Ngày học tập tốt nhất</div><div class="tv-kpi__value">30/10 - 00h:30m</div><div class="tv-kpi__foot">(Tính trong khoảng thời gian của bộ lọc)</div></div>
+          <div class="tv-kpi"><div class="tv-kpi__label">Thời lượng trung bình</div><div class="tv-kpi__value">00h:06m</div><div class="tv-kpi__foot"><span class="tv-pill-outline tv-pill-outline--success">↗ 00h:06m</span> so với 7 ngày trước</div></div>
+        </div>
+        <!-- Chart line đơn giản bằng SVG (site gốc dùng chart lib, màu line = primary) -->
+        <svg class="chart" viewBox="0 0 880 340" preserveAspectRatio="none" role="img" aria-label="Thời lượng online theo ngày">
+          <g class="grid"><line x1="80" x2="870" y1="30" y2="30"/><line x1="80" x2="870" y1="80" y2="80"/><line x1="80" x2="870" y1="130" y2="130"/><line x1="80" x2="870" y1="180" y2="180"/><line x1="80" x2="870" y1="230" y2="230"/><line x1="80" x2="870" y1="280" y2="280"/></g>
+          <text x="10" y="35">00h30m</text><text x="10" y="135">00h20m</text><text x="10" y="235">00h10m</text>
+          <polyline fill="none" stroke="#0b6cfc" stroke-width="2" points="140,270 300,250 460,240 620,130 780,80"/>
+          <g fill="#0b6cfc"><circle cx="140" cy="270" r="4"/><circle cx="300" cy="250" r="4"/><circle cx="460" cy="240" r="4"/><circle cx="620" cy="130" r="4"/><circle cx="780" cy="80" r="4"/></g>
+          <text x="110" y="315">26/10</text><text x="270" y="315">27/10</text><text x="430" y="315">28/10</text><text x="590" y="315">29/10</text><text x="750" y="315">30/10</text>
+        </svg>
+      </section>
+
+      <section class="tv-panel">
+        <div class="tv-panel__head"><div class="tv-panel__title"><i data-lucide="list-checks"></i>Bài kiểm tra</div><button class="tv-date-btn"><i data-lucide="calendar-days"></i>25/10/2026 - 31/10/2026<i data-lucide="chevron-down" style="color:var(--tv-text)"></i></button></div>
+        <div class="tv-row" style="justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--tv-divider)">
+          <div><a href="06-exam.html" style="font-weight:500;text-decoration:underline">BÀI THI 1</a><div class="tv-small tv-muted tv-row" style="gap:6px"><i data-lucide="calendar" style="width:16px"></i>30/10/2026</div></div>
+          <span class="tv-score">2/42<small>câu đúng</small></span>
+        </div>
+      </section>
+
+      <section class="tv-panel">
+        <div class="tv-panel__head"><div class="tv-panel__title"><i data-lucide="languages"></i>Bài tập dịch</div><button class="tv-date-btn"><i data-lucide="calendar-days"></i>25/10/2026 - 31/10/2026<i data-lucide="chevron-down" style="color:var(--tv-text)"></i></button></div>
+        <div class="tv-empty">Chưa có bài tập dịch nào</div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<footer class="tv-footer">
+  <div class="tv-container tv-footer__grid">
+    <div><a class="tv-logo" href="#"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></a><p>Nền tảng số ngành Giáo dục tỉnh Bắc Ninh, tích hợp trí tuệ nhân tạo cho dạy, học và quản lý.</p></div>
+    <div><h3>Liên kết nhanh</h3><a href="02-app-sidebar-list.html">Học tập</a><a href="#">Hướng dẫn sử dụng</a></div>
+    <div><h3>Chính sách</h3></div>
+    <div><h3>Kết nối với chúng tôi</h3></div>
+  </div>
+</footer>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../tvet.js"></script>
+</body>
+</html>

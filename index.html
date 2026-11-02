@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cổng hệ thống</title>
+<link rel="icon" href="design-system/assets/favicon_bn.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg: #f4f7fb; --surface: #ffffff; --text: #344054; --muted: #667085; --heading: #17426a; --border: #e4e8ee; --soft: #eef4ff;
+    --shadow: 0 6px 24px rgba(16, 24, 40, .07);
+    --lms: #0b6cfc; --lcms: #1579ad; --qldt: #1b3a60;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #12172b; --surface: #1b2138; --text: #d0d5dd; --muted: #98a2b3; --heading: #e6edf7; --border: #2c3450; --soft: #222a45; --shadow: 0 6px 24px rgba(0, 0, 0, .35); --qldt: #4b7bc4; }
+  }
+  :root[data-theme="dark"] { --bg: #12172b; --surface: #1b2138; --text: #d0d5dd; --muted: #98a2b3; --heading: #e6edf7; --border: #2c3450; --soft: #222a45; --shadow: 0 6px 24px rgba(0, 0, 0, .35); --qldt: #4b7bc4; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 Inter, system-ui, sans-serif; }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
+  header { background: var(--surface); box-shadow: 0 1px 0 var(--border); }
+  header .wrap { display: flex; align-items: center; gap: 14px; height: 76px; }
+  header img { height: 52px; }
+  header .t b { display: block; font: 700 16px 'Be Vietnam Pro', sans-serif; color: var(--heading); }
+  header .t span { font-size: 13px; color: var(--muted); }
+  .theme { margin-left: auto; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: var(--text); display: grid; place-items: center; cursor: pointer; }
+  .theme svg { width: 18px; height: 18px; }
+  .hero { padding: 40px 0 8px; }
+  .hero h1 { margin: 0; font: 700 30px/1.25 'Be Vietnam Pro', sans-serif; color: var(--heading); }
+  .hero p { margin: 8px 0 0; color: var(--muted); max-width: 680px; }
+  .search { position: relative; margin-top: 20px; max-width: 520px; }
+  .search svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--muted); }
+  .search input { width: 100%; height: 46px; padding: 0 16px 0 42px; border-radius: 23px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font: inherit; outline: none; }
+  .search input:focus { border-color: var(--lms); box-shadow: 0 0 0 3px var(--soft); }
+  .systems { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin: 28px 0 56px; align-items: start; }
+  .sys { background: var(--surface); border-radius: 18px; box-shadow: var(--shadow); overflow: hidden; border-top: 5px solid var(--c); }
+  .sys__head { padding: 20px 20px 16px; }
+  .sys__ic { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; background: var(--c); color: #fff; }
+  .sys__ic svg { width: 26px; height: 26px; }
+  .sys__code { margin-top: 14px; font-size: 12px; font-weight: 600; letter-spacing: .06em; color: var(--c); }
+  .sys h2 { margin: 2px 0 0; font: 700 20px/1.3 'Be Vietnam Pro', sans-serif; color: var(--heading); }
+  .sys__who { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .sys__who span { padding: 2px 10px; border-radius: 12px; background: var(--soft); font-size: 12px; font-weight: 600; color: var(--muted); }
+  .sys__desc { margin: 12px 0 0; font-size: 14px; color: var(--muted); }
+  .sys__cta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 16px; border-radius: 20px; font-weight: 600; font-size: 14px; }
+  .btn svg { width: 16px; height: 16px; }
+  .btn--main { background: var(--c); color: #fff; }
+  .btn--ghost { border: 1px solid var(--border); color: var(--text); }
+  .btn:hover { filter: brightness(1.08); }
+  .screens { border-top: 1px solid var(--border); }
+  .screens summary { display: flex; align-items: center; gap: 8px; padding: 12px 20px; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--heading); list-style: none; }
+  .screens summary::-webkit-details-marker { display: none; }
+  .screens summary svg { width: 16px; height: 16px; margin-left: auto; transition: transform .2s; color: var(--muted); }
+  .screens[open] summary svg { transform: rotate(180deg); }
+  .screens ul { list-style: none; margin: 0; padding: 0 12px 12px; }
+  .screens li a { display: flex; gap: 10px; align-items: baseline; padding: 7px 8px; border-radius: 8px; font-size: 14px; }
+  .screens li a:hover { background: var(--soft); color: var(--c); }
+  .screens li code { font: 600 12px ui-monospace, Menlo, monospace; color: var(--muted); flex: none; }
+  .screens li mark { background: none; color: var(--c); font-weight: 600; }
+  .empty { padding: 0 20px 14px; font-size: 13px; color: var(--muted); }
+  .roles { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+  .roles button { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font: 600 14px Inter, sans-serif; cursor: pointer; }
+  .roles button svg { width: 16px; height: 16px; }
+  .roles button.is-on { background: var(--heading); border-color: var(--heading); color: var(--surface); }
+  .role { margin: 24px 0 56px; }
+  .role__intro { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; padding: 20px; background: var(--surface); border-radius: 18px; box-shadow: var(--shadow); }
+  .role__intro h2 { margin: 0; font: 700 20px/1.3 'Be Vietnam Pro', sans-serif; color: var(--heading); }
+  .role__intro p { margin: 4px 0 0; font-size: 14px; color: var(--muted); max-width: 640px; }
+  .role__intro .sys__cta { margin: 0; }
+  .flows { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; margin-top: 20px; }
+  .flow { background: var(--surface); border-radius: 18px; box-shadow: var(--shadow); padding: 18px 20px; }
+  .flow h3 { margin: 0; font: 700 16px/1.35 'Be Vietnam Pro', sans-serif; color: var(--heading); }
+  .flow > p { margin: 4px 0 12px; font-size: 13px; color: var(--muted); }
+  .flow ol { list-style: none; margin: 0; padding: 0; counter-reset: st; }
+  .flow li a { display: grid; grid-template-columns: 26px auto 1fr; gap: 10px; align-items: baseline; padding: 7px 8px; border-radius: 8px; font-size: 14px; counter-increment: st; }
+  .flow li a::before { content: counter(st); width: 22px; height: 22px; border-radius: 50%; background: var(--soft); color: var(--heading); font-size: 12px; font-weight: 700; display: grid; place-items: center; align-self: center; }
+  .flow li a:hover { background: var(--soft); }
+  .tag { font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--c); }
+  .flow li small { display: block; font-size: 12px; color: var(--muted); }
+  .screens--muted summary { color: var(--muted); font-weight: 500; }
+  footer { padding: 0 0 32px; font-size: 13px; color: var(--muted); }
+  @media (max-width: 960px) { .systems { grid-template-columns: 1fr; } .hero h1 { font-size: 24px; } }
+  @media (max-width: 480px) { header .t span { display: none; } header img { height: 44px; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <img src="design-system/assets/logo_bn.png" alt="Sở Giáo dục và Đào tạo Bắc Ninh">
+    <div class="t"><b>Nền tảng số ngành Giáo dục</b><span>Sở Giáo dục và Đào tạo Bắc Ninh · bản mẫu giao diện</span></div>
+    <button class="theme" id="theme" aria-label="Đổi giao diện sáng/tối"><i data-lucide="moon"></i></button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>Bạn là ai?</h1>
+    <p>Ba hệ thống dùng chung tài khoản và dữ liệu. Chọn vai trò để thấy các luồng thao tác chính (có thể đi xuyên hệ thống), hoặc xem theo hệ thống và tìm thẳng tên màn hình.</p>
+    <div class="roles" id="roles" role="tablist"></div>
+  </section>
+  <section id="view"></section>
+</main>
+
+<footer class="wrap">Bản mẫu giao diện, mọi dữ liệu là mô phỏng. Ô "Vai trò (bản mẫu)" trong LCMS thay cho việc đăng nhập nhiều tài khoản khi demo.</footer>
+
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script>
+(function () {
+  var LMS = 'design-system/templates/', LC = 'lcms-design-system/templates/', QD = 'qldt-design-system/templates/';
+  var SYS = { lms: 'LMS', lcms: 'LCMS', qldt: 'QLĐT' };
+  function st(sys, label, href, note) { return { sys: sys, label: label, href: (sys === 'lms' ? LMS : sys === 'lcms' ? LC : QD) + href, note: note }; }
+
+  // Vai trò → lối vào + kịch bản demo đánh số bước
+  var ROLES = [
+    { key: 'hs', name: 'Học sinh', icon: 'backpack', sys: 'lms', desc: 'Học theo môn, làm bài được giao, thi trên phòng máy, dùng kho học liệu và thư viện điện tử.',
+      entry: [LMS + '07-form-modal.html#dang-nhap', 'Đăng nhập LMS'], direct: [LMS + '02-app-sidebar-list.html', 'Vào Góc học tập'],
+      flows: [
+        { t: 'Một buổi học', d: 'Từ Góc học tập tới bài kiểm tra và kết quả.', s: [st('lms', 'Góc học tập', '02-app-sidebar-list.html'), st('lms', 'Chi tiết môn Tiếng Anh 10', '03-detail-two-column.html'), st('lms', 'Học video tương tác', '08-video-lesson.html'), st('lms', 'Bài tập của tôi', '12-my-tasks.html'), st('lms', 'Kiểm tra Đúng/Sai, nộp bài, xem điểm', '10-true-false.html'), st('lms', 'Kết quả học tập', '04-dashboard-report.html')] },
+        { t: 'Thi trên phòng máy', d: 'Bài thi được giao, vào máy thi, nộp bài, xem lại.', s: [st('lms', 'Bài tập của tôi', '12-my-tasks.html'), st('lms', 'Máy thi: quy chế, làm bài, nộp', '11-exam-kiosk.html'), st('lms', 'Kết quả và xem lại bài thi', '06-exam.html')] },
+        { t: 'Học liệu và thư viện', d: 'Học liệu đã duyệt từ Kho Trường, Kho Sở; sách thư viện dạng file xem trực tuyến.', s: [st('lms', 'Kho học liệu', '15-shared-materials.html'), st('lms', 'Thư viện điện tử: xem sách trực tuyến (xác thực tự động)', '14-elibrary.html?from=lms'), st('lms', 'Bài đọc và tra từ', '09-reading-dictionary.html')] }
+      ] },
+    { key: 'gv', name: 'Giáo viên', icon: 'presentation', sys: 'lcms', desc: 'Soạn bài, câu hỏi, gửi duyệt học liệu, giao bài cho lớp. Giáo viên chủ nhiệm và cán bộ coi thi dùng cùng LCMS với menu riêng.',
+      entry: [LC + '01-login.html?role=gv', 'Đăng nhập LCMS'], direct: [LC + '02-list-grid-table.html?role=gv', 'Vào thẳng'],
+      flows: [
+        { t: 'Soạn, giao bài, học sinh làm', d: 'Vòng dạy học chính, đi từ LCMS sang LMS.', s: [st('lcms', 'Khoá học', '02-list-grid-table.html?role=gv'), st('lcms', 'Chi tiết khoá, chương, bài', '04-detail-chapters.html'), st('lcms', 'Soạn bài · tab Tài liệu: thêm từ máy, kho học liệu, Thư viện điện tử', '06-editor-split.html'), st('lcms', 'Ngân hàng câu hỏi: thêm câu, sao chép từ kho Sở', '12-question-bank.html'), st('lcms', 'Giao bài từ khoá học cho nhiều lớp', '14-assignment.html'), st('lms', 'Học sinh thấy bài trong Bài tập của tôi', '12-my-tasks.html'), st('lcms', 'Xem tiến độ khoá học: bài giảng, bài tập, điểm', '18-course-results.html')] },
+        { t: 'Gán nhãn và gửi duyệt học liệu', d: 'Theo khung CTGDPT 2018, gửi Kho Trường rồi Kho Sở.', s: [st('lcms', 'Tra cứu khung chương trình (chỉ xem)', '11-curriculum.html?role=gv'), st('lcms', 'Quét đề từ ảnh/PDF', '10-scan-import.html'), st('lcms', 'Học liệu của tôi: gán nhãn, gửi duyệt học liệu và ngân hàng câu hỏi', '09-content-approval.html?role=gv')] },
+        { t: 'Giáo viên chủ nhiệm', d: 'Theo dõi lớp, cảnh báo từ lớp bộ môn, liên lạc phụ huynh.', s: [st('lcms', 'Đăng nhập vai GVCN', '01-login.html?role=gvcn'), st('lcms', 'Lớp chủ nhiệm', '15-homeroom.html?role=gvcn')] },
+        { t: 'Cán bộ coi thi', d: 'Giám sát phòng máy và máy thi của học sinh.', s: [st('lcms', 'Giám sát phòng thi', '13-exam-proctoring.html?role=ct'), st('lms', 'Máy thi phía học sinh', '11-exam-kiosk.html')] }
+      ] },
+    { key: 'ht', name: 'Tổ trưởng · Hiệu trưởng', icon: 'school', sys: 'lcms', desc: 'Duyệt học liệu vào Kho Trường (Tổ trưởng → Hiệu trưởng, theo QĐ 4725 mục 1.4) và theo dõi số liệu nhà trường.',
+      entry: [LC + '01-login.html?role=tt', 'Đăng nhập LCMS'], direct: [QD + '01-login.html', 'Đăng nhập QLĐT'],
+      flows: [
+        { t: 'Duyệt học liệu Kho Trường', d: 'Mở từng bước theo thứ tự; dữ liệu dùng chung trong một phiên của màn 09.', s: [st('lcms', 'Giáo viên gửi duyệt (bắt đầu lại dữ liệu mẫu)', '09-content-approval.html?role=gv&reset=1'), st('lcms', 'Tổ trưởng duyệt (bước 1/2)', '09-content-approval.html?role=tt'), st('lcms', 'Hiệu trưởng phê duyệt (bước 2/2)', '09-content-approval.html?role=ht'), st('lms', 'Học sinh thấy trong Kho học liệu', '15-shared-materials.html')] },
+        { t: 'Hiệu trưởng theo dõi nhà trường', d: 'Chọn vai trò "Hiệu trưởng" trên menu QLĐT để thu phạm vi về trường.', s: [st('qldt', 'Dashboard (cấp trường)', '08-management-dashboard.html'), st('qldt', 'Tần suất giảng dạy online của GV', '09-executive-report.html#tan-suat-gv'), st('lcms', 'Giao bài tập (nguồn số liệu)', '14-assignment.html?role=ht')] }
+      ] },
+    { key: 'so', name: 'Cán bộ Sở · xã/phường', icon: 'landmark', sys: 'qldt', desc: 'Dashboard các cấp và báo cáo điều hành định kỳ; thẩm định học liệu lên Kho Sở.',
+      entry: [QD + '01-login.html', 'Đăng nhập QLĐT'], direct: [QD + '08-management-dashboard.html', 'Vào Dashboard'],
+      flows: [
+        { t: 'Điều hành theo cấp', d: 'Sở → xã/phường → trường, rồi báo cáo theo nhóm.', s: [st('qldt', 'Trang chủ quản lý', '02-home-modules.html'), st('qldt', 'Dashboard các cấp quản lý', '08-management-dashboard.html'), st('qldt', 'Báo cáo: Tổng quan', '09-executive-report.html#tong-quan'), st('qldt', 'Báo cáo: Kỳ thi chung', '09-executive-report.html#ky-thi'), st('qldt', 'Báo cáo: Học liệu', '09-executive-report.html#hoc-lieu')] },
+        { t: 'Soạn khung chương trình', d: 'Chỉ cấp Sở được soạn; trường tra cứu để gán nhãn học liệu.', s: [st('lcms', 'Đăng nhập LCMS vai Chuyên viên Sở', '01-login.html?role=so'), st('lcms', 'Soạn khung: môn, cấp, nút, YCCĐ', '11-curriculum.html?role=so'), st('lcms', 'Giáo viên tra cứu khung (chỉ xem)', '11-curriculum.html?role=gv')] },
+        { t: 'Thẩm định Kho Sở', d: 'Học liệu đã qua Kho Trường được gửi lên Sở.', s: [st('lcms', 'Thẩm định viên Sở duyệt 2 bước', '09-content-approval.html?role=tdv'), st('lcms', 'Quản trị cấp Sở: cấu hình quy trình', '09-content-approval.html?role=admin'), st('lms', 'Học sinh thấy học liệu Kho Sở', '15-shared-materials.html')] }
+      ] }
+  ];
+
+  // Theo hệ thống: màn thuộc luồng + mẫu component (không thuộc luồng nào)
+  var SYSTEMS = [
+    { key: 'lms', code: 'LMS', name: 'Hệ thống học tập', icon: 'graduation-cap', who: ['Học sinh'],
+      desc: 'Học trực tuyến theo môn, làm bài tập và bài kiểm tra, thi trên máy, kho học liệu, thư viện sách xem trực tuyến.',
+      base: 'design-system/', main: ['templates/07-form-modal.html#dang-nhap', 'Đăng nhập LMS'], extra: ['templates/02-app-sidebar-list.html', 'Vào thẳng'],
+      screens: [['02', 'Góc học tập', '02-app-sidebar-list'], ['03', 'Chi tiết môn Tiếng Anh 10', '03-detail-two-column'], ['12', 'Bài tập của tôi', '12-my-tasks'], ['08', 'Học video tương tác', '08-video-lesson'], ['09', 'Bài đọc & tra từ', '09-reading-dictionary'], ['10', 'Kiểm tra Đúng/Sai', '10-true-false'], ['11', 'Máy thi', '11-exam-kiosk'], ['06', 'Kết quả và xem lại bài thi', '06-exam'], ['15', 'Kho học liệu', '15-shared-materials'], ['14', 'Thư viện điện tử: xem sách trực tuyến (qua xác thực tự động)', '14-elibrary', '?from=lms'], ['04', 'Kết quả học tập', '04-dashboard-report'], ['05', 'Bảng từ vựng', '05-table-list'], ['07', 'Thông tin tài khoản', '07-form-modal'], ['07', 'Đăng nhập', '07-form-modal', '#dang-nhap'], ['01', 'Trang giới thiệu', '01-landing']], samples: [] },
+    { key: 'lcms', code: 'LCMS', name: 'Quản lý nội dung học tập', icon: 'library-big', who: ['Giáo viên', 'GVCN', 'Tổ trưởng', 'Hiệu trưởng', 'Cán bộ coi thi'],
+      desc: 'Soạn bài, câu hỏi, kho học liệu dùng chung, giao bài, giám sát phòng thi, lớp chủ nhiệm. Menu đổi theo vai trò.',
+      base: 'lcms-design-system/', main: ['templates/01-login.html', 'Đăng nhập LCMS'], extra: ['templates/02-list-grid-table.html', 'Vào thẳng'],
+      screens: [['01', 'Đăng nhập', '01-login'], ['02', 'Khoá học', '02-list-grid-table'], ['04', 'Chi tiết khoá học', '04-detail-chapters'], ['05', 'Cài đặt khoá học', '05-form-settings'], ['06', 'Soạn bài và tài liệu của bài', '06-editor-split'], ['11', 'Khung chương trình', '11-curriculum'], ['12', 'Ngân hàng câu hỏi', '12-question-bank'], ['10', 'Quét đề từ ảnh/PDF', '10-scan-import'], ['08', 'Kịch bản video', '08-video-script'], ['09', 'Gán nhãn và duyệt kho dùng chung', '09-content-approval'], ['14', 'Giao bài tập', '14-assignment'], ['18', 'Tiến độ khoá học (bài giảng, bài tập)', '18-course-results'], ['13', 'Giám sát phòng thi', '13-exam-proctoring'], ['15', 'Lớp chủ nhiệm', '15-homeroom']],
+      samples: [['03', 'Bảng quản trị (Combo, Sự kiện)', '03-data-table'], ['07', 'Card, lịch tuần, empty state (từ màn Lộ trình cũ)', '07-cards-calendar'], ['17', 'Mô phỏng xác thực tự động LCMS → Thư viện điện tử', '17-elibrary']] },
+    { key: 'qldt', code: 'QLĐT', name: 'Quản trị đào tạo', icon: 'landmark', who: ['Sở GD&ĐT', 'Xã/phường', 'Hiệu trưởng'],
+      desc: 'Dashboard các cấp quản lý và báo cáo điều hành định kỳ cho Sở, UBND xã/phường, hiệu trưởng.',
+      base: 'qldt-design-system/', main: ['templates/01-login.html', 'Đăng nhập QLĐT'], extra: ['templates/08-management-dashboard.html', 'Vào Dashboard'],
+      screens: [['01', 'Đăng nhập', '01-login'], ['02', 'Trang chủ', '02-home-modules'], ['08', 'Dashboard các cấp quản lý', '08-management-dashboard'], ['09', 'Báo cáo điều hành', '09-executive-report']],
+      samples: [['03', 'Kế hoạch giáo dục', '03-plan-list'], ['04', 'Chi tiết kế hoạch giáo dục', '04-plan-detail'], ['05', 'Danh sách lớp học', '05-class-list'], ['06', 'Nhiệm vụ / Công việc', '06-task-dashboard'], ['07', 'Hồ sơ học sinh', '07-student-filters']] }
+  ];
+
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function fold(s) { return s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase(); }
+
+  var tab = 'hs', q = '';
+  try { tab = localStorage.getItem('bn-portal-tab') || 'hs'; } catch (e) {}
+  var TABS = ROLES.map(function (r) { return [r.key, r.name, r.icon]; }).concat([['sys', 'Theo hệ thống', 'layout-grid']]);
+  if (!TABS.some(function (t) { return t[0] === tab; })) tab = 'hs';
+
+  function renderTabs() {
+    $('roles').innerHTML = TABS.map(function (t) { return '<button role="tab" aria-selected="' + (t[0] === tab) + '" class="' + (t[0] === tab ? 'is-on' : '') + '" data-tab="' + t[0] + '"><i data-lucide="' + t[2] + '"></i>' + t[1] + '</button>'; }).join('');
+  }
+
+  function renderRole(r) {
+    return '<div class="role"><div class="role__intro" style="--c:var(--' + r.sys + ')"><div><h2>' + r.name + '</h2><p>' + r.desc + '</p></div>' +
+      '<div class="sys__cta"><a class="btn btn--main" href="' + r.entry[0] + '">' + r.entry[1] + '<i data-lucide="arrow-right"></i></a><a class="btn btn--ghost" href="' + r.direct[0] + '">' + r.direct[1] + '</a></div></div>' +
+      '<div class="flows">' + r.flows.map(function (f) {
+        return '<article class="flow"><h3>' + f.t + '</h3><p>' + f.d + '</p><ol>' + f.s.map(function (x) {
+          return '<li><a href="' + x.href + '" style="--c:var(--' + x.sys + ')"><span class="tag">' + SYS[x.sys] + '</span><span>' + esc(x.label) + '</span></a></li>';
+        }).join('') + '</ol></article>';
+      }).join('') + '</div></div>';
+  }
+
+  function screenList(s, list) {
+    return '<ul>' + list.map(function (sc) { return '<li><a href="' + s.base + 'templates/' + sc[2] + '.html' + (sc[3] || '') + '"><code>' + sc[0] + '</code><span>' + esc(sc[1]) + '</span></a></li>'; }).join('') + '</ul>';
+  }
+  function renderSystems() {
+    var f = fold(q);
+    return '<label class="search"><i data-lucide="search"></i><input id="q" value="' + esc(q) + '" placeholder="Tìm màn hình: bài tập, thư viện, giám sát phòng thi…" aria-label="Tìm màn hình"></label>' +
+      '<div class="systems">' + SYSTEMS.map(function (s) {
+        var hit = function (sc) { return !f || fold(sc[1]).indexOf(f) >= 0 || fold(s.code + ' ' + s.name).indexOf(f) >= 0; };
+        var list = s.screens.filter(hit), samples = s.samples.filter(hit);
+        return '<article class="sys" style="--c:var(--' + s.key + ')"><div class="sys__head"><span class="sys__ic"><i data-lucide="' + s.icon + '"></i></span>' +
+          '<div class="sys__code">' + s.code + '</div><h2>' + s.name + '</h2><div class="sys__who">' + s.who.map(function (w) { return '<span>' + w + '</span>'; }).join('') + '</div>' +
+          '<p class="sys__desc">' + s.desc + '</p><div class="sys__cta"><a class="btn btn--main" href="' + s.base + s.main[0] + '">' + s.main[1] + '<i data-lucide="arrow-right"></i></a><a class="btn btn--ghost" href="' + s.base + s.extra[0] + '">' + s.extra[1] + '</a></div></div>' +
+          '<details class="screens"' + (f ? ' open' : '') + '><summary>' + (f ? list.length + ' màn khớp' : 'Màn hình trong luồng (' + s.screens.length + ')') + '<i data-lucide="chevron-down"></i></summary>' +
+          (list.length ? screenList(s, list) : '<p class="empty">Không có màn nào khớp.</p>') + '</details>' +
+          '<details class="screens screens--muted"' + (f && samples.length ? ' open' : '') + '><summary>Mẫu component, không thuộc luồng (' + (s.samples.length + 1) + ')<i data-lucide="chevron-down"></i></summary>' +
+          (samples.length ? screenList(s, samples) : '') + '<ul style="padding-top:0"><li><a href="' + s.base + 'design-system.html"><code>DS</code><span>Tài liệu design system ' + s.code + '</span></a></li></ul></details></article>';
+      }).join('') + '</div>';
+  }
+
+  function render() {
+    renderTabs();
+    var r = ROLES.filter(function (x) { return x.key === tab; })[0];
+    $('view').innerHTML = r ? renderRole(r) : renderSystems();
+    if (!r) { var inp = $('q'); inp.addEventListener('input', function () { q = inp.value; var pos = inp.selectionStart; render(); var n = $('q'); n.focus(); n.setSelectionRange(pos, pos); }); }
+    if (window.lucide) lucide.createIcons();
+  }
+
+  $('roles').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-tab]'); if (!b) return;
+    tab = b.dataset.tab; try { localStorage.setItem('bn-portal-tab', tab); } catch (err) {}
+    render();
+  });
+
+  var root = document.documentElement;
+  function isDark() { return root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; }
+  function themeIcon() { $('theme').innerHTML = '<i data-lucide="' + (isDark() ? 'sun' : 'moon') + '"></i>'; if (window.lucide) lucide.createIcons(); }
+  try { var saved = localStorage.getItem('bn-portal-theme'); if (saved) root.dataset.theme = saved; } catch (e) {}
+  $('theme').addEventListener('click', function () {
+    root.dataset.theme = isDark() ? 'light' : 'dark';
+    try { localStorage.setItem('bn-portal-theme', root.dataset.theme); } catch (e) {}
+    themeIcon();
+  });
+  render(); themeIcon();
+})();
+</script>
+</body>
+</html>

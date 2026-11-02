@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tiếng Anh 10</title>
+<link rel="stylesheet" href="../tvet.css">
+</head>
+<body>
+
+<header class="tv-header">
+  <div class="tv-container tv-header__inner">
+    <a class="tv-logo" href="01-landing.html"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></a>
+    <div class="tv-input tv-input--search" style="width:190px"><i data-lucide="search"></i><input placeholder="Tìm bài học..." aria-label="Tìm bài học"></div>
+    <nav class="tv-nav"><a class="is-active" href="02-app-sidebar-list.html">Học tập</a><a href="12-my-tasks.html">Bài tập</a><a href="15-shared-materials.html">Học liệu</a><a href="14-elibrary.html?from=lms">Thư viện</a></nav>
+    <div class="tv-header__actions">
+      <button class="tv-icon-btn" data-tv-theme-toggle></button>
+      <span class="tv-icon-btn tv-icon-btn--warn"><i data-lucide="bell"></i></span>
+      <img class="tv-avatar" src="../assets/default-avatar.jpg" alt="">
+    </div>
+  </div>
+</header>
+
+<div class="tv-container">
+  <nav class="tv-breadcrumb"><a href="01-landing.html">Trang chủ</a><i data-lucide="chevron-right"></i><a href="02-app-sidebar-list.html">Học tập</a><i data-lucide="chevron-right"></i><span class="is-current">Tiếng Anh 10</span></nav>
+  <div class="tv-panel" id="monNote" hidden style="gap:10px;align-items:center;padding:12px 16px;margin-bottom:16px;border:1px dashed var(--tv-primary);background:var(--tv-primary-soft)"><i data-lucide="info"></i><span>Bản mẫu chỉ dựng nội dung chi tiết cho <b>Tiếng Anh 10</b>. Màn <b id="monName"></b> sẽ dùng cùng bố cục này.</span></div>
+  <script>(function () { var m = new URLSearchParams(location.search).get('mon'); if (!m) return; var n = document.getElementById('monNote'); n.hidden = false; n.style.display = 'flex'; document.getElementById('monName').textContent = m; })();</script>
+
+  <div class="tv-split tv-page">
+    <!-- Cột chính -->
+    <div class="tv-stack">
+      <div class="tv-panel" style="padding:24px 20px"><h1 class="tv-h1" style="font-size:24px;font-weight:700">Tiếng Anh 10</h1><p class="tv-small tv-muted" style="margin-top:6px">Lớp 10A1 · Thầy Lê Quang Huy · 3 tiết/tuần</p></div>
+
+      <div class="tv-panel">
+        <h2 class="tv-h2">Bài học gần đây</h2>
+        <p class="tv-small tv-muted">Unit 1 · Family Life</p>
+        <a class="tv-step-card" href="09-reading-dictionary.html" style="margin-top:12px;gap:10px;color:inherit"><i data-lucide="clock" style="width:16px;color:var(--tv-text-muted)"></i><div style="flex:1"><div>Reading: Sharing housework</div><div class="tv-small tv-muted">1 Bài giảng / 1 Bài tập</div></div><span class="tv-dot-status tv-dot-status--done"><i data-lucide="check" style="width:14px"></i></span></a>
+      </div>
+
+      <div class="tv-chapter"><h3>Học kì I</h3><select class="tv-select" aria-label="Chọn unit"><option>Chọn unit</option><option>Unit 1</option><option>Unit 2</option><option>Unit 3</option></select><span class="tv-icon-btn"><i data-lucide="chevron-up"></i></span></div>
+
+      <div class="tv-panel tv-stack" style="gap:16px">
+        <div class="tv-unit">
+          <div class="tv-unit__head" data-tv-accordion style="cursor:pointer"><i data-lucide="chevrons-down"></i><div><b>Unit 1: Family Life</b><span>7 Bài học</span></div><span class="tv-progress-chip"><span class="ok"><i data-lucide="check" style="width:14px"></i></span>43% tiến độ</span></div>
+          <ul class="tv-timeline">
+            <li><span class="tv-num">01</span><a class="t" href="08-video-lesson.html" style="color:inherit"><b>Getting started: Household chores</b><span>1 Bài giảng</span></a><span class="tv-dot-status tv-dot-status--done"><i data-lucide="check" style="width:14px"></i></span></li>
+            <li><span class="tv-num">02</span><a class="t" href="#" style="color:inherit"><b>Language: Pronunciation, Vocabulary, Grammar</b><span>2 Bài giảng/1 Bài tập</span></a><span class="tv-dot-status tv-dot-status--done"><i data-lucide="check" style="width:14px"></i></span></li>
+            <li><span class="tv-num">03</span><a class="t" href="09-reading-dictionary.html" style="color:inherit"><b>Reading: Sharing housework</b><span>1 Bài giảng/1 Bài tập</span></a><span class="tv-dot-status tv-dot-status--done"><i data-lucide="check" style="width:14px"></i></span></li>
+            <li><span class="tv-num">04</span><a class="t" href="#" style="color:inherit"><b>Speaking: Talking about chores</b><span>1 Bài giảng</span></a>-</li>
+            <li><span class="tv-num">05</span><a class="t" href="#" style="color:inherit"><b>Listening: A family survey</b><span>1 Bài giảng/1 Bài tập</span></a>-</li>
+            <li><span class="tv-num">06</span><a class="t" href="#" style="color:inherit"><b>Writing: Benefits of doing housework</b><span>1 Bài giảng/1 Bài tập</span></a>-</li>
+            <li><span class="tv-num">07</span><a class="t" href="#" style="color:inherit"><b>Looking back & Project</b><span>1 Bài tập</span></a>-</li>
+          </ul>
+        </div>
+        <div class="tv-unit">
+          <div class="tv-unit__head" data-tv-accordion style="cursor:pointer"><i data-lucide="chevrons-down"></i><div><b>Unit 2: Humans and the Environment</b><span>7 Bài học</span></div><span class="tv-progress-chip"><span class="ok"><i data-lucide="check" style="width:14px"></i></span>0% tiến độ</span></div>
+          <ul class="tv-timeline" hidden>
+            <li><span class="tv-num">01</span><div class="t"><b>Getting started: Going green</b><span>1 Bài giảng</span></div>-</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tv-panel" style="padding:0">
+        <h2 class="tv-h2" style="padding:20px">Hoạt động gần đây</h2>
+        <div class="tv-grid tv-grid-2" style="border-top:1px solid var(--tv-divider);padding:16px 20px;gap:16px">
+          <div class="tv-row" style="align-items:flex-start"><img class="tv-avatar" style="width:50px;height:50px" src="../assets/default-avatar.jpg" alt=""><div style="flex:1"><b style="color:var(--tv-heading);font-weight:500;font-size:14px">Thầy Lê Quang Huy</b><div class="tv-small">đã giao bài Reading: Family life · hạn 22:00 08/11</div><div class="tv-caption" style="margin-top:18px;border-bottom:1px solid var(--tv-border);padding-bottom:2px">15:10 - 03/11/2026</div></div></div>
+          <div class="tv-row" style="align-items:flex-start"><img class="tv-avatar" style="width:50px;height:50px" src="../assets/default-avatar.jpg" alt=""><div style="flex:1"><b style="color:var(--tv-heading);font-weight:500;font-size:14px">Nguyễn Minh Anh</b><div class="tv-small">đã hoàn thành Reading: Sharing housework · 4/5 câu đúng</div><div class="tv-caption" style="margin-top:18px;border-bottom:1px solid var(--tv-border);padding-bottom:2px">20:30 - 02/11/2026</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cột widget phải -->
+    <aside class="tv-stack" style="gap:16px">
+      <div class="tv-panel tv-panel--widget" style="border-radius:12px;padding:16px">
+        <div class="tv-widget-title">Tiến độ học tập</div>
+        <p class="tv-small tv-muted">Dựa trên số bài học đã hoàn thành</p>
+        <div class="tv-ring" style="--p:44;margin-top:16px"><div><b>44%</b><span>Tiến độ học</span></div></div>
+        <p class="tv-small" style="text-align:center;margin-top:16px"><span style="color:var(--tv-primary)">●</span> Số bài đã học trong môn: <b style="color:var(--tv-primary)">14</b>/32</p>
+      </div>
+      <div class="tv-panel tv-panel--outline">
+        <h3 class="tv-h3" style="color:var(--tv-primary)">Kiểm tra 15 phút Unit 1</h3>
+        <p class="tv-small tv-muted" style="margin:10px 0 16px">Mở lúc 09:00 ngày 05/11, làm trong 15 phút, 1 lần làm bài. Tra từ điển bị tắt trong bài kiểm tra.</p>
+        <a class="tv-btn tv-btn--primary tv-btn--block" style="height:44px" href="12-my-tasks.html">Xem bài tập của tôi <i data-lucide="chevron-right"></i></a>
+      </div>
+      <div class="tv-panel tv-panel--widget">
+        <div class="tv-widget-title">Tiện ích</div>
+        <a class="tv-util-row" href="#"><i data-lucide="file-search"></i>Tài liệu môn học: <b>24</b><i class="chev" data-lucide="chevron-right"></i></a>
+        <a class="tv-util-row" href="#"><i data-lucide="file-pen-line"></i>Ghi chú: <b>0</b><i class="chev" data-lucide="chevron-right"></i></a>
+        <a class="tv-util-row" href="14-elibrary.html?from=lms"><i data-lucide="library"></i>Sách, tài liệu trong thư viện<i class="chev" data-lucide="chevron-right"></i></a>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<footer class="tv-footer">
+  <div class="tv-container tv-footer__grid">
+    <div><a class="tv-logo" href="#"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></a><p>Nền tảng số ngành Giáo dục tỉnh Bắc Ninh, tích hợp trí tuệ nhân tạo cho dạy, học và quản lý.</p></div>
+    <div><h3>Liên kết nhanh</h3><a href="02-app-sidebar-list.html">Học tập</a><a href="#">Hướng dẫn sử dụng</a></div>
+    <div><h3>Chính sách</h3></div>
+    <div><h3>Kết nối với chúng tôi</h3></div>
+  </div>
+</footer>
+<div class="tv-fab"><span class="tv-fab__label">Hỗ trợ</span><button class="tv-fab__btn"><i data-lucide="messages-square"></i></button></div>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../tvet.js"></script>
+</body>
+</html>

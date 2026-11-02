@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nền tảng số ngành Giáo dục</title>
+<link rel="stylesheet" href="../tvet.css">
+<style>
+  body { background: var(--tv-surface); }
+  .hero { position: relative; overflow: hidden; padding: 48px 0 32px; }
+  .hero::before { content: ""; position: absolute; left: -80px; top: -60px; width: 260px; height: 260px; border-radius: 50%; background: var(--tv-surface-alt); }
+  .hero__grid { position: relative; display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; align-items: center; }
+  .hero__img { width: 360px; max-width: 100%; justify-self: center; border-radius: 50%; }
+  .hero__cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+  .section { padding: 56px 0 0; text-align: center; }
+  .section .tv-lead { max-width: 720px; margin: 12px auto 32px; }
+  .mod__icon { width: 48px; height: 48px; border-radius: 12px; background: var(--tv-primary-soft); color: var(--tv-primary); display: grid; place-items: center; }
+  @media (max-width: 900px) { .hero__grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header class="tv-header">
+  <div class="tv-container tv-header__inner">
+    <a class="tv-logo" href="#"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></a>
+    <nav class="tv-nav"><a href="02-app-sidebar-list.html">Học tập</a><a href="14-elibrary.html">Thư viện</a></nav>
+    <div class="tv-header__actions">
+      <button class="tv-icon-btn" data-tv-theme-toggle></button>
+      <a class="tv-btn tv-btn--primary" href="07-form-modal.html#dang-nhap">Đăng nhập</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="tv-container hero__grid">
+    <div>
+      <span class="tv-badge">Sở Giáo dục và Đào tạo Bắc Ninh</span>
+      <h1 class="tv-display" style="margin-top:12px">NỀN TẢNG SỐ<br><span class="tv-accent">NGÀNH GIÁO DỤC</span></h1>
+      <p class="tv-lead" style="margin-top:12px;max-width:560px">Kết nối Sở, phường/xã, nhà trường, giáo viên, học sinh và phụ huynh trên một nền tảng: học tập trực tuyến, kho học liệu số, thi và kiểm tra, thư viện điện tử, quản trị đào tạo và báo cáo điều hành.</p>
+      <div class="hero__cta">
+        <a class="tv-btn tv-btn--primary tv-btn--lg" href="02-app-sidebar-list.html">Vào học tập <i data-lucide="chevron-right"></i></a>
+        <a class="tv-btn tv-btn--outline tv-btn--lg" href="07-form-modal.html#dang-nhap">Đăng nhập <i data-lucide="chevron-right"></i></a>
+      </div>
+    </div>
+    <img class="hero__img" src="../assets/presenter-container.png" alt="">
+  </div>
+  <div class="tv-container" style="max-width:830px;margin-top:40px">
+    <div class="tv-stats">
+      <div class="tv-stats__item"><span class="tv-stats__icon"><i data-lucide="landmark"></i></span><div><div class="tv-stats__num">3</div><div class="tv-stats__lbl">cấp quản lý: Sở · Xã/phường · Trường</div></div></div>
+      <div class="tv-stats__item"><span class="tv-stats__icon"><i data-lucide="layout-grid"></i></span><div><div class="tv-stats__num">6</div><div class="tv-stats__lbl">phân hệ dùng chung</div></div></div>
+      <div class="tv-stats__item"><span class="tv-stats__icon"><i data-lucide="key-round"></i></span><div><div class="tv-stats__num">1</div><div class="tv-stats__lbl">tài khoản cho mọi phân hệ</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="tv-container">
+    <h2 class="tv-display">Các <span class="tv-accent">phân hệ</span></h2>
+    <p class="tv-lead">Mỗi phân hệ phục vụ một nhóm nghiệp vụ, dùng chung dữ liệu và tài khoản để công việc dạy, học và quản lý liền mạch.</p>
+    <div class="tv-grid tv-grid-3" style="text-align:left">
+      <div class="tv-card-lg"><span class="mod__icon"><i data-lucide="book-open"></i></span><div class="tv-card-lg__title">Học tập trực tuyến</div><p class="tv-card-lg__desc">Khoá học, bài giảng video tương tác, bài tập và lộ trình học cá nhân hoá cho học sinh.</p><a class="tv-link" href="02-app-sidebar-list.html">Tìm hiểu thêm <i data-lucide="chevron-right"></i></a></div>
+      <div class="tv-card-lg"><span class="mod__icon"><i data-lucide="library"></i></span><div class="tv-card-lg__title">Kho học liệu số</div><p class="tv-card-lg__desc">Giáo viên soạn, gán nhãn theo CTGDPT 2018 và chia sẻ học liệu; duyệt từ Trường lên Sở.</p><a class="tv-link" href="#">Tìm hiểu thêm <i data-lucide="chevron-right"></i></a></div>
+      <div class="tv-card-lg"><span class="mod__icon"><i data-lucide="file-check"></i></span><div class="tv-card-lg__title">Thi và kiểm tra</div><p class="tv-card-lg__desc">Ngân hàng câu hỏi, đề thi trực tuyến, máy thi có giám sát và chấm điểm tự động.</p><a class="tv-link" href="06-exam.html">Tìm hiểu thêm <i data-lucide="chevron-right"></i></a></div>
+      <div class="tv-card-lg"><span class="mod__icon"><i data-lucide="book-marked"></i></span><div class="tv-card-lg__title">Thư viện điện tử</div><p class="tv-card-lg__desc">Sách giáo khoa, sách tham khảo điện tử đọc trực tiếp và nhúng vào bài học.</p><a class="tv-link" href="14-elibrary.html">Tìm hiểu thêm <i data-lucide="chevron-right"></i></a></div>
+      <div class="tv-card-lg"><span class="mod__icon"><i data-lucide="school"></i></span><div class="tv-card-lg__title">Quản trị đào tạo</div><p class="tv-card-lg__desc">Kế hoạch giáo dục, lớp học, hồ sơ học sinh và công việc của Sở, xã/phường, nhà trường.</p><a class="tv-link" href="#">Tìm hiểu thêm <i data-lucide="chevron-right"></i></a></div>
+      <div class="tv-card-lg"><span class="mod__icon"><i data-lucide="chart-column"></i></span><div class="tv-card-lg__title">Báo cáo điều hành</div><p class="tv-card-lg__desc">Số liệu học tập, thi cử và triển khai theo thời gian thực cho lãnh đạo các cấp.</p><a class="tv-link" href="04-dashboard-report.html">Tìm hiểu thêm <i data-lucide="chevron-right"></i></a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-bottom:72px">
+  <div class="tv-container">
+    <h2 class="tv-display">Dành cho <span class="tv-accent">mọi đối tượng</span></h2>
+    <p class="tv-lead">Mỗi người dùng một tài khoản, thấy đúng công việc của mình, cùng làm việc trên một nguồn dữ liệu chung.</p>
+    <div class="tv-grid tv-grid-3" style="text-align:left">
+      <div class="tv-feature"><span class="tv-feature__icon"><i data-lucide="landmark"></i></span><div><h4>Sở Giáo dục và Đào tạo</h4><p>Chỉ đạo, theo dõi kế hoạch và số liệu toàn tỉnh; duyệt học liệu vào kho dùng chung.</p></div></div>
+      <div class="tv-feature"><span class="tv-feature__icon"><i data-lucide="map-pin"></i></span><div><h4>Phường/xã</h4><p>Nắm tình hình các trường trên địa bàn, giao việc và nhận báo cáo định kỳ.</p></div></div>
+      <div class="tv-feature"><span class="tv-feature__icon"><i data-lucide="school"></i></span><div><h4>Nhà trường</h4><p>Quản lý lớp, kế hoạch giáo dục, hồ sơ học sinh và tổ chức thi trực tuyến.</p></div></div>
+      <div class="tv-feature"><span class="tv-feature__icon"><i data-lucide="presentation"></i></span><div><h4>Giáo viên</h4><p>Soạn bài giảng, giao bài, chấm bài và theo dõi tiến độ từng học sinh.</p></div></div>
+      <div class="tv-feature"><span class="tv-feature__icon"><i data-lucide="graduation-cap"></i></span><div><h4>Học sinh</h4><p>Học bài, làm bài tập, thi trực tuyến và xem sách, tài liệu thư viện mọi lúc, mọi nơi.</p></div></div>
+      <div class="tv-feature"><span class="tv-feature__icon"><i data-lucide="users"></i></span><div><h4>Phụ huynh</h4><p>Nhận thông báo, xem kết quả học tập và trao đổi với giáo viên chủ nhiệm.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<footer class="tv-footer">
+  <div class="tv-container tv-footer__grid">
+    <div><a class="tv-logo" href="#"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></a><p>Nền tảng số ngành Giáo dục tỉnh Bắc Ninh, tích hợp trí tuệ nhân tạo cho dạy, học và quản lý.</p></div>
+    <div><h3>Liên kết nhanh</h3><a href="#">Phân hệ</a><a href="#">Hướng dẫn sử dụng</a></div>
+    <div><h3>Chính sách</h3><a href="#">Điều khoản sử dụng</a><a href="#">Chính sách bảo mật</a></div>
+    <div><h3>Kết nối với chúng tôi</h3><a href="#">Facebook</a><a href="#">Zalo</a></div>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../tvet.js"></script>
+</body>
+</html>

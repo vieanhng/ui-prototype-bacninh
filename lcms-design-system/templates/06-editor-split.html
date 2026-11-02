@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LCMS · Soạn bài</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../lcms.css">
+<style>
+  .editor-tree .lc-chapter { box-shadow: 0 1px 6px rgba(0,0,0,.12); margin-bottom: 14px; }
+  .editor-tree .lc-chapter__head { padding: 16px 12px 16px 28px; gap: 16px; }
+  .editor-tree .lc-lessons { padding-left: 32px; }
+  .editor-tree .lc-lessons::before { left: 47px; }
+  .editor-tree .lc-lesson { padding-right: 12px; cursor: pointer; }
+  .editor-tree .lc-lesson .lc-icon-btn { margin-left: auto; }
+  .form-card { background: var(--lc-bg); border-radius: 20px; padding: 24px 22px; margin-top: 18px; }
+  /* Tài liệu của bài */
+  .docs-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 24px 0 12px; }
+  .docs-head h3 { margin: 0; font-size: 16px; font-weight: 600; color: var(--lc-text-strong); flex: 1; min-width: 200px; }
+  .docs { background: var(--lc-bg); border-radius: 16px; overflow: hidden; }
+  .doc { display: flex; align-items: center; gap: 12px; padding: 12px 18px; border-top: 1px solid var(--lc-divider); }
+  .doc:first-child { border-top: 0; }
+  .doc .lc-thumb { width: 44px; height: 44px; font-size: 11px; }
+  .doc .t { flex: 1; min-width: 0; }
+  .doc .t b { display: block; color: var(--lc-primary); font-weight: 600; }
+  .doc .t small { color: var(--lc-text-secondary); font-size: 12px; }
+  .doc.is-new { background: var(--lc-primary-soft); }
+  .lc-thumb--lib { background: #e6fffb; color: #08979c; }
+  .src { flex: none; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 11px; white-space: nowrap; }
+  .src--upload { background: var(--lc-neutral-bg); color: var(--lc-neutral); }
+  .src--school { background: var(--lc-info-bg); color: var(--lc-info); }
+  .src--so { background: var(--lc-success-2-bg); color: var(--lc-success-2); }
+  .src--lib { background: #e6fffb; color: #08979c; }
+  .docs-empty { padding: 32px 16px; text-align: center; color: var(--lc-text-secondary); }
+  /* Modal thêm tài liệu */
+  .add-src { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 16px; }
+  .add-src button { padding: 10px 12px; border: 1px solid var(--lc-divider); border-radius: 10px; background: var(--lc-bg); text-align: left; cursor: pointer; font: inherit; }
+  .add-src button b { display: block; font-size: 14px; color: var(--lc-text-strong); }
+  .add-src button span { font-size: 12px; color: var(--lc-text-secondary); }
+  .add-src button.is-on { border-color: var(--lc-primary); background: var(--lc-primary-soft); }
+  .drop { display: grid; place-items: center; gap: 8px; padding: 28px 16px; border: 1.5px dashed var(--lc-border); border-radius: 12px; text-align: center; color: var(--lc-text-secondary); cursor: pointer; }
+  .drop:hover { border-color: var(--lc-primary); }
+  .pick { display: grid; gap: 6px; max-height: 320px; overflow: auto; margin-top: 12px; }
+  .pick label { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--lc-divider); border-radius: 10px; cursor: pointer; }
+  .pick label:has(input:checked) { border-color: var(--lc-primary); background: var(--lc-primary-soft); }
+  .pick input { width: 16px; height: 16px; accent-color: var(--lc-ant-blue); flex: none; }
+  .pick .lc-thumb { width: 38px; height: 38px; font-size: 10px; }
+  .pick .t { flex: 1; min-width: 0; }
+  .pick .t b { display: block; font-weight: 600; font-size: 14px; }
+  .pick .t small { color: var(--lc-text-secondary); font-size: 12px; }
+  .pick label.is-added { opacity: .55; cursor: default; }
+  .books { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+  .book { padding: 8px; border: 1px solid var(--lc-divider); border-radius: 10px; cursor: pointer; }
+  .book.is-sel { border-color: var(--lc-primary); background: var(--lc-primary-soft); }
+  .book .cover { height: 84px; border-radius: 6px; padding: 8px; color: #fff; display: flex; flex-direction: column; justify-content: space-between; font-size: 10px; }
+  .book .cover b { font-size: 12px; line-height: 1.3; }
+  .book h4 { margin: 6px 0 0; font-size: 13px; font-weight: 600; line-height: 1.35; }
+  .filters { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+  .fgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+  .fgrid .lc-select { width: 100%; min-width: 0; }
+  .chipbtn { height: 28px; padding: 0 12px; border: 1px solid var(--lc-divider); border-radius: 14px; background: var(--lc-bg); font: 600 13px var(--lc-font); color: var(--lc-text-tertiary); cursor: pointer; }
+  .chipbtn.is-on { border-color: var(--lc-primary); background: var(--lc-primary-soft); color: var(--lc-primary); }
+  .pick .t small { display: block; }
+  @media (max-width: 700px) { .add-src, .books, .fgrid { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+<!-- Trình soạn: sider ở dạng rail (thu gọn) -->
+<div class="lc-layout is-collapsed">
+  <aside class="lc-sider">
+    <nav class="lc-rail" data-demo-rail="khoahoc"></nav>
+  </aside>
+
+  <div class="lc-main">
+    <header class="lc-header">
+      <button class="lc-burger" aria-label="Menu"><img src="../assets/icons/menu.svg" alt=""></button>
+      <h1 class="lc-page-title">Sửa chương trình học <em>Toán 10 – Lớp 10A1</em></h1>
+      <img class="lc-avatar" src="../assets/default-avatar.jpg" alt="">
+    </header>
+
+    <div style="flex:1;min-height:0">
+      <div class="lc-split">
+        <!-- Cây chương / bài -->
+        <div class="lc-split__left editor-tree">
+          <section class="lc-chapter is-open">
+            <div class="lc-chapter__head"><svg class="toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 6 6 6-6 6M12 6l6 6-6 6"/></svg><div><div class="lc-chapter__title">Chương IV. Hệ thức lượng trong tam giác</div><div class="lc-chapter__meta">0 Video - 0 Tài liệu</div><div class="lc-chapter__date">Phát hành: 13:27 07/08/2026</div></div><button class="lc-icon-btn lc-icon-btn--ghost"><img src="../assets/icons/three-dots-vertical.svg" alt=""></button></div>
+            <ul class="lc-lessons">
+              <li class="lc-lesson is-active"><span class="lc-num">01</span><span class="lc-lesson__type"></span><div class="lc-lesson__body"><b>Bài 1. Giá trị lượng giác của một góc từ 0° đến 180°</b><span>1 Video / 1 Tài liệu / 10 Câu hỏi</span><small>Phát hành: 07:00 26/10/2026</small></div><button class="lc-icon-btn lc-icon-btn--ghost"><img src="../assets/icons/three-dots-vertical.svg" alt=""></button></li>
+              <li class="lc-lesson"><span class="lc-num">02</span><span class="lc-lesson__type"></span><div class="lc-lesson__body"><b>Bài 2. Định lí côsin và định lí sin</b><span>1 Video / 2 Tài liệu / 12 Câu hỏi</span><small>Phát hành: 07:00 02/11/2026</small></div><button class="lc-icon-btn lc-icon-btn--ghost"><img src="../assets/icons/three-dots-vertical.svg" alt=""></button></li>
+              <li class="lc-lesson"><span class="lc-num">03</span><span class="lc-lesson__type"></span><div class="lc-lesson__body"><b>Bài 3. Giải tam giác và ứng dụng thực tế</b><span>1 Tài liệu / 8 Câu hỏi</span><small>Phát hành: 07:00 09/11/2026</small></div><button class="lc-icon-btn lc-icon-btn--ghost"><img src="../assets/icons/three-dots-vertical.svg" alt=""></button></li>
+            </ul>
+            <a class="lc-collapse-link" href="#">Rút gọn</a>
+            <div class="lc-lessons"><div class="lc-add-row"><span class="lc-num">04</span><button class="lc-add-btn">+ Thêm nội dung</button></div></div>
+          </section>
+          <section class="lc-chapter"><div class="lc-chapter__head"><svg class="toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 6 6 6-6 6M12 6l6 6-6 6"/></svg><div><div class="lc-chapter__title">Chương V. Vectơ</div><div class="lc-chapter__meta">0 Video - 0 Tài liệu</div><div class="lc-chapter__date">Phát hành: 13:27 07/08/2026</div></div><button class="lc-icon-btn lc-icon-btn--ghost"><img src="../assets/icons/three-dots-vertical.svg" alt=""></button></div></section>
+        </div>
+
+        <div class="lc-split__handle" title="Kéo để đổi kích thước">↔</div>
+
+        <!-- Khu soạn -->
+        <div class="lc-split__right">
+          <div class="lc-tabs" id="tabs"><a href="#" class="is-active" data-pane="content">Nội dung</a><a href="#" data-pane="docs">Tài liệu (0)</a><a href="#" data-pane="hidden">Tài liệu đã ẩn (0)</a><a href="#" data-pane="deleted">Tài liệu đã xoá (0)</a><a href="#" data-pane="sync">Đồng bộ</a></div>
+
+          <!-- Tài liệu của bài: thêm từ máy, từ kho học liệu (Kho Trường / Kho Sở) hoặc Thư viện điện tử -->
+          <div id="paneDocs" hidden></div>
+
+          <div id="paneContent">
+          <div class="lc-steps" style="margin-top:28px">
+            <div class="lc-step"><span class="n">1</span><b>Thông tin bài thi</b><span class="lc-tag lc-tag--success lc-tag--sm">Đã hoàn thành</span></div>
+            <div class="lc-step is-wait"><span class="n">2</span><b>Thông tin câu hỏi</b><span class="lc-tag lc-tag--success lc-tag--sm">Đã hoàn thành</span></div>
+          </div>
+
+          <div style="text-align:right;margin-top:24px"><button class="lc-btn lc-btn--danger">🗑 Xoá</button></div>
+
+          <form class="form-card" onsubmit="event.preventDefault()">
+            <div class="lc-form lc-grid-2" style="gap:16px 24px">
+              <div class="lc-field" style="grid-column:1/-1"><label class="lc-label" for="e-name">Tên bài thi<span class="req">*</span></label><input class="lc-input" id="e-name" value="Kiểm tra 15 phút: Giá trị lượng giác"></div>
+              <div class="lc-field" style="grid-column:1/-1"><label class="lc-label" for="e-desc">Mô tả ngắn</label><input class="lc-input" id="e-desc" value="Bài 1 · Chương IV · 10 câu trắc nghiệm, mức nhận biết – thông hiểu"></div>
+              <div class="lc-field"><label class="lc-label" for="e-id">ID</label><div class="lc-input-affix"><input class="lc-input lc-input--link" id="e-id" value="5402563087171584" readonly style="background:var(--lc-bg-disabled)"><svg class="affix" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1Zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Z"/></svg></div></div>
+              <div class="lc-field"><label class="lc-label" for="e-link">Link chia sẻ</label><div class="lc-input-affix"><input class="lc-input lc-input--link" id="e-link" value="https://hoctap.bacninh.edu.vn/bai-hoc/toan10-c4-b1" readonly style="background:var(--lc-bg-disabled)"><svg class="affix" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1Zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Z"/></svg></div></div>
+              <div class="lc-field"><label class="lc-label" for="e-pub">Ngày phát hành<span class="req">*</span></label><div class="lc-input-affix"><input class="lc-input" id="e-pub" value="07:00 26/10/2026"><svg class="affix" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7Zm-2 8h14v10H5V10Z"/></svg></div></div>
+              <div class="lc-field"><label class="lc-label" for="e-end">Ngày kết thúc</label><div class="lc-input-affix"><input class="lc-input" id="e-end" placeholder="Chọn ngày kết thúc"><svg class="affix" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7Zm-2 8h14v10H5V10Z"/></svg></div></div>
+              <div class="lc-field"><label class="lc-label" for="e-q">Số câu hỏi</label><input class="lc-input" id="e-q" value="10" inputmode="numeric"></div>
+              <div class="lc-field"><label class="lc-label" for="e-t">Thời gian làm bài (Phút)<span class="req">*</span></label><input class="lc-input" id="e-t" value="15" inputmode="numeric"></div>
+              <div class="lc-field"><label class="lc-label" for="e-pass">Điều kiện qua (% đúng)</label><input class="lc-input" id="e-pass" value="50" inputmode="numeric"></div>
+              <div class="lc-field"><label class="lc-label" for="e-type">Loại bài</label><select class="lc-select" id="e-type" style="border-color:var(--lc-border-input);border-radius:8px"><option>Chuyên đề</option><option>Bài thi</option></select></div>
+              <div class="lc-field" style="grid-column:1/-1"><label class="lc-label" for="e-tag">Gắn tag kiến thức</label><select class="lc-select" id="e-tag" style="border-color:var(--lc-border-input);border-radius:8px"><option>Gắn tag kiến thức</option></select></div>
+            </div>
+          </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lc-toolbar">
+      <div style="position:relative;display:flex">
+        <button class="lc-toolbar__item lc-toolbar__item--magenta" data-lc-toggle="featMenu"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm3 4v2h2V7H7Zm4 0v2h6V7h-6Zm-4 4v2h2v-2H7Zm4 0v2h6v-2h-6Zm-4 4v2h2v-2H7Zm4 0v2h6v-2h-6Z"/></svg>Tính năng<span style="margin-left:auto">⌄</span></button>
+        <div class="lc-dropdown" id="featMenu" data-lc-pop hidden style="position:absolute;left:0;bottom:70px;width:210px"><button>Sao chép nội dung</button><button>Hoạt động gần đây</button><button>Tạo nhanh</button></div>
+      </div>
+      <button class="lc-toolbar__item lc-toolbar__item--blue"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 3h-2v4h-2V5H9l3-3Zm0 20-3-3h2v-4h2v4h2l-3 3ZM2 12l3-3v2h4v2H5v2l-3-3Zm20 0-3 3v-2h-4v-2h4V9l3 3Z"/></svg>Đổi vị trí các khối</button>
+      <button class="lc-toolbar__item lc-toolbar__item--orange"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h6l2 2h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Zm6 6v6l5-3-5-3Z"/></svg>Xem thử bản web</button>
+      <div class="lc-toolbar__end"><a class="lc-btn lc-btn--outline" href="04-detail-chapters.html" style="height:42px">Huỷ chỉnh sửa</a><button class="lc-btn lc-btn--primary" style="height:40px">Lưu</button></div>
+    </div>
+  </div>
+</div>
+<div class="lc-overlay" id="mAdd" hidden>
+  <div class="lc-modal" role="dialog" aria-labelledby="mAddTitle" style="max-width:760px">
+    <div class="lc-modal__head"><h3 id="mAddTitle">Thêm tài liệu vào bài</h3><button class="lc-modal__close" data-lc-close aria-label="Đóng">×</button></div>
+    <div class="lc-modal__body">
+      <div class="add-src" id="addSrc">
+        <button data-src="upload" class="is-on"><b>Tải lên từ máy</b><span>PDF, Word, PowerPoint, video</span></button>
+        <button data-src="kho"><b>Kho học liệu</b><span>Đã duyệt · Kho Trường, Kho Sở</span></button>
+        <button data-src="lib"><b>Thư viện điện tử</b><span>Sách, tạp chí dạng file (PDF)</span></button>
+      </div>
+      <div id="addBody"></div>
+    </div>
+    <div class="lc-modal__foot"><span class="lc-secondary" id="addCount" style="margin-right:auto"></span><button class="lc-btn lc-btn--outline" data-lc-close>Huỷ</button><button class="lc-btn lc-btn--primary" data-act="addDocs" id="addBtn">Thêm vào bài</button></div>
+  </div>
+</div>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../lcms.js"></script>
+<script src="../lcms-demo.js"></script>
+<script>
+(function () {
+  var D = LcDemo, esc = D.esc, $ = function (id) { return document.getElementById(id); };
+  var SRC = { upload: 'Tải lên', school: 'Kho Trường', so: 'Kho Sở', lib: 'Thư viện điện tử' };
+  var THUMB = { pdf: 'PDF', doc: 'DOC', ppt: 'PPT', video: 'VIDEO', lib: 'SÁCH' };
+  var LESSONS = ['Bài 1. Giá trị lượng giác của một góc từ 0° đến 180°', 'Bài 2. Định lí côsin và định lí sin', 'Bài 3. Giải tam giác và ứng dụng thực tế'];
+  // Tài liệu đang gắn với từng bài (mô phỏng). state: shown | hidden | deleted
+  var DOCS = [
+    [{ src: 'upload', type: 'pdf', title: 'Phiếu học tập: Giá trị lượng giác', meta: '2 trang · 380 KB', state: 'shown' }],
+    [{ src: 'so', type: 'video', title: 'Video: Định lí sin trong đo đạc thực tế', meta: '04:15 · Ngô Đức Anh, THPT Demo số 3', state: 'shown' },
+     { src: 'lib', type: 'lib', title: 'Sách giáo khoa Toán 10 – Tập một', meta: 'Chương IV · Bài 2: Định lí côsin và định lí sin · Xem trực tuyến ngay trong bài', state: 'shown' },
+     { src: 'upload', type: 'doc', title: 'Bài tập về nhà: Định lí côsin', meta: '1 trang · 96 KB', state: 'hidden' }],
+    [{ src: 'school', type: 'doc', title: 'Phiếu bài tập Vectơ (tiết 1)', meta: '4 trang · Nguyễn Thị Lan', state: 'shown' }]
+  ];
+  // Kho học liệu đã duyệt: lấy bản LCMS 09 vừa lưu (nếu có), không thì dùng dữ liệu mẫu
+  // Kho học liệu đã duyệt (mô phỏng). t: ngày duyệt (yyyy-mm-dd), uses: số bài đang dùng
+  var KHO = [
+    { src: 'school', type: 'doc', mtype: 'Phiếu bài tập', title: 'Phiếu bài tập Vectơ (tiết 1)', meta: '4 trang', who: 'Nguyễn Thị Lan · THPT Demo số 1', subject: 'Toán', grade: '10', bai: 'Vectơ', level: 'Thông hiểu', t: '2026-10-29', uses: 12 },
+    { src: 'so', type: 'ppt', mtype: 'Bài trình chiếu', title: 'Bài giảng Giải tam giác và ứng dụng thực tế', meta: '24 slide', who: 'Vũ Thị Hoa · THPT Demo số 2', subject: 'Toán', grade: '10', bai: 'Hệ thức lượng trong tam giác', level: 'Vận dụng', t: '2026-10-24', uses: 86 },
+    { src: 'so', type: 'video', mtype: 'Video bài giảng', title: 'Video: Định lí sin trong đo đạc thực tế', meta: '04:15', who: 'Ngô Đức Anh · THPT Demo số 3', subject: 'Toán', grade: '10', bai: 'Hệ thức lượng trong tam giác', level: 'Vận dụng', t: '2026-10-27', uses: 141 },
+    { src: 'school', type: 'doc', mtype: 'Đề kiểm tra', title: 'Đề kiểm tra 15 phút: Hàm số bậc hai', meta: '2 trang', who: 'Hoàng Văn Nam · THPT Demo số 1', subject: 'Toán', grade: '10', bai: 'Hàm số bậc hai, đồ thị và ứng dụng', level: 'Thông hiểu', t: '2026-10-30', uses: 9 },
+    { src: 'so', type: 'pdf', mtype: 'Sơ đồ tư duy', title: 'Sơ đồ tư duy: Hệ thức lượng trong tam giác', meta: '1 trang', who: 'Lê Minh Tâm · THPT Demo số 4', subject: 'Toán', grade: '10', bai: 'Hệ thức lượng trong tam giác', level: 'Nhận biết', t: '2026-10-18', uses: 57 },
+    { src: 'school', type: 'pdf', mtype: 'Phiếu bài tập', title: 'Phiếu học tập: Định lí côsin', meta: '3 trang', who: 'Trần Văn Minh · THPT Demo số 1', subject: 'Toán', grade: '10', bai: 'Hệ thức lượng trong tam giác', level: 'Thông hiểu', t: '2026-10-31', uses: 4 },
+    { src: 'so', type: 'video', mtype: 'Video bài giảng', title: 'Video: Mệnh đề và tập hợp', meta: '06:40', who: 'Phan Thị Mai · THPT Demo số 2', subject: 'Toán', grade: '10', bai: 'Mệnh đề toán học', level: 'Nhận biết', t: '2026-09-20', uses: 203 },
+    { src: 'so', type: 'ppt', mtype: 'Bài trình chiếu', title: 'Bài giảng Giá trị lượng giác của góc lượng giác', meta: '30 slide', who: 'Đào Quang Huy · THPT Demo số 5', subject: 'Toán', grade: '11', bai: 'Giá trị lượng giác của góc lượng giác', level: 'Thông hiểu', t: '2026-10-10', uses: 64 },
+    { src: 'so', type: 'pdf', mtype: 'Phiếu bài tập', title: 'Phiếu bài tập: Chuyển động thẳng biến đổi đều', meta: '5 trang', who: 'Bùi Thị Hằng · THPT Demo số 3', subject: 'Vật lí', grade: '10', bai: 'Chuyển động thẳng biến đổi đều', level: 'Vận dụng', t: '2026-10-22', uses: 38 }
+  ];
+  try {
+    var raw = JSON.parse(localStorage.getItem('bn-shared-materials'));
+    if (raw && raw.items && raw.items.length) {
+      // Bản LCMS 09 vừa lưu thay cho phần Toán 10 của dữ liệu mẫu; giữ các môn/lớp khác để bộ lọc có dữ liệu
+      KHO = raw.items.filter(function (it) { return it.kind === 'material'; }).map(function (it, n) {
+        var old = KHO.filter(function (k) { return k.title === it.title; })[0] || {};
+        return { src: it.src, type: it.type, mtype: it.mtype, title: it.title, meta: it.meta || '', who: it.owner + ' · ' + it.school, subject: it.subject, grade: it.grade, bai: it.bai, level: it.level || old.level || '', t: old.t || '2026-11-01', uses: old.uses || 0 };
+      }).concat(KHO.filter(function (k) { return !(k.subject === 'Toán' && k.grade === '10'); }));
+    }
+  } catch (e) {}
+  var BOOKS = [
+    { id: 'b1', type: 'sgk', subject: 'Toán', grade: '10', title: 'Sách giáo khoa Toán 10 – Tập một', sub: 'Sách giáo khoa · PDF · 132 trang', color: '#1579ad', chapters: ['Chương IV · Bài 1: Giá trị lượng giác của một góc', 'Chương IV · Bài 2: Định lí côsin và định lí sin', 'Chương IV · Bài 3: Giải tam giác'] },
+    { id: 'b2', type: 'tk', subject: 'Toán', grade: '10', title: 'Bài tập Hình học 10 nâng cao', sub: 'Sách tham khảo · 210 trang', color: '#2f9e44', chapters: ['Phần 1: Vectơ', 'Phần 2: Hệ thức lượng'] },
+    { id: 'b3', type: 'tk', subject: 'Toán', grade: '', title: 'Toán học và đời sống: Đo đạc', sub: 'Sách tham khảo · 96 trang', color: '#d46b08', chapters: ['Đo chiều cao', 'Đo khoảng cách'] },
+    { id: 'b4', type: 'tc', subject: 'Toán', grade: '', title: 'Tạp chí Toán tuổi trẻ số 10/2026', sub: 'Tạp chí · 48 trang', color: '#722ed1', chapters: ['Toàn bộ số tạp chí'] },
+    { id: 'b5', type: 'tk', subject: 'Toán', grade: '', title: 'Sổ tay công thức Toán THPT', sub: 'Sách tham khảo · 64 trang', color: '#c41d7f', chapters: ['Lượng giác', 'Hình học phẳng'] },
+    { id: 'b6', type: 'sgk', subject: 'Toán', grade: '11', title: 'Sách giáo khoa Toán 11 – Tập một', sub: 'Sách giáo khoa · PDF · 140 trang', color: '#0958d9', chapters: ['Chương I: Hàm số lượng giác'] },
+    { id: 'b7', type: 'sgk', subject: 'Vật lí', grade: '10', title: 'Sách giáo khoa Vật lí 10', sub: 'Sách giáo khoa · PDF · 156 trang', color: '#531dab', chapters: ['Chương II: Động học'] }
+  ];
+  var BOOK_TYPES = [['', 'Tất cả'], ['sgk', 'Sách giáo khoa'], ['tk', 'Sách tham khảo'], ['tc', 'Tạp chí']];
+  // Khoá học đang soạn: Toán 10, mọi bài của Chương IV thuộc bài khung "Hệ thức lượng trong tam giác"
+  var COURSE = { subject: 'Toán', grade: '10', bai: 'Hệ thức lượng trong tam giác' };
+  function uniq(list, key) { return list.map(function (x) { return x[key]; }).filter(function (v, i, a) { return v && a.indexOf(v) === i; }).sort(); }
+  function opts(values, cur, all) { return '<option value="">' + all + '</option>' + values.map(function (v) { return '<option' + (v === cur ? ' selected' : '') + '>' + esc(v) + '</option>'; }).join(''); }
+  function fmtDate(t) { var p = t.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+
+  var lesson = 0, pane = 'content', add = null;
+  function docs(st) { return DOCS[lesson].filter(function (d) { return d.state === st; }); }
+  function srcTag(src) { return '<span class="src src--' + src + '">' + SRC[src] + '</span>'; }
+  function thumb(type) { return '<span class="lc-thumb lc-thumb--' + type + '">' + (THUMB[type] || 'FILE') + '</span>'; }
+
+  function renderTabs() {
+    var n = { docs: docs('shown').length, hidden: docs('hidden').length, deleted: docs('deleted').length };
+    var label = { content: 'Nội dung', docs: 'Tài liệu (' + n.docs + ')', hidden: 'Tài liệu đã ẩn (' + n.hidden + ')', deleted: 'Tài liệu đã xoá (' + n.deleted + ')', sync: 'Đồng bộ' };
+    document.querySelectorAll('#tabs [data-pane]').forEach(function (a) { a.textContent = label[a.dataset.pane]; a.classList.toggle('is-active', a.dataset.pane === pane); });
+  }
+  function renderDocs() {
+    var shownPane = pane === 'docs' || pane === 'hidden' || pane === 'deleted';
+    $('paneContent').hidden = pane !== 'content'; $('paneDocs').hidden = !shownPane && pane !== 'sync';
+    if (pane === 'sync') { $('paneDocs').innerHTML = '<div class="lc-callout" style="margin-top:24px">Bản mẫu: đồng bộ nội dung bài với lớp học trên LMS.</div>'; return; }
+    if (!shownPane) return;
+    var st = pane === 'docs' ? 'shown' : pane, list = docs(st);
+    var head = '<div class="docs-head"><h3>' + (pane === 'docs' ? 'Tài liệu học sinh thấy trong bài' : pane === 'hidden' ? 'Tài liệu đã ẩn với học sinh' : 'Tài liệu đã xoá khỏi bài') + '<br><small class="lc-secondary" style="font-weight:400">' + esc(LESSONS[lesson]) + '</small></h3>' +
+      (pane === 'docs' ? '<a class="lc-btn lc-btn--text lc-btn--sm" href="../../design-system/templates/03-detail-two-column.html?mon=To%C3%A1n%2010" target="_blank" rel="noopener">Xem như học sinh ↗</a><button class="lc-btn lc-btn--primary lc-btn--sm" data-act="openAdd">+ Thêm tài liệu</button>' : '') + '</div>';
+    var rows = list.map(function (d) {
+      var i = DOCS[lesson].indexOf(d), act;
+      if (st === 'shown') act = '<button class="lc-btn lc-btn--text lc-btn--sm" data-doc="' + i + '" data-to="hidden">Ẩn</button><button class="lc-btn lc-btn--text lc-btn--sm" style="color:var(--lc-danger)" data-doc="' + i + '" data-to="deleted">Xoá</button>';
+      else act = '<button class="lc-btn lc-btn--outline lc-btn--sm" data-doc="' + i + '" data-to="shown">' + (st === 'hidden' ? 'Hiện lại' : 'Khôi phục') + '</button>';
+      return '<div class="doc' + (d.isNew ? ' is-new' : '') + '">' + thumb(d.type) + '<div class="t"><b>' + esc(d.title) + '</b><small>' + esc(d.meta) + '</small></div>' + srcTag(d.src) + act + '</div>';
+    }).join('');
+    $('paneDocs').innerHTML = head + '<div class="docs">' + (rows || '<div class="docs-empty">' + (st === 'shown' ? 'Bài chưa có tài liệu. Bấm “+ Thêm tài liệu” để tải lên hoặc lấy từ kho học liệu, Thư viện điện tử.' : 'Không có tài liệu.') + '</div>') + '</div>' +
+      (st === 'shown' ? '<div class="lc-callout" style="margin-top:14px">Tài liệu lấy từ kho học liệu và Thư viện điện tử được <b>liên kết, không sao chép</b>: kho cập nhật thì bài tự cập nhật; sách vẫn do Thư viện quản lý bản quyền. Giáo viên mở Thư viện bằng xác thực tự động, không đăng nhập lại.</div>' : '');
+  }
+  function render() { renderTabs(); renderDocs(); D.icons(); }
+
+  /* ---------- Modal thêm tài liệu ---------- */
+  function has(title) { return DOCS[lesson].some(function (d) { return d.title === title && d.state !== 'deleted'; }); }
+  function khoFilter() { return { subject: COURSE.subject, grade: COURSE.grade, bai: '', mtype: '', type: '', level: '', sort: 'new' }; }
+  function openAdd() { add = { src: 'upload', files: [], kho: {}, q: '', fSchool: true, fSo: true, f: khoFilter(), bq: '', bf: { type: '', subject: COURSE.subject, grade: COURSE.grade }, book: null, chap: 0, view: 'embed' }; $('mAdd').hidden = false; renderAdd(); }
+  function selected() {
+    if (add.src === 'upload') return add.files.length;
+    if (add.src === 'kho') return Object.keys(add.kho).filter(function (k) { return add.kho[k]; }).length;
+    return add.book ? 1 : 0;
+  }
+  // Sách hợp bộ lọc; sách không gắn lớp (dùng chung) luôn hiện khi lọc theo lớp
+  function bookList() {
+    var q = add.bq.toLowerCase(), f = add.bf;
+    return BOOKS.filter(function (b) { return (!f.type || b.type === f.type) && (!f.subject || b.subject === f.subject) && (!f.grade || !b.grade || b.grade === f.grade) && (!q || (b.title + ' ' + b.sub).toLowerCase().indexOf(q) >= 0); });
+  }
+  function renderAdd() {
+    document.querySelectorAll('#addSrc button').forEach(function (b) { b.classList.toggle('is-on', b.dataset.src === add.src); });
+    var html;
+    if (add.src === 'upload') {
+      html = '<label class="drop"><input type="file" id="file" multiple hidden accept=".pdf,.doc,.docx,.ppt,.pptx,.mp4"><b style="color:var(--lc-primary)">Chọn tệp</b><span>hoặc kéo thả vào đây · PDF, Word, PowerPoint, MP4 · tối đa 200 MB</span></label>' +
+        (add.files.length ? '<div class="pick">' + add.files.map(function (f) { return '<label class="is-added">' + thumb(f.type) + '<div class="t"><b>' + esc(f.title) + '</b><small>' + esc(f.meta) + '</small></div></label>'; }).join('') + '</div>' : '') +
+        '<p class="lc-caption" style="margin-top:10px">Tài liệu tải lên chỉ dùng trong bài này. Muốn dùng chung cho cả trường, gửi duyệt ở <a href="09-content-approval.html">Học liệu & duyệt kho</a>.</p>';
+    } else if (add.src === 'kho') {
+      var q = add.q.toLowerCase(), f = add.f;
+      var scope = KHO.filter(function (k) { return (!f.subject || k.subject === f.subject) && (!f.grade || k.grade === f.grade); });
+      var list = scope.filter(function (k) {
+        return (k.src === 'so' ? add.fSo : add.fSchool) && (!f.bai || k.bai === f.bai) && (!f.mtype || k.mtype === f.mtype) && (!f.type || k.type === f.type) && (!f.level || k.level === f.level) &&
+          (!q || (k.title + ' ' + k.bai + ' ' + k.who).toLowerCase().indexOf(q) >= 0);
+      }).sort(function (a, b) { return f.sort === 'uses' ? b.uses - a.uses : f.sort === 'name' ? a.title.localeCompare(b.title, 'vi') : b.t.localeCompare(a.t); });
+      var TYPE_NAMES = { pdf: 'PDF', doc: 'Word', ppt: 'PowerPoint', video: 'Video' };
+      html = '<div class="filters"><div class="lc-search--round" style="flex:1;min-width:220px"><input id="kq" value="' + esc(add.q) + '" placeholder="Tìm theo tên, bài học, người soạn…" aria-label="Tìm trong kho"></div>' +
+        '<label class="lc-check"><input type="checkbox" id="fSchool"' + (add.fSchool ? ' checked' : '') + '>Kho Trường</label><label class="lc-check"><input type="checkbox" id="fSo"' + (add.fSo ? ' checked' : '') + '>Kho Sở</label></div>' +
+        '<div class="fgrid">' +
+          '<select class="lc-select lc-select--sm" data-f="subject" aria-label="Môn">' + opts(uniq(KHO, 'subject'), f.subject, 'Tất cả môn') + '</select>' +
+          '<select class="lc-select lc-select--sm" data-f="grade" aria-label="Lớp">' + opts(uniq(KHO, 'grade'), f.grade, 'Tất cả lớp').replace(/<option>(\d+)</g, '<option value="$1">Lớp $1<').replace(/<option selected>(\d+)</g, '<option value="$1" selected>Lớp $1<') + '</select>' +
+          '<select class="lc-select lc-select--sm" data-f="bai" aria-label="Bài học">' + opts(uniq(scope, 'bai'), f.bai, 'Tất cả bài học') + '</select>' +
+          '<select class="lc-select lc-select--sm" data-f="mtype" aria-label="Loại học liệu">' + opts(uniq(KHO, 'mtype'), f.mtype, 'Mọi loại học liệu') + '</select>' +
+          '<select class="lc-select lc-select--sm" data-f="type" aria-label="Định dạng"><option value="">Mọi định dạng</option>' + uniq(KHO, 'type').map(function (t) { return '<option value="' + t + '"' + (t === f.type ? ' selected' : '') + '>' + (TYPE_NAMES[t] || t) + '</option>'; }).join('') + '</select>' +
+          '<select class="lc-select lc-select--sm" data-f="level" aria-label="Mức độ">' + opts(['Nhận biết', 'Thông hiểu', 'Vận dụng'], f.level, 'Mọi mức độ') + '</select>' +
+        '</div>' +
+        '<div class="filters" style="margin-top:10px"><button class="chipbtn' + (f.bai === COURSE.bai && f.subject === COURSE.subject && f.grade === COURSE.grade ? ' is-on' : '') + '" data-act="fLesson">Đúng bài đang soạn</button>' +
+          '<span class="lc-secondary" style="font-size:13px">' + list.length + ' học liệu</span><button class="lc-btn lc-btn--text lc-btn--sm" data-act="fClear">Xoá lọc</button>' +
+          '<label class="lc-secondary" style="margin-left:auto;font-size:13px;display:flex;align-items:center;gap:6px">Sắp xếp<select class="lc-select lc-select--sm" data-f="sort" style="width:150px"><option value="new"' + (f.sort === 'new' ? ' selected' : '') + '>Mới duyệt nhất</option><option value="uses"' + (f.sort === 'uses' ? ' selected' : '') + '>Dùng nhiều nhất</option><option value="name"' + (f.sort === 'name' ? ' selected' : '') + '>Tên A–Z</option></select></label></div>' +
+        '<div class="pick">' + (list.map(function (k) {
+          var i = KHO.indexOf(k), done = has(k.title);
+          return '<label class="' + (done ? 'is-added' : '') + '"><input type="checkbox" data-kho="' + i + '"' + (add.kho[i] || done ? ' checked' : '') + (done ? ' disabled' : '') + '>' + thumb(k.type) +
+            '<div class="t"><b>' + esc(k.title) + '</b><small>' + esc(k.mtype + (k.meta ? ' · ' + k.meta : '') + ' · ' + k.subject + ' ' + k.grade + ' · ' + k.bai + (k.level ? ' · ' + k.level : '')) + '</small>' +
+            '<small>' + esc(k.who) + ' · duyệt ' + fmtDate(k.t) + ' · ' + k.uses + ' bài đang dùng' + (done ? ' · Đã có trong bài' : '') + '</small></div>' + srcTag(k.src) + '</label>';
+        }).join('') || '<p class="lc-secondary">Không có học liệu phù hợp bộ lọc.</p>') + '</div>' +
+        '<p class="lc-caption" style="margin-top:10px">Chỉ hiện học liệu đã duyệt. Nguồn: <a href="09-content-approval.html">Kho dùng chung</a>.</p>';
+    } else {
+      html = '<div class="lc-callout" style="margin-bottom:4px">Đã kết nối Thư viện điện tử Bắc Ninh bằng tài khoản <b>Nguyễn Thị Lan</b> (xác thực tự động, không đăng nhập lại).</div>' +
+        '<div class="filters" style="margin-top:12px"><div class="lc-search--round" style="flex:1;min-width:200px"><input id="bq" value="' + esc(add.bq) + '" placeholder="Tìm tên sách, tạp chí…" aria-label="Tìm sách"></div>' +
+          '<select class="lc-select lc-select--sm" data-bf="subject" style="width:140px" aria-label="Môn">' + opts(uniq(BOOKS, 'subject'), add.bf.subject, 'Tất cả môn') + '</select>' +
+          '<select class="lc-select lc-select--sm" data-bf="grade" style="width:130px" aria-label="Lớp"><option value="">Tất cả lớp</option>' + uniq(BOOKS, 'grade').map(function (g) { return '<option value="' + g + '"' + (g === add.bf.grade ? ' selected' : '') + '>Lớp ' + g + '</option>'; }).join('') + '</select></div>' +
+        '<div class="filters" style="margin-top:10px">' + BOOK_TYPES.map(function (t) { return '<button class="chipbtn' + (add.bf.type === t[0] ? ' is-on' : '') + '" data-btype="' + t[0] + '">' + t[1] + '</button>'; }).join('') + '</div>' +
+        '<div class="books">' + (bookList().map(function (b) { return '<div class="book' + (add.book === b ? ' is-sel' : '') + '" data-book="' + b.id + '" role="button" tabindex="0"><div class="cover" style="background:linear-gradient(160deg,' + b.color + ',' + b.color + 'cc)"><small>THƯ VIỆN ĐIỆN TỬ</small><b>' + esc(b.title) + '</b></div><h4>' + esc(b.title) + '</h4><small class="lc-secondary">' + esc(b.sub) + '</small></div>'; }).join('') || '<p class="lc-secondary">Không có sách phù hợp bộ lọc.</p>') + '</div>' +
+        (add.book ? '<div class="lc-form lc-grid-2" style="gap:12px 20px;margin-top:14px"><div class="lc-field"><label class="lc-label" for="fChap">Phạm vi gắn</label><select class="lc-select" id="fChap">' + add.book.chapters.map(function (c, i) { return '<option value="' + i + '"' + (i === add.chap ? ' selected' : '') + '>' + esc(c) + '</option>'; }).join('') + '<option value="-1"' + (add.chap === -1 ? ' selected' : '') + '>Cả cuốn sách</option></select></div>' +
+          '<div class="lc-field"><span class="lc-label">Chế độ xem của học sinh</span><label class="lc-radio"><input type="radio" name="view" value="embed"' + (add.view === 'embed' ? ' checked' : '') + '> Xem trực tuyến ngay trong bài</label><label class="lc-radio"><input type="radio" name="view" value="open"' + (add.view === 'open' ? ' checked' : '') + '> Mở trong Thư viện</label></div></div>' : '');
+    }
+    $('addBody').innerHTML = html;
+    var n = selected();
+    $('addCount').textContent = n ? 'Đã chọn ' + n : '';
+    $('addBtn').disabled = !n;
+    var kq = $('kq'); if (kq) kq.oninput = function () { add.q = this.value; var pos = this.selectionStart; renderAdd(); var k = $('kq'); k.focus(); k.setSelectionRange(pos, pos); };
+    var bq = $('bq'); if (bq) bq.oninput = function () { add.bq = this.value; var pos = this.selectionStart; renderAdd(); var k = $('bq'); k.focus(); k.setSelectionRange(pos, pos); };
+    D.icons();
+  }
+  function addDocs() {
+    var items = [];
+    if (add.src === 'upload') items = add.files.map(function (f) { return { src: 'upload', type: f.type, title: f.title, meta: f.meta }; });
+    else if (add.src === 'kho') items = KHO.filter(function (k, i) { return add.kho[i]; }).map(function (k) { return { src: k.src, type: k.type, title: k.title, meta: k.meta + ' · ' + k.who }; });
+    else items = [{ src: 'lib', type: 'lib', title: add.book.title, meta: (add.chap === -1 ? 'Cả cuốn sách' : add.book.chapters[add.chap]) + ' · ' + (add.view === 'embed' ? 'Xem trực tuyến ngay trong bài' : 'Mở trong Thư viện') }];
+    DOCS[lesson].forEach(function (d) { d.isNew = false; });
+    items.forEach(function (it) { it.state = 'shown'; it.isNew = true; DOCS[lesson].push(it); });
+    $('mAdd').hidden = true; pane = 'docs'; render();
+    D.toast('Đã thêm ' + items.length + ' tài liệu vào ' + LESSONS[lesson].split('.')[0]);
+  }
+  function fileType(name) { var e = name.split('.').pop().toLowerCase(); return e === 'pdf' ? 'pdf' : /^pptx?$/.test(e) ? 'ppt' : e === 'mp4' ? 'video' : 'doc'; }
+
+  document.addEventListener('click', function (e) {
+    var el;
+    if ((el = e.target.closest('#tabs [data-pane]'))) { e.preventDefault(); pane = el.dataset.pane; return render(); }
+    if ((el = e.target.closest('.editor-tree .lc-lesson'))) {
+      var all = [].slice.call(document.querySelectorAll('.editor-tree .lc-lessons > .lc-lesson')); lesson = Math.max(0, all.indexOf(el));
+      all.forEach(function (x) { x.classList.toggle('is-active', x === el); }); return render();
+    }
+    if ((el = e.target.closest('[data-doc]'))) { var d = DOCS[lesson][+el.dataset.doc]; d.state = el.dataset.to; d.isNew = false; D.toast(el.dataset.to === 'hidden' ? 'Đã ẩn với học sinh' : el.dataset.to === 'deleted' ? 'Đã xoá khỏi bài' : 'Đã hiện lại trong bài'); return render(); }
+    if ((el = e.target.closest('#addSrc [data-src]'))) { add.src = el.dataset.src; return renderAdd(); }
+    if ((el = e.target.closest('[data-btype]'))) { add.bf.type = el.dataset.btype; return renderAdd(); }
+    if ((el = e.target.closest('[data-act="fLesson"]'))) { add.f.subject = COURSE.subject; add.f.grade = COURSE.grade; add.f.bai = add.f.bai === COURSE.bai ? '' : COURSE.bai; return renderAdd(); }
+    if ((el = e.target.closest('[data-act="fClear"]'))) { add.f = { subject: '', grade: '', bai: '', mtype: '', type: '', level: '', sort: add.f.sort }; add.q = ''; add.fSchool = add.fSo = true; return renderAdd(); }
+    if ((el = e.target.closest('[data-book]'))) { add.book = BOOKS.filter(function (b) { return b.id === el.dataset.book; })[0]; add.chap = Math.min(lesson, add.book.chapters.length - 1); return renderAdd(); }
+    if ((el = e.target.closest('[data-act]'))) {
+      if (el.dataset.act === 'openAdd') openAdd();
+      if (el.dataset.act === 'addDocs' && !el.disabled) addDocs();
+    }
+  });
+  document.addEventListener('change', function (e) {
+    var t = e.target;
+    if (t.id === 'file') { add.files = [].slice.call(t.files).map(function (f) { return { title: f.name.replace(/\.[^.]+$/, ''), type: fileType(f.name), meta: (f.size / 1024 / 1024).toFixed(1).replace('.', ',') + ' MB' }; }); return renderAdd(); }
+    if (t.dataset.kho != null) { add.kho[t.dataset.kho] = t.checked; return renderAdd(); }
+    if (t.id === 'fSchool' || t.id === 'fSo') { add[t.id] = t.checked; return renderAdd(); }
+    if (t.dataset.f) { add.f[t.dataset.f] = t.value; if (t.dataset.f === 'subject' || t.dataset.f === 'grade') add.f.bai = ''; return renderAdd(); }
+    if (t.dataset.bf) { add.bf[t.dataset.bf] = t.value; return renderAdd(); }
+    if (t.id === 'fChap') { add.chap = +t.value; return; }
+    if (t.name === 'view') add.view = t.value;
+  });
+  render();
+})();
+</script>
+</body>
+</html>

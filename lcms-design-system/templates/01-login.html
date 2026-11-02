@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LCMS · Đăng nhập</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../lcms.css">
+</head>
+<body>
+<div class="lc-auth-top"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"><span>HỆ THỐNG QUẢN LÝ NỘI DUNG</span></div>
+
+<main style="padding:48px 16px">
+  <div style="text-align:center;margin-bottom:36px">
+    <h1 style="font-size:24px;font-weight:700;color:#1f1f1f">CHÀO MỪNG BẠN ĐẾN VỚI</h1>
+    <p style="font-size:22px;color:#1f1f1f;margin-top:6px">Hệ thống quản lý nội dung</p>
+  </div>
+
+  <form class="lc-auth-card" id="loginForm">
+    <h2 style="text-align:center;font-size:22px;font-weight:600;color:#1f1f1f;margin-bottom:28px">Đăng nhập</h2>
+    <div class="lc-stack" style="max-width:364px;margin:0 auto;gap:24px">
+      <label class="lc-auth-input">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg>
+        <input placeholder="Tài khoản đăng nhập" autocomplete="username">
+      </label>
+      <label class="lc-auth-input">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V11a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5Zm-3 8V6a3 3 0 1 1 6 0v3H9Zm3 4a2 2 0 0 1 1 3.7V19h-2v-2.3A2 2 0 0 1 12 13Z"/></svg>
+        <input type="password" placeholder="Mật khẩu" autocomplete="current-password" id="pw">
+        <button type="button" class="lc-icon-btn lc-icon-btn--ghost" aria-label="Hiện mật khẩu" onclick="var i=document.getElementById('pw');i.type=i.type==='password'?'text':'password'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#777" stroke-width="2" width="20" height="20"><path d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.1A10 10 0 0 1 12 5c5 0 9 5 10 7a14 14 0 0 1-3.2 4M6.6 6.6C4.4 8 2.8 10.2 2 12c1 2 5 7 10 7a9.8 9.8 0 0 0 5.4-1.6"/></svg>
+        </button>
+      </label>
+      <label class="lc-role-switch" style="align-self:center" title="Chỉ có trong bản mẫu: thực tế vai trò lấy theo tài khoản"><span>Vai trò (bản mẫu)</span>
+        <select id="role"><option value="gv">Giáo viên bộ môn</option><option value="gvcn">Giáo viên chủ nhiệm</option><option value="tt">Tổ trưởng chuyên môn</option><option value="ht">Hiệu trưởng</option><option value="ct">Cán bộ coi thi</option><option value="so">Chuyên viên Sở (quản trị khung)</option></select>
+      </label>
+      <button class="lc-btn lc-btn--ant lc-btn--block">Đăng nhập</button>
+      <a href="../../index.html" style="text-align:center;color:var(--lc-text-secondary)">← Về cổng chọn hệ thống</a>
+    </div>
+  </form>
+</main>
+<script src="../lcms.js"></script>
+<script>
+(function () {
+  // Màn mở đầu theo vai trò; vai trò lưu chung cho menu của mọi màn LCMS (lcms-demo.js)
+  var HOME = { gv: '02-list-grid-table.html', gvcn: '15-homeroom.html', tt: '09-content-approval.html', ht: '09-content-approval.html', ct: '13-exam-proctoring.html', so: '11-curriculum.html' };
+  var sel = document.getElementById('role'), q = new URLSearchParams(location.search).get('role');
+  if (HOME[q]) sel.value = q;
+  document.getElementById('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    try { localStorage.setItem('bn-lcms-role', sel.value); } catch (err) {}
+    location.href = HOME[sel.value];
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Góc học tập</title>
+<link rel="stylesheet" href="../tvet.css">
+<style>
+  .home-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .home-row .tv-panel { border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .box-title { display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--tv-heading); }
+  .box-title svg { width: 18px; height: 18px; color: var(--tv-primary); }
+  .box-title a { margin-left: auto; font-size: 13px; font-weight: 600; }
+  .due a { display: flex; gap: 10px; align-items: flex-start; padding: 7px 0; border-top: 1px dashed var(--tv-border); color: inherit; font-size: 14px; }
+  .due a:first-child { border-top: 0; }
+  .due svg { width: 16px; height: 16px; flex: none; margin-top: 3px; color: var(--tv-primary); }
+  .due b { display: block; font-weight: 600; color: var(--tv-heading); line-height: 1.4; }
+  .due small { font-size: 12px; color: var(--tv-text-muted); }
+  .due small.hot { color: var(--tv-danger); font-weight: 600; }
+  .subj { display: flex; flex-direction: column; gap: 10px; padding: 16px; border-radius: var(--tv-r-lg); background: var(--tv-surface); box-shadow: var(--tv-sh-card); border: 2px solid transparent; color: inherit; }
+  .subj:hover { border-color: var(--tv-primary-soft); }
+  .subj__top { display: flex; align-items: center; gap: 12px; }
+  .subj__ic { width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center; color: #fff; flex: none; }
+  .subj__ic svg { width: 24px; height: 24px; }
+  .subj__top b { display: block; font-size: 16px; color: var(--tv-heading); }
+  .subj__top span { font-size: 13px; color: var(--tv-text-muted); }
+  .subj .bar { height: 6px; border-radius: 3px; background: var(--tv-track); overflow: hidden; }
+  .subj .bar span { display: block; height: 100%; background: var(--tv-primary); }
+  .subj__foot { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--tv-text-muted); }
+  @media (max-width: 700px) { .home-row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header class="tv-header">
+  <div class="tv-container tv-header__inner">
+    <a class="tv-logo" href="01-landing.html"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></a>
+    <div class="tv-input tv-input--search" style="width:220px"><i data-lucide="search"></i><input placeholder="Tìm bài học, môn học..." aria-label="Tìm bài học, môn học"></div>
+    <nav class="tv-nav"><a class="is-active" href="#">Học tập</a><a href="12-my-tasks.html">Bài tập</a><a href="15-shared-materials.html">Học liệu</a><a href="14-elibrary.html?from=lms">Thư viện</a></nav>
+    <div class="tv-header__actions" style="position:relative">
+      <button class="tv-icon-btn" data-tv-theme-toggle></button>
+      <span class="tv-icon-btn tv-icon-btn--warn"><i data-lucide="bell"></i></span>
+      <img class="tv-avatar" src="../assets/default-avatar.jpg" alt="" data-tv-menu="userMenu" style="cursor:pointer">
+      <div class="tv-menu" id="userMenu" data-tv-menu-panel hidden style="position:absolute;right:0;top:48px;z-index:60">
+        <div class="tv-menu__head"><img class="tv-avatar" src="../assets/default-avatar.jpg" alt=""><div><b>Nguyễn Minh Anh</b><span>Lớp 10A1 · THPT Demo số 1</span></div></div>
+        <a href="07-form-modal.html"><i data-lucide="circle-user-round"></i>Thông tin tài khoản</a>
+        <a href="#mon-hoc"><i data-lucide="book-open"></i>Môn học của tôi</a>
+        <a href="04-dashboard-report.html"><i data-lucide="chart-column"></i>Kết quả học tập</a>
+        <a href="01-landing.html"><i data-lucide="log-out"></i>Đăng xuất</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="tv-container" style="padding-top:24px;padding-bottom:48px">
+      <h1 class="tv-h2">Chào buổi sáng, Minh Anh</h1>
+      <p class="tv-small tv-muted" style="margin:2px 0 20px">Lớp 10A1 · THPT Demo số 1 · Năm học 2026–2027 · Học kì I · Thứ Tư, 04/11</p>
+
+      <div class="home-row">
+        <!-- Bài tập sắp đến hạn -->
+        <div class="tv-panel">
+          <div class="box-title"><i data-lucide="clipboard-list"></i>Sắp đến hạn<a href="12-my-tasks.html">Tất cả</a></div>
+          <div class="due">
+            <a href="12-my-tasks.html"><i data-lucide="clipboard-check"></i><div><b>Kiểm tra 15 phút Unit 1 · Tiếng Anh</b><small class="hot">Mở lúc 09:00 05/11</small></div></a>
+            <a href="12-my-tasks.html"><i data-lucide="file-text"></i><div><b>Phiếu bài tập: Giải tam giác · Toán</b><small>Hạn 22:00 06/11</small></div></a>
+            <a href="12-my-tasks.html"><i data-lucide="book-open"></i><div><b>Reading: Family life · Tiếng Anh</b><small>Hạn 22:00 08/11</small></div></a>
+          </div>
+        </div>
+
+        <!-- Lối vào Thư viện điện tử: qua màn giả lập xác thực tự động -->
+        <div class="tv-panel" style="background:var(--tv-primary-soft)">
+          <div class="tv-row" style="gap:12px"><span class="tv-feature__icon" style="background:var(--tv-surface)"><i data-lucide="library"></i></span><div><div style="color:var(--tv-primary);font-weight:600">Thư viện điện tử Bắc Ninh</div><div class="tv-small tv-muted">Sách giáo khoa, sách tham khảo, tạp chí · không cần đăng nhập lại</div></div></div>
+          <div style="margin-top:auto;text-align:right"><a class="tv-btn tv-btn--primary tv-btn--lg" href="14-elibrary.html?from=lms"><i data-lucide="book-open"></i> Mở Thư viện điện tử</a></div>
+        </div>
+      </div>
+
+      <h2 class="tv-h2" id="mon-hoc" style="margin:32px 0 16px">Môn học của tôi <span class="tv-small tv-muted" style="font-weight:400">(10 môn · lớp 10A1)</span></h2>
+      <div class="tv-grid tv-grid-4" id="subjects"></div>
+</main>
+
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script>
+(function () {
+  // [môn, giáo viên, icon, màu, đã học, tổng số bài, bài mới, link]
+  var SUBJECTS = [
+    ['Toán 10', 'Cô Nguyễn Thị Lan', 'sigma', '#1579ad', 12, 30, 2, '03-detail-two-column.html'],
+    ['Ngữ văn 10', 'Cô Trần Thu Hương', 'feather', '#cf1322', 9, 28, 1, '03-detail-two-column.html'],
+    ['Tiếng Anh 10', 'Thầy Lê Quang Huy', 'languages', '#08979c', 14, 32, 3, '03-detail-two-column.html'],
+    ['Vật lí 10', 'Thầy Phạm Văn Đức', 'atom', '#722ed1', 8, 24, 0, '03-detail-two-column.html'],
+    ['Hoá học 10', 'Cô Hoàng Mai Anh', 'flask-conical', '#d46b08', 7, 24, 1, '03-detail-two-column.html'],
+    ['Sinh học 10', 'Cô Vũ Thị Ngọc', 'leaf', '#2f9e44', 6, 22, 0, '03-detail-two-column.html'],
+    ['Lịch sử 10', 'Thầy Đỗ Minh Tuấn', 'landmark', '#ad6800', 5, 20, 0, '03-detail-two-column.html'],
+    ['Địa lí 10', 'Cô Bùi Thanh Hà', 'globe', '#0958d9', 6, 20, 1, '03-detail-two-column.html'],
+    ['Tin học 10', 'Thầy Ngô Đức Long', 'monitor', '#531dab', 10, 26, 0, '03-detail-two-column.html'],
+    ['GD Kinh tế và Pháp luật 10', 'Cô Đinh Thu Trang', 'scale', '#c41d7f', 4, 18, 0, '03-detail-two-column.html']
+  ];
+  document.getElementById('subjects').innerHTML = SUBJECTS.map(function (s) {
+    return '<a class="subj" href="' + s[7] + (s[0] === 'Tiếng Anh 10' ? '' : '?mon=' + encodeURIComponent(s[0])) + '"><div class="subj__top"><span class="subj__ic" style="background:' + s[3] + '"><i data-lucide="' + s[2] + '"></i></span><div><b>' + s[0] + '</b><span>' + s[1] + '</span></div></div>' +
+      '<div class="bar"><span style="width:' + Math.round(s[4] / s[5] * 100) + '%"></span></div>' +
+      '<div class="subj__foot"><span>Đã học ' + s[4] + '/' + s[5] + ' bài</span>' + (s[6] ? '<span class="tv-chip tv-chip--info">' + s[6] + ' bài mới</span>' : '') + '</div></a>';
+  }).join('');
+})();
+</script>
+<script src="../tvet.js"></script>
+</body>
+</html>

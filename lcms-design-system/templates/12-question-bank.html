@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LCMS · Ngân hàng câu hỏi</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../lcms.css">
+<style>
+  .bar-top { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin-bottom: 16px; }
+  .bar-top .lc-search--round { width: 260px; }
+  .banks { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .bank { padding: 18px; cursor: pointer; display: flex; flex-direction: column; gap: 10px; border: 1.5px solid transparent; }
+  .bank:hover { border-color: var(--lc-primary-soft); }
+  .bank h3 { margin: 0; font-size: 16px; font-weight: 600; color: var(--lc-text-strong); line-height: 1.4; }
+  .bank .meta { font-size: 13px; color: var(--lc-text-secondary); }
+  .bank .nums { display: flex; flex-wrap: wrap; gap: 6px; }
+  .bank .nums span { padding: 2px 8px; border-radius: 10px; background: var(--lc-bg-soft); font-size: 12px; color: var(--lc-text-tertiary); }
+  .bank .foot { display: flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 8px; border-top: 1px solid var(--lc-divider); font-size: 12px; color: var(--lc-text-secondary); }
+  .scope { display: inline-block; padding: 2px 10px; border-radius: 11px; font-size: 12px; font-weight: 600; }
+  .scope--me { background: var(--lc-neutral-bg); color: var(--lc-neutral); }
+  .scope--to { background: var(--lc-info-bg); color: var(--lc-info); }
+  .scope--so { background: var(--lc-success-2-bg); color: var(--lc-success-2); }
+  .perm { margin-left: auto; font-weight: 600; }
+  .crumb { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 14px; }
+  .crumb button { border: 0; background: none; padding: 0; font: inherit; color: var(--lc-link); cursor: pointer; }
+  .bank-head { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 18px 20px; margin-bottom: 16px; }
+  .bank-head h2 { margin: 0; font-size: 20px; font-weight: 600; color: var(--lc-text-strong); flex: 1; min-width: 240px; }
+  .filters { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .filters .lc-select { width: auto; min-width: 140px; }
+  .filters .lc-search--round { width: 240px; }
+  .bulk { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 12px; margin-bottom: 10px; border-radius: 10px; background: var(--lc-primary-soft); font-size: 14px; }
+  .qstem { max-width: 520px; font-weight: 500; color: var(--lc-text-strong); line-height: 1.45; }
+  .qstem small { display: block; margin-top: 2px; font-weight: 400; color: var(--lc-text-secondary); font-size: 12px; }
+  .qtype { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; white-space: nowrap; background: var(--lc-bg-soft); color: var(--lc-text-tertiary); }
+  .lc-table tr.click td { cursor: pointer; }
+  .lc-table td.chk, .lc-table th.chk { width: 40px; text-align: center; }
+  /* Soạn câu hỏi */
+  .types { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-bottom: 16px; }
+  .types button { padding: 10px; border: 1px solid var(--lc-divider); border-radius: 10px; background: var(--lc-bg); font: 600 13px var(--lc-font); color: var(--lc-text-strong); cursor: pointer; text-align: left; }
+  .types button span { display: block; font-weight: 400; font-size: 12px; color: var(--lc-text-secondary); }
+  .types button.is-on { border-color: var(--lc-primary); background: var(--lc-primary-soft); }
+  .opt { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .opt b { text-align: center; color: var(--lc-text-secondary); }
+  .opt .tf { display: inline-flex; border: 1px solid var(--lc-border); border-radius: 8px; overflow: hidden; }
+  .opt .tf button { border: 0; padding: 6px 12px; background: var(--lc-bg); font: 600 13px var(--lc-font); color: var(--lc-text-secondary); cursor: pointer; }
+  .opt .tf button.on-d { background: var(--lc-success-2-bg); color: var(--lc-success-2); }
+  .opt .tf button.on-s { background: var(--lc-danger-bg); color: var(--lc-danger); }
+  .opt label.lc-radio { white-space: nowrap; font-size: 13px; }
+  .pv { padding: 14px 16px; border: 1px solid var(--lc-divider); border-radius: 10px; font-size: 14px; line-height: 1.55; }
+  .pv ol { margin: 8px 0 0; padding-left: 22px; }
+  .pv .ans { color: var(--lc-success-2); font-weight: 600; }
+  @media (max-width: 760px) { .types { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+<div class="lc-layout">
+  <aside class="lc-sider">
+    <div class="lc-sider__logo"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></div>
+    <nav class="lc-menu" data-demo-menu="nganhang"></nav>
+  </aside>
+  <div class="lc-main">
+    <header class="lc-header">
+      <button class="lc-burger" data-lc-collapse aria-label="Thu gọn menu"><img src="../assets/icons/menu.svg" alt=""></button>
+      <h1 class="lc-page-title" id="pageTitle">Ngân hàng câu hỏi</h1>
+      <div class="lc-header__actions" style="margin-left:auto">
+        <div class="lc-user"><img class="lc-avatar" src="../assets/default-avatar.jpg" alt=""><div><b>Nguyễn Thị Lan</b><span>Giáo viên Toán</span></div></div>
+      </div>
+    </header>
+    <main class="lc-content lc-content--soft" id="main"></main>
+  </div>
+</div>
+<div id="drawer"></div>
+
+<!-- Tạo / sửa ngân hàng -->
+<div class="lc-overlay" id="mBank" hidden>
+  <div class="lc-modal" role="dialog" aria-labelledby="mBankTitle" style="max-width:560px">
+    <div class="lc-modal__head"><h3 id="mBankTitle">Tạo ngân hàng câu hỏi</h3><button class="lc-modal__close" data-lc-close aria-label="Đóng">×</button></div>
+    <div class="lc-modal__body lc-form" id="mBankBody"></div>
+    <div class="lc-modal__foot"><button class="lc-btn lc-btn--outline" data-lc-close>Huỷ</button><button class="lc-btn lc-btn--primary" data-act="saveBank">Lưu</button></div>
+  </div>
+</div>
+<!-- Soạn câu hỏi -->
+<div class="lc-overlay" id="mQ" hidden>
+  <div class="lc-modal" role="dialog" aria-labelledby="mQTitle" style="max-width:820px">
+    <div class="lc-modal__head"><h3 id="mQTitle">Thêm câu hỏi</h3><button class="lc-modal__close" data-lc-close aria-label="Đóng">×</button></div>
+    <div class="lc-modal__body" id="mQBody"></div>
+    <div class="lc-modal__foot"><button class="lc-btn lc-btn--outline" data-lc-close>Huỷ</button><button class="lc-btn lc-btn--primary" data-act="saveQ">Lưu câu hỏi</button></div>
+  </div>
+</div>
+<!-- Chuyển / sao chép -->
+<div class="lc-overlay" id="mMove" hidden>
+  <div class="lc-modal" role="dialog" aria-labelledby="mMoveTitle" style="max-width:520px">
+    <div class="lc-modal__head"><h3 id="mMoveTitle">Sao chép sang ngân hàng khác</h3><button class="lc-modal__close" data-lc-close aria-label="Đóng">×</button></div>
+    <div class="lc-modal__body lc-form" id="mMoveBody"></div>
+    <div class="lc-modal__foot"><button class="lc-btn lc-btn--outline" data-lc-close>Huỷ</button><button class="lc-btn lc-btn--primary" data-act="doMove">Thực hiện</button></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../lcms.js"></script>
+<script src="../lcms-demo.js"></script>
+<script>
+(function () {
+  var D = LcDemo, esc = D.esc, $ = function (id) { return document.getElementById(id); };
+  var ME = 'Nguyễn Thị Lan';
+  var TYPES = { mcq: ['Trắc nghiệm', '4 lựa chọn, 1 đáp án'], tf: ['Đúng/Sai', '4 ý a, b, c, d'], short: ['Trả lời ngắn', 'Điền số hoặc cụm từ'], essay: ['Tự luận', 'Chấm tay'] };
+  var LEVELS = ['Nhận biết', 'Thông hiểu', 'Vận dụng'];
+  var STATUS = { draft: ['Nháp', 'neutral'], pending: ['Chờ duyệt', 'warning'], approved: ['Đã duyệt', 'success'] };
+  var SCOPE = { me: 'Cá nhân', to: 'Tổ chuyên môn', so: 'Kho Sở' };
+  var PERM = { own: 'Sở hữu', edit: 'Được sửa', view: 'Chỉ xem' };
+  var BAI = { 'Toán 10': D.KHUNG.map(function (k) { return k.bai; }).concat(['Định lí côsin và định lí sin']), 'Toán 11': ['Giá trị lượng giác của góc lượng giác', 'Công thức lượng giác'] };
+
+  function Q(type, stem, extra) { var q = { type: type, stem: stem, opts: [], ans: 0, stmts: [], level: 'Thông hiểu', bai: '', status: 'approved', used: 0, updated: '28/10/2026', exp: '' }; for (var k in extra) q[k] = extra[k]; return q; }
+  var seq = 0;
+  // Các ngân hàng giáo viên thấy: của mình, của tổ (được sửa), kho Sở (chỉ xem, lấy câu về để dùng)
+  var BANKS = [
+    { id: 'b1', name: 'Toán 10 · Ngân hàng của tôi', subject: 'Toán', grade: '10', scope: 'me', owner: ME, perm: 'own', share: [], updated: '02/11/2026', qs: [
+      Q('mcq', 'Mệnh đề phủ định của mệnh đề “∀x ∈ ℝ, x² ≥ 0” là', { opts: ['∃x ∈ ℝ, x² < 0', '∀x ∈ ℝ, x² < 0', '∃x ∈ ℝ, x² ≥ 0', '∀x ∈ ℝ, x² ≤ 0'], ans: 0, bai: 'Mệnh đề toán học', level: 'Thông hiểu', used: 3 }),
+      Q('tf', 'Cho tập hợp A = {1; 2; 3; 4} và B = {2; 4; 6}.', { stmts: [['A ∩ B = {2; 4}', true], ['A ∪ B có 6 phần tử', false], ['A \\ B = {1; 3}', true], ['B ⊂ A', false]], bai: 'Tập hợp. Các phép toán trên tập hợp', level: 'Thông hiểu', used: 2 }),
+      Q('mcq', 'Cho tập A = [−2; 3) và B = (1; 5]. Tập A ∩ B là', { opts: ['(1; 3)', '[−2; 5]', '(1; 3]', '[−2; 1)'], ans: 0, bai: 'Tập hợp. Các phép toán trên tập hợp', level: 'Nhận biết', used: 4 }),
+      Q('short', 'Tập hợp X = {x ∈ ℕ | x < 5} có bao nhiêu tập con?', { ans: '32', bai: 'Tập hợp. Các phép toán trên tập hợp', level: 'Vận dụng', used: 1 }),
+      Q('mcq', 'Đỉnh của parabol y = x² − 4x + 3 là', { opts: ['I(2; −1)', 'I(−2; 15)', 'I(4; 3)', 'I(1; 0)'], ans: 0, bai: 'Hàm số bậc hai, đồ thị và ứng dụng', level: 'Nhận biết', used: 5 }),
+      Q('tf', 'Cho hàm số y = −x² + 2x + 3.', { stmts: [['Đồ thị là parabol quay bề lõm xuống dưới', true], ['Trục đối xứng là x = −1', false], ['Hàm số đồng biến trên (−∞; 1)', true], ['Giá trị lớn nhất của hàm số là 3', false]], bai: 'Hàm số bậc hai, đồ thị và ứng dụng', level: 'Thông hiểu', used: 2 }),
+      Q('short', 'Giá trị lớn nhất của hàm số y = −x² + 4x − 1 là bao nhiêu?', { ans: '3', bai: 'Hàm số bậc hai, đồ thị và ứng dụng', level: 'Thông hiểu', status: 'pending' }),
+      Q('mcq', 'Tam giác ABC có AB = 5, AC = 8, Â = 60°. Độ dài BC là', { opts: ['7', '√89', '√129', '6'], ans: 0, bai: 'Định lí côsin và định lí sin', level: 'Thông hiểu', status: 'draft', updated: '02/11/2026' }),
+      Q('essay', 'Một người đứng cách chân tháp 50 m, nhìn đỉnh tháp với góc nâng 35°. Tính chiều cao tháp (làm tròn đến hàng phần mười).', { bai: 'Hệ thức lượng trong tam giác', level: 'Vận dụng', status: 'draft', updated: '02/11/2026' }),
+      Q('tf', 'Cho tam giác ABC có a = 7, b = 5, c = 8.', { stmts: [['cos A = 1/2', true], ['Góc A là góc tù', false], ['Diện tích tam giác bằng 10√3', true], ['Bán kính đường tròn ngoại tiếp bằng 7√3/3', true]], bai: 'Hệ thức lượng trong tam giác', level: 'Vận dụng', status: 'pending', updated: '01/11/2026' })
+    ] },
+    { id: 'b2', name: 'Toán 10 · Tổ Toán THPT Demo số 1', subject: 'Toán', grade: '10', scope: 'to', owner: 'Trần Văn Minh', perm: 'edit', share: ['Tổ Toán (8 giáo viên)'], updated: '31/10/2026', qs: [
+      Q('mcq', 'Câu nào sau đây là mệnh đề?', { opts: ['Hà Nội là thủ đô của Việt Nam', 'Bạn có khoẻ không?', 'Hãy đóng cửa lại', 'x + 1 > 3'], ans: 0, bai: 'Mệnh đề toán học', level: 'Nhận biết', used: 12 }),
+      Q('mcq', 'Số tập con của tập hợp có 3 phần tử là', { opts: ['8', '6', '3', '9'], ans: 0, bai: 'Tập hợp. Các phép toán trên tập hợp', level: 'Nhận biết', used: 9 }),
+      Q('tf', 'Cho parabol (P): y = x² − 2x − 3.', { stmts: [['(P) cắt trục hoành tại x = −1 và x = 3', true], ['(P) có đỉnh I(1; −4)', true], ['(P) đi qua điểm (0; 3)', false], ['(P) nhận x = 1 làm trục đối xứng', true]], bai: 'Hàm số bậc hai, đồ thị và ứng dụng', level: 'Thông hiểu', used: 7 }),
+      Q('mcq', 'Cho tam giác ABC có Â = 30°, BC = 4. Bán kính đường tròn ngoại tiếp là', { opts: ['4', '2', '8', '4√3'], ans: 0, bai: 'Hệ thức lượng trong tam giác', level: 'Thông hiểu', used: 6 }),
+      Q('short', 'Cho vectơ a = (3; −4). Độ dài của vectơ a bằng bao nhiêu?', { ans: '5', bai: 'Vectơ', level: 'Nhận biết', used: 4 }),
+      Q('essay', 'Chứng minh rằng với mọi tam giác ABC: a = b·cos C + c·cos B.', { bai: 'Hệ thức lượng trong tam giác', level: 'Vận dụng', used: 2 })
+    ] },
+    { id: 'b3', name: 'Kho câu hỏi Sở · Toán 10', subject: 'Toán', grade: '10', scope: 'so', owner: 'Sở GD&ĐT Bắc Ninh', perm: 'view', share: ['Toàn tỉnh'], updated: '27/10/2026', qs: [
+      Q('mcq', 'Cho A = {x ∈ ℝ | x ≥ 2}. Phần bù của A trong ℝ là', { opts: ['(−∞; 2)', '(−∞; 2]', '(2; +∞)', '[2; +∞)'], ans: 0, bai: 'Tập hợp. Các phép toán trên tập hợp', level: 'Thông hiểu', used: 214 }),
+      Q('tf', 'Cho hàm số bậc hai y = ax² + bx + c có đồ thị đi qua A(0; 2), B(1; 0), C(2; 0).', { stmts: [['c = 2', true], ['a < 0', false], ['b = −3', true], ['Đỉnh của đồ thị là (3/2; −1/4)', true]], bai: 'Hàm số bậc hai, đồ thị và ứng dụng', level: 'Vận dụng', used: 156 }),
+      Q('mcq', 'Tam giác ABC có b = 6, c = 8, Â = 90°. Độ dài a là', { opts: ['10', '14', '2√7', '48'], ans: 0, bai: 'Hệ thức lượng trong tam giác', level: 'Nhận biết', used: 301 }),
+      Q('short', 'Tam giác có ba cạnh 13, 14, 15. Diện tích tam giác bằng bao nhiêu?', { ans: '84', bai: 'Hệ thức lượng trong tam giác', level: 'Vận dụng', used: 98 })
+    ] },
+    { id: 'b4', name: 'Toán 11 · Ôn tập lượng giác', subject: 'Toán', grade: '11', scope: 'me', owner: ME, perm: 'own', share: [], updated: '15/10/2026', qs: [
+      Q('mcq', 'Đổi 150° sang radian ta được', { opts: ['5π/6', '2π/3', '3π/4', '5π/3'], ans: 0, bai: 'Giá trị lượng giác của góc lượng giác', level: 'Nhận biết', used: 1 }),
+      Q('short', 'Giá trị của sin²x + cos²x bằng bao nhiêu?', { ans: '1', bai: 'Công thức lượng giác', level: 'Nhận biết' })
+    ] }
+  ];
+  BANKS.forEach(function (b) { b.qs.forEach(function (q) { q.id = 'q' + (++seq); }); });
+
+  var S = { bank: null, q: '', bq: '', fType: '', fLevel: '', fStatus: '', fBai: '', sel: {}, edit: null, drawer: null, scopeTab: 'all' };
+  function bank(id) { return BANKS.filter(function (b) { return b.id === id; })[0]; }
+  function canEdit(b) { return b.perm !== 'view'; }
+  function count(b, t) { return b.qs.filter(function (q) { return q.type === t; }).length; }
+
+  /* ---------- Danh sách ngân hàng ---------- */
+  function viewBanks() {
+    var q = S.bq.toLowerCase();
+    var list = BANKS.filter(function (b) { return (S.scopeTab === 'all' || b.scope === S.scopeTab) && (!q || b.name.toLowerCase().indexOf(q) >= 0); });
+    return '<div class="bar-top"><div class="lc-tabs">' + [['all', 'Tất cả'], ['me', 'Của tôi'], ['to', 'Tổ chuyên môn'], ['so', 'Kho Sở']].map(function (t) { return '<a href="#" data-scope="' + t[0] + '" class="' + (S.scopeTab === t[0] ? 'is-active' : '') + '">' + t[1] + '</a>'; }).join('') + '</div>' +
+      '<span class="lc-spacer"></span><div class="lc-search--round"><input id="bq" value="' + esc(S.bq) + '" placeholder="Tìm ngân hàng…" aria-label="Tìm ngân hàng"></div>' +
+      '<a class="lc-btn lc-btn--outline" href="10-scan-import.html">Nhập từ ảnh/PDF</a><button class="lc-btn lc-btn--primary" data-act="newBank">+ Tạo ngân hàng</button></div>' +
+      '<div class="banks">' + (list.map(function (b) {
+        return '<div class="lc-card bank" data-bank="' + b.id + '" role="button" tabindex="0"><div class="lc-row" style="gap:8px"><span class="scope scope--' + b.scope + '">' + SCOPE[b.scope] + '</span><span class="lc-caption">' + esc(b.subject + ' ' + b.grade) + '</span></div>' +
+          '<h3>' + esc(b.name) + '</h3><div class="meta"><b style="color:var(--lc-text-strong)">' + b.qs.length + '</b> câu hỏi · quản lý: ' + esc(b.owner) + (b.share.length ? ' · chia sẻ: ' + esc(b.share.join(', ')) : '') + '</div>' +
+          '<div class="nums">' + Object.keys(TYPES).map(function (t) { var n = count(b, t); return n ? '<span>' + TYPES[t][0] + ' ' + n + '</span>' : ''; }).join('') + '</div>' +
+          '<div class="foot"><span>Cập nhật ' + b.updated + '</span><span class="perm">' + PERM[b.perm] + '</span></div></div>';
+      }).join('') || '<p class="lc-secondary">Không có ngân hàng phù hợp.</p>') + '</div>';
+  }
+
+  /* ---------- Câu hỏi trong một ngân hàng ---------- */
+  function filtered(b) {
+    var q = S.q.toLowerCase();
+    return b.qs.filter(function (x) {
+      return (!S.fType || x.type === S.fType) && (!S.fLevel || x.level === S.fLevel) && (!S.fStatus || x.status === S.fStatus) && (!S.fBai || x.bai === S.fBai) && (!q || (x.stem + ' ' + x.bai).toLowerCase().indexOf(q) >= 0);
+    });
+  }
+  function viewBank(b) {
+    var list = filtered(b), ed = canEdit(b), nSel = Object.keys(S.sel).filter(function (k) { return S.sel[k]; }).length;
+    var bais = b.qs.map(function (x) { return x.bai; }).filter(function (v, i, a) { return v && a.indexOf(v) === i; });
+    function sel(id, cur, all, opts) { return '<select class="lc-select lc-select--sm" id="' + id + '"><option value="">' + all + '</option>' + opts.map(function (o) { return '<option value="' + esc(o[0]) + '"' + (o[0] === cur ? ' selected' : '') + '>' + esc(o[1]) + '</option>'; }).join('') + '</select>'; }
+    return '<div class="crumb"><button data-act="backBanks">← Ngân hàng câu hỏi</button><span class="lc-secondary">/</span><span>' + esc(b.name) + '</span></div>' +
+      '<div class="lc-card bank-head"><h2>' + esc(b.name) + '<div class="lc-caption" style="font-weight:400;margin-top:4px"><span class="scope scope--' + b.scope + '">' + SCOPE[b.scope] + '</span> · ' + b.qs.length + ' câu · quản lý: ' + esc(b.owner) + ' · ' + PERM[b.perm] + '</div></h2>' +
+        (b.perm === 'own' ? '<button class="lc-btn lc-btn--text lc-btn--sm" data-act="editBank">Đổi tên, chia sẻ</button>' : '') +
+        (ed ? '<a class="lc-btn lc-btn--outline lc-btn--sm" href="10-scan-import.html">Nhập từ ảnh/PDF</a><button class="lc-btn lc-btn--primary lc-btn--sm" data-act="newQ">+ Thêm câu hỏi</button>' : '<span class="lc-callout" style="margin:0">Chỉ xem. Chọn câu hỏi rồi <b>Sao chép</b> sang ngân hàng của bạn để dùng hoặc chỉnh sửa.</span>') + '</div>' +
+      '<div class="filters"><div class="lc-search--round"><input id="q" value="' + esc(S.q) + '" placeholder="Tìm nội dung câu hỏi…" aria-label="Tìm câu hỏi"></div>' +
+        sel('fType', S.fType, 'Mọi loại', Object.keys(TYPES).map(function (t) { return [t, TYPES[t][0]]; })) +
+        sel('fLevel', S.fLevel, 'Mọi mức độ', LEVELS.map(function (l) { return [l, l]; })) +
+        sel('fBai', S.fBai, 'Mọi bài học', bais.map(function (x) { return [x, x]; })) +
+        (b.scope === 'so' ? '' : sel('fStatus', S.fStatus, 'Mọi trạng thái', Object.keys(STATUS).map(function (k) { return [k, STATUS[k][0]]; }))) +
+        '<span class="lc-spacer"></span><span class="lc-secondary" style="font-size:13px">' + list.length + '/' + b.qs.length + ' câu</span></div>' +
+      (nSel ? '<div class="bulk"><b>Đã chọn ' + nSel + '</b><button class="lc-btn lc-btn--outline lc-btn--sm" data-act="copy">Sao chép sang…</button>' + (ed ? '<button class="lc-btn lc-btn--outline lc-btn--sm" data-act="move">Chuyển sang…</button>' : '') +
+        (b.scope === 'me' ? '<a class="lc-btn lc-btn--outline lc-btn--sm" href="09-content-approval.html">Gửi duyệt lên kho</a>' : '') + (ed ? '<button class="lc-btn lc-btn--text lc-btn--sm" style="color:var(--lc-danger)" data-act="del">Xoá</button>' : '') + '<button class="lc-btn lc-btn--text lc-btn--sm" data-act="clearSel">Bỏ chọn</button></div>' : '') +
+      '<div class="lc-table-wrap"><table class="lc-table lc-table--plain"><thead><tr><th class="chk"><input type="checkbox" id="selAll" aria-label="Chọn tất cả"' + (list.length && list.every(function (x) { return S.sel[x.id]; }) ? ' checked' : '') + '></th><th>Câu hỏi</th><th class="c">Loại</th><th class="c">Mức độ</th>' + (b.scope === 'so' ? '' : '<th class="c">Trạng thái</th>') + '<th class="c">Đã dùng</th><th class="c">Cập nhật</th></tr></thead><tbody>' +
+      (list.map(function (x) {
+        return '<tr class="click" data-q="' + x.id + '"><td class="chk"><input type="checkbox" data-sel="' + x.id + '"' + (S.sel[x.id] ? ' checked' : '') + ' aria-label="Chọn câu hỏi"></td><td><div class="qstem">' + esc(x.stem) + '<small>' + esc(x.bai) + '</small></div></td>' +
+          '<td class="c"><span class="qtype">' + TYPES[x.type][0] + '</span></td><td class="c">' + x.level + '</td>' + (b.scope === 'so' ? '' : '<td class="c"><span class="lc-tag lc-tag--sm lc-tag--' + STATUS[x.status][1] + '">' + STATUS[x.status][0] + '</span></td>') +
+          '<td class="c">' + x.used + ' đề</td><td class="c">' + x.updated + '</td></tr>';
+      }).join('') || '<tr><td colspan="7" class="c lc-secondary">Không có câu hỏi phù hợp bộ lọc.</td></tr>') + '</tbody></table></div>';
+  }
+
+  function render() {
+    var b = S.bank && bank(S.bank);
+    $('main').innerHTML = b ? viewBank(b) : viewBanks();
+    renderDrawer();
+  }
+
+  /* ---------- Xem câu hỏi ---------- */
+  function previewHtml(x) {
+    var h = '<p style="margin:0">' + esc(x.stem) + '</p>';
+    if (x.type === 'mcq') h += '<ol type="A">' + x.opts.map(function (o, i) { return '<li class="' + (i === x.ans ? 'ans' : '') + '">' + esc(o) + (i === x.ans ? ' ✓' : '') + '</li>'; }).join('') + '</ol>';
+    if (x.type === 'tf') h += '<ol type="a">' + x.stmts.map(function (s) { return '<li>' + esc(s[0]) + ' <span class="' + (s[1] ? 'ans' : '') + '" style="' + (s[1] ? '' : 'color:var(--lc-danger);font-weight:600') + '">— ' + (s[1] ? 'Đúng' : 'Sai') + '</span></li>'; }).join('') + '</ol>';
+    if (x.type === 'short') h += '<p style="margin:8px 0 0">Đáp án: <span class="ans">' + esc(x.ans) + '</span></p>';
+    if (x.type === 'essay') h += '<p class="lc-secondary" style="margin:8px 0 0">Câu tự luận, giáo viên chấm tay.</p>';
+    if (x.exp) h += '<p style="margin:8px 0 0"><b>Lời giải:</b> ' + esc(x.exp) + '</p>';
+    return '<div class="pv">' + h + '</div>';
+  }
+  function renderDrawer() {
+    var id = S.drawer, b = S.bank && bank(S.bank), x = id && b && b.qs.filter(function (q) { return q.id === id; })[0];
+    if (!x) { $('drawer').innerHTML = ''; return; }
+    $('drawer').innerHTML = '<div class="lc-drawer-mask" data-act="closeDrawer"></div><aside class="lc-drawer" role="dialog" aria-label="Câu hỏi"><div class="lc-drawer__head"><div style="flex:1"><h3>' + TYPES[x.type][0] + ' · ' + x.level + '</h3><div class="lc-caption">' + esc(x.bai) + ' · ' + esc(b.name) + '</div></div><button class="lc-modal__close" data-act="closeDrawer" aria-label="Đóng">×</button></div>' +
+      '<div class="lc-drawer__body">' + previewHtml(x) + '<div class="lc-sec-title">Thông tin</div><div class="lc-dl" style="font-size:14px;line-height:1.8">' +
+      (b.scope === 'so' ? '' : 'Trạng thái: <b>' + STATUS[x.status][0] + '</b><br>') + 'Đã dùng trong <b>' + x.used + '</b> đề / bài tập<br>Cập nhật: ' + x.updated + '</div></div>' +
+      '<div class="lc-drawer__foot"><button class="lc-btn lc-btn--text" data-act="copyOne">Sao chép sang…</button>' + (canEdit(b) ? '<button class="lc-btn lc-btn--primary" data-act="editQ">Sửa câu hỏi</button>' : '') + '</div></aside>';
+  }
+
+  /* ---------- Soạn câu hỏi ---------- */
+  function openQ(x) {
+    var b = bank(S.bank);
+    S.edit = x ? JSON.parse(JSON.stringify(x)) : Q('mcq', '', { opts: ['', '', '', ''], ans: 0, stmts: [['', null], ['', null], ['', null], ['', null]], bai: (BAI[b.subject + ' ' + b.grade] || [''])[0], status: 'draft', updated: '02/11/2026' });
+    if (!S.edit.opts.length) S.edit.opts = ['', '', '', ''];
+    if (!S.edit.stmts.length) S.edit.stmts = [['', null], ['', null], ['', null], ['', null]];
+    S.edit.isNew = !x;
+    $('mQTitle').textContent = x ? 'Sửa câu hỏi' : 'Thêm câu hỏi vào ' + b.name;
+    renderQ(); $('mQ').hidden = false;
+  }
+  function renderQ() {
+    var e = S.edit, b = bank(S.bank), body;
+    body = '<div class="types">' + Object.keys(TYPES).map(function (t) { return '<button data-type="' + t + '" class="' + (e.type === t ? 'is-on' : '') + '">' + TYPES[t][0] + '<span>' + TYPES[t][1] + '</span></button>'; }).join('') + '</div>' +
+      '<div class="lc-form"><div class="lc-field"><label class="lc-label" for="qStem">' + (e.type === 'tf' ? 'Ngữ cảnh / đề dẫn' : 'Nội dung câu hỏi') + '<span class="req">*</span></label><textarea class="lc-textarea" id="qStem" rows="3" data-e="stem">' + esc(e.stem) + '</textarea></div>';
+    if (e.type === 'mcq') body += '<div class="lc-field"><span class="lc-label">Phương án (chọn đáp án đúng)</span>' + e.opts.map(function (o, i) { return '<div class="opt"><b>' + 'ABCD'[i] + '</b><input class="lc-input" data-opt="' + i + '" value="' + esc(o) + '" placeholder="Phương án ' + 'ABCD'[i] + '"><label class="lc-radio"><input type="radio" name="ans" value="' + i + '"' + (+e.ans === i ? ' checked' : '') + '> Đúng</label></div>'; }).join('') + '</div>';
+    if (e.type === 'tf') body += '<div class="lc-field"><span class="lc-label">4 mệnh đề (chọn Đúng hoặc Sai cho từng ý)</span>' + e.stmts.map(function (s, i) { return '<div class="opt"><b>' + 'abcd'[i] + ')</b><input class="lc-input" data-stmt="' + i + '" value="' + esc(s[0]) + '" placeholder="Mệnh đề ' + 'abcd'[i] + '"><span class="tf"><button data-tf="' + i + ':1" class="' + (s[1] === true ? 'on-d' : '') + '">Đúng</button><button data-tf="' + i + ':0" class="' + (s[1] === false ? 'on-s' : '') + '">Sai</button></span></div>'; }).join('') + '<p class="lc-caption">Điểm tính theo số ý trả lời đúng (cấu hình chung của Sở).</p></div>';
+    if (e.type === 'short') body += '<div class="lc-field"><label class="lc-label" for="qAns">Đáp án<span class="req">*</span></label><input class="lc-input" id="qAns" data-e="ans" value="' + esc(typeof e.ans === 'string' ? e.ans : '') + '" style="max-width:240px"></div>';
+    body += '<div class="lc-grid-2" style="display:grid;gap:12px 20px"><div class="lc-field"><label class="lc-label" for="qBai">Bài học</label><select class="lc-select" id="qBai" data-e="bai">' + (BAI[b.subject + ' ' + b.grade] || []).map(function (x) { return '<option' + (x === e.bai ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('') + '</select></div>' +
+      '<div class="lc-field"><label class="lc-label" for="qLevel">Mức độ</label><select class="lc-select" id="qLevel" data-e="level">' + LEVELS.map(function (l) { return '<option' + (l === e.level ? ' selected' : '') + '>' + l + '</option>'; }).join('') + '</select></div></div>' +
+      '<div class="lc-field"><label class="lc-label" for="qExp">Lời giải</label><textarea class="lc-textarea" id="qExp" rows="2" data-e="exp">' + esc(e.exp) + '</textarea></div><p class="lc-err" id="qErr" hidden></p></div>';
+    $('mQBody').innerHTML = body;
+  }
+  function saveQ() {
+    var e = S.edit, err = !e.stem.trim() ? 'Nhập nội dung câu hỏi.' :
+      e.type === 'mcq' && e.opts.some(function (o) { return !o.trim(); }) ? 'Nhập đủ 4 phương án.' :
+      e.type === 'tf' && e.stmts.some(function (s) { return !s[0].trim() || s[1] === null; }) ? 'Nhập đủ 4 mệnh đề và chọn Đúng/Sai cho từng ý.' :
+      e.type === 'short' && !String(e.ans).trim() ? 'Nhập đáp án.' : '';
+    if (err) { $('qErr').textContent = err; $('qErr').hidden = false; return; }
+    var b = bank(S.bank);
+    if (e.type !== 'mcq') e.opts = []; if (e.type !== 'tf') e.stmts = []; if (e.type === 'mcq') e.ans = +e.ans || 0;
+    e.updated = '02/11/2026'; delete e.isNew;
+    if (e.id) { var i = b.qs.findIndex(function (q) { return q.id === e.id; }); b.qs[i] = e; D.toast('Đã lưu câu hỏi'); }
+    else { e.id = 'q' + (++seq); b.qs.unshift(e); D.toast('Đã thêm câu hỏi vào ' + b.name); }
+    b.updated = '02/11/2026';
+    $('mQ').hidden = true; S.drawer = e.id; render();
+  }
+
+  /* ---------- Ngân hàng: tạo, sửa, sao chép / chuyển câu hỏi ---------- */
+  function openBank(b) {
+    S.editBank = b ? b.id : null;
+    $('mBankTitle').textContent = b ? 'Đổi tên, chia sẻ ngân hàng' : 'Tạo ngân hàng câu hỏi';
+    $('mBankBody').innerHTML = '<div class="lc-field"><label class="lc-label" for="bName">Tên ngân hàng<span class="req">*</span></label><input class="lc-input" id="bName" value="' + esc(b ? b.name : '') + '" placeholder="VD: Toán 10 · Đề kiểm tra 15 phút"></div>' +
+      '<div class="lc-grid-2" style="display:grid;gap:12px 20px"><div class="lc-field"><label class="lc-label" for="bSub">Môn</label><select class="lc-select" id="bSub"' + (b ? ' disabled' : '') + '><option>Toán</option></select></div><div class="lc-field"><label class="lc-label" for="bGrade">Lớp</label><select class="lc-select" id="bGrade"' + (b ? ' disabled' : '') + '>' + ['10', '11', '12'].map(function (g) { return '<option' + (b && b.grade === g ? ' selected' : '') + '>' + g + '</option>'; }).join('') + '</select></div></div>' +
+      '<div class="lc-field"><span class="lc-label">Chia sẻ</span><label class="lc-radio"><input type="radio" name="bShare" value="me"' + (!b || !b.share.length ? ' checked' : '') + '> Chỉ mình tôi</label><label class="lc-radio"><input type="radio" name="bShare" value="to"' + (b && b.share.length ? ' checked' : '') + '> Tổ Toán: cùng xem và sửa</label></div>';
+    $('mBank').hidden = false;
+  }
+  function saveBank() {
+    var name = $('bName').value.trim(); if (!name) return D.toast('Nhập tên ngân hàng');
+    var shared = (document.querySelector('[name=bShare]:checked') || {}).value === 'to';
+    if (S.editBank) { var b = bank(S.editBank); b.name = name; b.share = shared ? ['Tổ Toán (8 giáo viên)'] : []; D.toast('Đã lưu ngân hàng'); }
+    else { var nb = { id: 'b' + (BANKS.length + 1) + Date.now() % 1000, name: name, subject: 'Toán', grade: $('bGrade').value, scope: 'me', owner: ME, perm: 'own', share: shared ? ['Tổ Toán (8 giáo viên)'] : [], updated: '02/11/2026', qs: [] }; BANKS.unshift(nb); S.bank = nb.id; D.toast('Đã tạo ngân hàng ' + name); }
+    $('mBank').hidden = true; render();
+  }
+  function selectedIds() { return Object.keys(S.sel).filter(function (k) { return S.sel[k]; }); }
+  function openMove(mode, ids) {
+    S.moveMode = mode; S.moveIds = ids;
+    var targets = BANKS.filter(function (b) { return b.id !== S.bank && canEdit(b); });
+    $('mMoveTitle').textContent = (mode === 'move' ? 'Chuyển ' : 'Sao chép ') + ids.length + ' câu hỏi sang ngân hàng khác';
+    $('mMoveBody').innerHTML = '<div class="lc-field"><label class="lc-label" for="mvTo">Ngân hàng đích</label><select class="lc-select" id="mvTo">' + targets.map(function (b) { return '<option value="' + b.id + '">' + esc(b.name) + ' · ' + SCOPE[b.scope] + '</option>'; }).join('') + '</select></div>' +
+      '<p class="lc-caption">' + (mode === 'move' ? 'Câu hỏi sẽ rời khỏi ngân hàng hiện tại.' : 'Bản sao là câu hỏi mới ở trạng thái Nháp, sửa được mà không ảnh hưởng bản gốc.') + '</p>';
+    $('mMove').hidden = false;
+  }
+  function doMove() {
+    var from = bank(S.bank), to = bank($('mvTo').value), ids = S.moveIds;
+    ids.forEach(function (id) {
+      var x = from.qs.filter(function (q) { return q.id === id; })[0]; if (!x) return;
+      if (S.moveMode === 'move') { from.qs.splice(from.qs.indexOf(x), 1); to.qs.unshift(x); }
+      else { var c = JSON.parse(JSON.stringify(x)); c.id = 'q' + (++seq); c.status = 'draft'; c.used = 0; c.updated = '02/11/2026'; to.qs.unshift(c); }
+    });
+    to.updated = '02/11/2026'; S.sel = {}; S.drawer = null; $('mMove').hidden = true;
+    D.toast((S.moveMode === 'move' ? 'Đã chuyển ' : 'Đã sao chép ') + ids.length + ' câu sang ' + to.name); render();
+  }
+
+  /* ---------- Sự kiện ---------- */
+  document.addEventListener('click', function (e) {
+    var el;
+    if ((el = e.target.closest('[data-scope]'))) { e.preventDefault(); S.scopeTab = el.dataset.scope; return render(); }
+    if ((el = e.target.closest('[data-bank]'))) { S.bank = el.dataset.bank; S.sel = {}; S.q = ''; S.fType = S.fLevel = S.fStatus = S.fBai = ''; return render(); }
+    if ((el = e.target.closest('[data-type]'))) { S.edit.type = el.dataset.type; return renderQ(); }
+    if ((el = e.target.closest('[data-tf]'))) { var p = el.dataset.tf.split(':'); S.edit.stmts[+p[0]][1] = p[1] === '1'; return renderQ(); }
+    if (e.target.closest('[data-sel], #selAll')) return;
+    if ((el = e.target.closest('[data-q]'))) { S.drawer = el.dataset.q; return renderDrawer(); }
+    if ((el = e.target.closest('[data-act]'))) {
+      var a = el.dataset.act, b = S.bank && bank(S.bank);
+      if (a === 'backBanks') { S.bank = null; S.drawer = null; render(); }
+      if (a === 'newBank') openBank(null);
+      if (a === 'editBank') openBank(b);
+      if (a === 'saveBank') saveBank();
+      if (a === 'newQ') openQ(null);
+      if (a === 'editQ') openQ(b.qs.filter(function (q) { return q.id === S.drawer; })[0]);
+      if (a === 'saveQ') saveQ();
+      if (a === 'closeDrawer') { S.drawer = null; renderDrawer(); }
+      if (a === 'clearSel') { S.sel = {}; render(); }
+      if (a === 'copy') openMove('copy', selectedIds());
+      if (a === 'move') openMove('move', selectedIds());
+      if (a === 'copyOne') openMove('copy', [S.drawer]);
+      if (a === 'doMove') doMove();
+      if (a === 'del') { var ids = selectedIds(); if (!confirm('Xoá ' + ids.length + ' câu hỏi khỏi ' + b.name + '?')) return; b.qs = b.qs.filter(function (q) { return ids.indexOf(q.id) < 0; }); S.sel = {}; D.toast('Đã xoá ' + ids.length + ' câu hỏi'); render(); }
+    }
+  });
+  document.addEventListener('keydown', function (e) {
+    var c = e.target.closest && e.target.closest('[data-bank]');
+    if (c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); c.click(); }
+    if (e.key === 'Escape' && S.drawer) { S.drawer = null; renderDrawer(); }
+  });
+  document.addEventListener('input', function (e) {
+    var t = e.target;
+    if (t.id === 'q' || t.id === 'bq') { S[t.id] = t.value; var pos = t.selectionStart, id = t.id; render(); var n = $(id); n.focus(); n.setSelectionRange(pos, pos); return; }
+    if (!S.edit) return;
+    if (t.dataset.e) S.edit[t.dataset.e] = t.value;
+    if (t.dataset.opt) S.edit.opts[+t.dataset.opt] = t.value;
+    if (t.dataset.stmt) S.edit.stmts[+t.dataset.stmt][0] = t.value;
+  });
+  document.addEventListener('change', function (e) {
+    var t = e.target;
+    if (['fType', 'fLevel', 'fStatus', 'fBai'].indexOf(t.id) >= 0) { S[t.id] = t.value; return render(); }
+    if (t.dataset.sel) { S.sel[t.dataset.sel] = t.checked; return render(); }
+    if (t.id === 'selAll') { filtered(bank(S.bank)).forEach(function (x) { S.sel[x.id] = t.checked; }); return render(); }
+    if (t.name === 'ans' && S.edit) S.edit.ans = +t.value;
+    if (t.dataset.e && S.edit) S.edit[t.dataset.e] = t.value;
+  });
+  render();
+})();
+</script>
+</body>
+</html>

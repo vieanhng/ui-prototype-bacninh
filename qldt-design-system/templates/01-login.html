@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QLĐT · Đăng nhập</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../qldt.css">
+</head>
+<body>
+<main class="qd-login">
+  <form class="qd-login__card" onsubmit="event.preventDefault(); location.href='02-home-modules.html'">
+    <h1>Đăng nhập</h1>
+    <p class="qd-login__note">Sử dụng email Office 365 của đơn vị!</p>
+    <div class="qd-login__sso">
+      <button type="button" class="qd-login__btn" onclick="location.href='02-home-modules.html'"><svg class="qd-i "><use href="#qd-office"/></svg> Office 365</button>
+      <button type="button" class="qd-login__btn qd-login__btn--ghost" onclick="location.href='02-home-modules.html'"><svg class="qd-i" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M2 6.5V19h4V9.6z"/><path fill="#34A853" d="M18 9.6V19h4V6.5z"/><path fill="#EA4335" d="M6 9.6 12 14l6-4.4V5L12 9.5 6 5z"/><path fill="#FBBC04" d="M18 5v4.6l4-3.1V5.2C22 3.4 19.9 2.4 18.5 3.5z"/><path fill="#C5221F" d="M2 5.2v1.3l4 3.1V5L5.5 3.5C4.1 2.4 2 3.4 2 5.2"/></svg> Gmail</button>
+    </div>
+    <p class="qd-login__or">Hoặc đăng nhập bằng:<b>Tài khoản và mật khẩu do Sở GD&amp;ĐT cấp</b></p>
+    <label for="u">Tài khoản <span class="qd-req">*</span></label>
+    <input id="u" placeholder="Nhập tên tài khoản" autocomplete="username">
+    <label for="p">Mật khẩu <span class="qd-req">*</span></label>
+    <input id="p" type="password" placeholder="Nhập mật khẩu" autocomplete="current-password">
+    <a class="qd-login__forgot" href="#">Quên mật khẩu?</a>
+    <button class="qd-login__btn qd-login__submit">Đăng nhập</button>
+    <a class="qd-login__forgot" href="../../index.html" style="text-align:center">← Về cổng chọn hệ thống</a>
+  </form>
+</main>
+<script src="../qldt.js"></script>
+</body>
+</html>

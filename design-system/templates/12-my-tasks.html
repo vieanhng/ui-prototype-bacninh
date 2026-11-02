@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bài tập của tôi</title>
+<link rel="stylesheet" href="../tvet.css">
+<style>
+  .tasks { display: grid; gap: 12px; max-width: 880px; }
+  .task { display: flex; align-items: center; gap: 14px; padding: 16px; background: var(--tv-surface); border-radius: var(--tv-r-lg); box-shadow: var(--tv-sh-card); border: 2px solid transparent; text-align: left; color: inherit; }
+  .task > svg:last-child { width: 20px; height: 20px; color: var(--tv-text-muted); flex: none; }
+  .task.is-locked { cursor: default; opacity: .85; }
+  .task:hover { border-color: var(--tv-primary-soft); }
+  .task .tv-feature__icon { flex: none; }
+  .task h3 { font-size: 16px; font-weight: 600; color: var(--tv-heading); line-height: 1.4; }
+  .task .meta { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 6px; font-size: 13px; color: var(--tv-text-muted); }
+  .task .meta span { display: inline-flex; align-items: center; gap: 4px; }
+  .task .meta svg { width: 14px; height: 14px; }
+</style>
+</head>
+<body>
+<header class="tv-header">
+  <div class="tv-container tv-header__inner">
+    <a class="tv-logo" href="01-landing.html"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></a>
+    <nav class="tv-nav"><a href="02-app-sidebar-list.html">Học tập</a><a class="is-active" href="#">Bài tập</a><a href="15-shared-materials.html">Học liệu</a><a href="14-elibrary.html?from=lms">Thư viện</a></nav>
+    <div class="tv-header__actions"><button class="tv-icon-btn" data-tv-theme-toggle></button><span class="tv-icon-btn tv-icon-btn--warn"><i data-lucide="bell"></i></span><img class="tv-avatar" src="../assets/default-avatar.jpg" alt=""></div>
+  </div>
+</header>
+
+<div class="tv-container">
+  <nav class="tv-breadcrumb"><a href="01-landing.html">Trang chủ</a><i data-lucide="chevron-right"></i><span class="is-current">Bài tập của tôi</span></nav>
+  <div class="tv-page">
+    <div class="tv-row" style="max-width:880px;margin-bottom:16px"><h1 class="tv-h1" style="flex:1">Bài tập của tôi</h1><span class="tv-small tv-muted" id="cnt"></span></div>
+    <div class="tasks" id="tasks"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../tvet.js"></script>
+<script>
+(function () {
+  // Bài được giao cho cả lớp 10A1; mỗi loại bài mở đúng màn làm bài (kiểm tra → 10, thi phòng máy → 11, video → 08, bài đọc → 09); phiếu dạng file mở trình xem trực tuyến
+  var TASKS = [
+    { title: 'Kiểm tra 15 phút: Hàm số bậc hai', subj: 'Toán', due: '10:00 03/11', tries: '0/1 lần', icon: 'clipboard-check', status: 'Đang mở', href: '10-true-false.html' },
+    { title: 'Kiểm tra giữa kỳ I · phòng máy P01', subj: 'Tiếng Anh', due: '08:45 04/11', tries: '0/1 lần', icon: 'monitor-check', status: 'Thi tại phòng máy · Ca 1', href: '11-exam-kiosk.html' },
+    { title: 'Video tương tác: Family life', subj: 'Tiếng Anh', due: '22:00 05/11', tries: '0/3 lần', icon: 'circle-play', status: 'Chưa xem', href: '08-video-lesson.html' },
+    { title: 'Kiểm tra 15 phút Unit 1', subj: 'Tiếng Anh', due: '09:15 05/11', tries: '0/1 lần', icon: 'clipboard-check', status: 'Mở lúc 09:00 05/11', locked: true },
+    { title: 'Phiếu bài tập: Giải tam giác', subj: 'Toán', due: '22:00 06/11', tries: '0/2 lần', icon: 'file-text', status: 'Chưa làm', file: { pages: 4 } },
+    { title: 'Reading: Family life', subj: 'Tiếng Anh', due: '22:00 08/11', tries: '0/3 lần', icon: 'book-open', status: 'Chưa làm', href: '09-reading-dictionary.html' },
+    { title: 'Reading: Hanoi bans petrol motorbikes', subj: 'Tiếng Anh', due: '22:00 10/11', tries: '0/2 lần', icon: 'newspaper', status: 'Chưa làm', href: '09-reading-dictionary.html' },
+    { title: 'Bài thi 1 · Lesson 6', subj: 'Tiếng Anh', due: '22:00 30/10', tries: '1/1 lần', icon: 'circle-check-big', status: 'Đã nộp · Xem kết quả', href: '06-exam.html' }
+  ];
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  document.getElementById('cnt').textContent = TASKS.length + ' bài';
+  document.getElementById('tasks').innerHTML = TASKS.map(function (t) {
+    var inner = '<span class="tv-feature__icon"><i data-lucide="' + t.icon + '"></i></span><div style="flex:1;min-width:0"><h3>' + esc(t.title) + '</h3>' +
+      '<div class="meta"><span><i data-lucide="book-marked"></i>' + t.subj + '</span><span><i data-lucide="calendar-clock"></i>Hạn ' + t.due + '</span><span><i data-lucide="repeat"></i>' + t.tries + '</span><span><i data-lucide="circle-dot"></i>' + t.status + '</span></div></div>' +
+      '<i data-lucide="' + (t.locked ? 'lock' : 'chevron-right') + '"></i>';
+    if (t.file) return '<button class="task" style="width:100%;cursor:pointer;font:inherit" data-file="' + TASKS.indexOf(t) + '">' + inner + '</button>';
+    return t.locked ? '<div class="task is-locked" title="Chưa đến giờ làm bài">' + inner + '</div>' : '<a class="task" href="' + t.href + '">' + inner + '</a>';
+  }).join('');
+  document.addEventListener('click', function (e) { var b = e.target.closest('[data-file]'); if (!b) return; var t = TASKS[+b.dataset.file]; TvViewer.open({ title: t.title, pages: t.file.pages, note: t.subj + ' · tài liệu giáo viên giao · xem trực tuyến' }); });
+  if (window.lucide) lucide.createIcons();
+})();
+</script>
+</body>
+</html>

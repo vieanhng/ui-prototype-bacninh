@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kho học liệu</title>
+<link rel="stylesheet" href="../tvet.css">
+<style>
+  .bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; }
+  .seg { display: inline-flex; padding: 3px; border-radius: var(--tv-r-pill); background: var(--tv-surface); box-shadow: var(--tv-sh-xs); }
+  .seg button { border: 0; background: none; padding: 6px 14px; border-radius: var(--tv-r-pill); font: 600 13px var(--tv-font, inherit); color: var(--tv-text-muted); cursor: pointer; }
+  .seg button.is-on { background: var(--tv-primary); color: #fff; }
+  .mats { display: grid; gap: 12px; }
+  .mat { display: flex; align-items: flex-start; gap: 14px; padding: 16px; background: var(--tv-surface); border-radius: var(--tv-r-lg); box-shadow: var(--tv-sh-card); color: inherit; }
+  .mat .tv-feature__icon { flex: none; }
+  .mat h3 { font-size: 16px; font-weight: 600; color: var(--tv-heading); line-height: 1.4; }
+  .mat .meta { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 6px; font-size: 13px; color: var(--tv-text-muted); }
+  .mat .meta span { display: inline-flex; align-items: center; gap: 4px; }
+  .mat .meta svg { width: 14px; height: 14px; }
+  .mat .act { margin-left: auto; flex: none; align-self: center; }
+  .sync { font-size: 13px; color: var(--tv-text-muted); }
+  @media (max-width: 640px) { .mat { flex-wrap: wrap; } .mat .act { margin-left: 0; } }
+</style>
+</head>
+<body>
+<header class="tv-header">
+  <div class="tv-container tv-header__inner">
+    <a class="tv-logo" href="01-landing.html"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></a>
+    <nav class="tv-nav"><a href="02-app-sidebar-list.html">Học tập</a><a href="12-my-tasks.html">Bài tập</a><a class="is-active" href="#">Học liệu</a><a href="14-elibrary.html?from=lms">Thư viện</a></nav>
+    <div class="tv-header__actions"><button class="tv-icon-btn" data-tv-theme-toggle></button><span class="tv-icon-btn tv-icon-btn--warn"><i data-lucide="bell"></i></span><img class="tv-avatar" src="../assets/default-avatar.jpg" alt=""></div>
+  </div>
+</header>
+
+<div class="tv-container">
+  <nav class="tv-breadcrumb"><a href="02-app-sidebar-list.html">Học tập</a><i data-lucide="chevron-right"></i><span class="is-current">Kho học liệu</span></nav>
+  <div class="tv-page" style="max-width:920px">
+    <h1 class="tv-h1">Kho học liệu</h1>
+    <p class="tv-muted" style="margin:4px 0 16px">Học liệu dùng chung đã được tổ chuyên môn, hiệu trưởng (Kho Trường) hoặc hội đồng thẩm định của Sở (Kho Sở) duyệt.</p>
+    <div class="bar">
+      <div class="seg" id="src"><button class="is-on" data-s="">Tất cả</button><button data-s="so">Kho Sở</button><button data-s="school">Kho Trường</button></div>
+      <select class="tv-select" id="subj" aria-label="Môn học"><option value="">Tất cả môn</option></select>
+      <label class="tv-input tv-input--search" style="flex:1;min-width:200px"><i data-lucide="search"></i><input id="q" placeholder="Tìm theo tên, bài học…" aria-label="Tìm học liệu"></label>
+    </div>
+    <p class="sync" id="sync"></p>
+    <div class="mats" id="list"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../tvet.js"></script>
+<script>
+(function () {
+  var SCHOOL = 'THPT Demo số 1';
+  // Dữ liệu mẫu, khớp phần đã duyệt trong LCMS 09. Nếu vừa thao tác duyệt ở LCMS 09 trên cùng trình duyệt thì đọc bản mới nhất.
+  var ITEMS = [
+    { kind: 'material', title: 'Phiếu bài tập Vectơ (tiết 1)', type: 'doc', mtype: 'Phiếu bài tập', meta: '4 trang', subject: 'Toán', grade: '10', bai: 'Vectơ', owner: 'Nguyễn Thị Lan', school: SCHOOL, src: 'school' },
+    { kind: 'material', title: 'Bài giảng Giải tam giác và ứng dụng thực tế', type: 'ppt', mtype: 'Bài trình chiếu', meta: '24 slide', subject: 'Toán', grade: '10', bai: 'Hệ thức lượng trong tam giác', owner: 'Vũ Thị Hoa', school: 'THPT Demo số 2', src: 'so' },
+    { kind: 'material', title: 'Video: Định lí sin trong đo đạc thực tế', type: 'video', mtype: 'Video bài giảng', meta: '04:15', subject: 'Toán', grade: '10', bai: 'Hệ thức lượng trong tam giác', owner: 'Ngô Đức Anh', school: 'THPT Demo số 3', src: 'so' },
+    { kind: 'material', title: 'Đề kiểm tra 15 phút: Hàm số bậc hai', type: 'doc', mtype: 'Đề kiểm tra', meta: '2 trang', subject: 'Toán', grade: '10', bai: 'Hàm số bậc hai, đồ thị và ứng dụng', owner: 'Hoàng Văn Nam', school: SCHOOL, src: 'school' }
+  ];
+  var synced = null;
+  try { var raw = JSON.parse(localStorage.getItem('bn-shared-materials')); if (raw && raw.items && raw.items.length) { ITEMS = raw.items; synced = raw.at; }
+  // Học sinh chỉ xem học liệu, không xem câu hỏi của kho
+  ITEMS = ITEMS.filter(function (it) { return it.kind === 'material'; }); } catch (e) {}
+
+  var ICON = { pdf: 'file-text', doc: 'file-type', ppt: 'presentation', video: 'circle-play' };
+  var F = { src: '', subj: '', q: '' };
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function fold(s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').toLowerCase(); }
+
+  $('subj').innerHTML += ITEMS.map(function (it) { return it.subject; }).filter(function (v, i, a) { return v && a.indexOf(v) === i; }).map(function (v) { return '<option>' + esc(v) + '</option>'; }).join('');
+  $('sync').textContent = synced ? 'Đồng bộ từ LCMS lúc ' + synced + '.' : 'Dữ liệu mẫu. Duyệt học liệu ở LCMS › Học liệu & duyệt kho trên cùng trình duyệt để thấy học liệu mới ở đây.';
+
+  function render() {
+    var list = ITEMS.filter(function (it) {
+      return (!F.src || it.src === F.src) && (!F.subj || it.subject === F.subj) && (!F.q || fold(it.title + ' ' + it.bai).indexOf(fold(F.q)) >= 0);
+    });
+    $('list').innerHTML = list.length ? list.map(function (it) {
+      return '<div class="mat"><span class="tv-feature__icon"><i data-lucide="' + (ICON[it.type] || 'file') + '"></i></span><div style="flex:1;min-width:0">' +
+        '<h3>' + esc(it.title) + '</h3>' +
+        '<div class="meta"><span class="tv-chip ' + (it.src === 'so' ? 'tv-chip--success' : 'tv-chip--info') + '">' + (it.src === 'so' ? 'Kho Sở' : 'Kho Trường') + '</span>' +
+        '<span><i data-lucide="book-marked"></i>' + esc(it.subject + ' ' + it.grade) + '</span><span><i data-lucide="bookmark"></i>' + esc(it.bai) + '</span>' +
+        '<span><i data-lucide="file"></i>' + esc(it.mtype) + (it.meta ? ' · ' + esc(it.meta) : '') + '</span>' +
+        '<span><i data-lucide="user-round"></i>' + esc(it.owner) + ' · ' + esc(it.school) + '</span></div>' +
+        '</div>' + (it.type === 'video' ? '<a class="tv-btn tv-btn--outline tv-btn--sm act" href="08-video-lesson.html">Xem</a>' : '<button class="tv-btn tv-btn--outline tv-btn--sm act" data-view="' + ITEMS.indexOf(it) + '">Xem</button>') + '</div>';
+    }).join('') : '<div class="tv-panel tv-empty">Không có học liệu phù hợp bộ lọc.</div>';
+    if (window.lucide) lucide.createIcons();
+  }
+
+  document.addEventListener('click', function (e) {
+    var v = e.target.closest('[data-view]');
+    if (v) { var it = ITEMS[+v.dataset.view], m = /(\d+) (?:trang|slide)/.exec(it.meta || ''); return TvViewer.open({ title: it.title, pages: m ? +m[1] : 8, note: (it.src === 'so' ? 'Kho Sở' : 'Kho Trường') + ' · xem trực tuyến' }); }
+    var b = e.target.closest('.seg button'); if (!b) return;
+    b.parentNode.querySelectorAll('button').forEach(function (x) { x.classList.toggle('is-on', x === b); });
+    F.src = b.dataset.s;
+    render();
+  });
+  $('subj').onchange = function () { F.subj = this.value; render(); };
+  $('q').oninput = function () { F.q = this.value; render(); };
+  render();
+})();
+</script>
+</body>
+</html>

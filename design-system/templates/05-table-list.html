@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quản lý từ vựng</title>
+<link rel="stylesheet" href="../tvet.css">
+</head>
+<body>
+<header class="tv-header">
+  <div class="tv-container tv-header__inner">
+    <a class="tv-logo" href="01-landing.html"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></a>
+    <div class="tv-input tv-input--search" style="width:220px"><i data-lucide="search"></i><input placeholder="Tìm kiếm..." aria-label="Tìm kiếm"></div>
+    <nav class="tv-nav"><a href="02-app-sidebar-list.html">Học tập</a><a href="12-my-tasks.html">Bài tập</a><a href="15-shared-materials.html">Học liệu</a><a href="14-elibrary.html?from=lms">Thư viện</a></nav>
+    <div class="tv-header__actions">
+      <button class="tv-icon-btn" data-tv-theme-toggle></button>
+      <span class="tv-icon-btn tv-icon-btn--warn"><i data-lucide="bell"></i></span>
+      <img class="tv-avatar" src="../assets/default-avatar.jpg" alt="">
+    </div>
+  </div>
+</header>
+
+<main class="tv-container" style="padding-top:24px;padding-bottom:48px">
+      <h1 class="tv-h1" style="color:var(--tv-primary)">Quản lý từ vựng</h1>
+      <div class="tv-row" style="margin-top:16px;gap:16px;flex-wrap:wrap">
+        <div class="tv-input tv-input--lg" style="flex:1;min-width:280px;max-width:690px"><i data-lucide="search"></i><input placeholder="Nhập từ cần tìm tại đây..." style="font-style:normal"></div>
+        <div class="tv-row" style="margin-left:auto">
+          <button class="tv-btn tv-btn--pink" style="font-size:16px">Tra cứu ngay</button>
+          <button class="tv-btn tv-btn--sky" style="font-size:16px">Thêm từ mới</button>
+        </div>
+      </div>
+
+      <div style="font-weight:600;margin:24px 0 16px">Tìm theo bảng chữ cái:</div>
+      <div class="tv-letters" id="letters"></div>
+
+      <div class="tv-h3" style="color:var(--tv-primary);font-size:20px;margin:28px 0 16px">A</div>
+      <div class="tv-table-wrap">
+        <table class="tv-table tv-table--dict">
+          <thead><tr><th>Headword</th><th>Noun</th><th>Adj</th><th>Adv</th><th>Verb</th><th>Prep</th><th>Det</th><th>Conj</th></tr></thead>
+          <tbody>
+            <tr><td>AIDS/Aids</td><td>AIDS/aids</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>a.m.</td><td></td><td></td><td>a.m./A.M.</td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>a/an</td><td></td><td></td><td></td><td></td><td></td><td>a/an</td><td></td></tr>
+            <tr><td>abandon</td><td>abandonment</td><td>abandoned</td><td></td><td>abandon</td><td></td><td></td><td></td></tr>
+            <tr><td>abbreviation</td><td>abbreviation</td><td>abbreviated, unabbreviated</td><td></td><td>abbreviate</td><td></td><td></td><td></td></tr>
+            <tr><td>able</td><td>disability, ability, inability</td><td>disabled, able, unable, enabled</td><td></td><td>enable, disable</td><td></td><td></td><td></td></tr>
+            <tr><td>abnormal</td><td>abnormality</td><td>abnormal</td><td>abnormally</td><td></td><td></td><td></td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tv-row" style="justify-content:center;gap:32px;margin-top:32px;flex-wrap:wrap">
+        <div class="tv-pagination"><button><i data-lucide="chevrons-left"></i></button><button><i data-lucide="chevron-left"></i></button><button class="is-active">1</button><button>2</button><button>3</button><button>4</button><button>5</button><button>…</button><button>35</button><button><i data-lucide="chevron-right"></i></button><button><i data-lucide="chevrons-right"></i></button></div>
+        <select class="tv-select" style="height:42px"><option>Hiển thị 10 dòng/trang</option><option>Hiển thị 20 dòng/trang</option></select>
+      </div>
+</main>
+<script>
+  // Sinh bộ lọc A–Z + ALL
+  var box = document.getElementById('letters');
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').concat('ALL').forEach(function (l, i) {
+    var b = document.createElement('button'); b.textContent = l; if (i === 0) b.className = 'is-active';
+    if (l === 'ALL') b.style.width = 'auto';
+    b.onclick = function () { box.querySelectorAll('button').forEach(function (x) { x.classList.remove('is-active'); }); b.classList.add('is-active'); };
+    box.appendChild(b);
+  });
+</script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../tvet.js"></script>
+</body>
+</html>

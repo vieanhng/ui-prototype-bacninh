@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QLĐT · Nhiệm vụ / Công việc</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../qldt.css">
+<style>
+.chart { position: relative; }
+.chart svg { width: 100%; height: auto; display: block; font-family: var(--qd-font); }
+.chart .bar { cursor: default; }
+.chart .bar:hover { opacity: .85; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; padding: 4px 0 8px; }
+.chart-legend span, .st-dot { display: inline-flex; align-items: center; gap: 6px; }
+.chart-legend span::before, .st-dot::before { content: ""; width: 10px; height: 10px; border-radius: 2px; background: var(--c); }
+.st-dot { margin-right: 6px; vertical-align: -1px; }
+.chart-tip { position: absolute; pointer-events: none; background: #fff; border: 1px solid #ddd; border-radius: 4px; box-shadow: var(--qd-sh-drop); padding: 8px 10px; font-size: 13px; min-width: 170px; }
+.chart-tip b { display: block; margin-bottom: 4px; }
+.chart-tip div { display: flex; justify-content: space-between; gap: 12px; }
+.chart-tip i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; }
+</style>
+</head>
+<body>
+<header class="qd-header">
+  <div class="qd-container qd-header__in">
+    <a class="qd-brand" href="02-home-modules.html">
+      <span class="qd-brand__logo"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></span>
+      <span><span class="qd-brand__name">Sở Giáo dục và Đào tạo Bắc Ninh</span><br><span class="qd-brand__sub">Hệ thống quản trị đào tạo trực tuyến</span></span>
+    </a>
+    <div class="qd-header__right">
+      <div class="qd-header__tools">
+        <button class="qd-hicon" aria-label="Lịch"><svg class="qd-i "><use href="#qd-calendar"/></svg></button>
+        <button class="qd-hicon" aria-label="Cài đặt"><svg class="qd-i "><use href="#qd-settings"/></svg></button>
+        <button class="qd-lang">VI</button>
+        <span class="qd-vsep"></span>
+        <button class="qd-hicon" aria-label="Việc cần làm"><svg class="qd-i "><use href="#qd-clipboard"/></svg></button>
+        <button class="qd-hicon qd-hicon--bell" aria-label="Thông báo"><svg class="qd-i "><use href="#qd-bell"/></svg><span class="qd-hicon__badge">6</span></button>
+        <button class="qd-user"><img src="../assets/default-avatar.jpg" alt=""><span>Nguyễn Văn Sơn</span><svg class="qd-i "><use href="#qd-chevron-down"/></svg></button>
+      </div>
+      <div class="qd-week">Năm học <b>2026-2027</b> · Tuần <b>9</b> (Học kỳ <b>I</b>): <a href="#">02/11 - 07/11</a></div>
+    </div>
+  </div>
+</header>
+<nav class="qd-nav">
+  <div class="qd-container qd-nav__in">
+      <div class="qd-nav__item" data-nav="dashboard"><a class="qd-nav__link" href="08-management-dashboard.html">Dashboard</a></div>
+      <div class="qd-nav__item" data-nav="tong-quan"><a class="qd-nav__link" href="09-executive-report.html#tong-quan">Tổng quan</a></div>
+      <div class="qd-nav__item" data-nav="nguoi-dung"><button class="qd-nav__link">Người dùng</button><div class="qd-menu"><a href="09-executive-report.html#nguoi-dung">Hoạt động người dùng</a><a href="09-executive-report.html#khao-sat">Khảo sát người dùng</a></div></div>
+      <div class="qd-nav__item" data-nav="day-hoc"><button class="qd-nav__link">Dạy và học</button><div class="qd-menu"><a href="09-executive-report.html#day-hoc">Hoạt động dạy và học</a><a href="09-executive-report.html#chat-luong">Chất lượng dạy và học</a></div></div>
+      <div class="qd-nav__item" data-nav="tan-suat"><button class="qd-nav__link">Tần suất</button><div class="qd-menu"><a href="09-executive-report.html#tan-suat-hs">Tần suất học tập của học sinh</a><a href="09-executive-report.html#tan-suat-gv">Giảng dạy online của giáo viên</a></div></div>
+      <div class="qd-nav__item" data-nav="ky-thi"><a class="qd-nav__link" href="09-executive-report.html#ky-thi">Kỳ thi chung</a></div>
+      <div class="qd-nav__item" data-nav="hoc-lieu"><a class="qd-nav__link" href="09-executive-report.html#hoc-lieu">Học liệu</a></div>
+      <div class="qd-nav__item" data-nav="ha-tang"><a class="qd-nav__link" href="09-executive-report.html#ha-tang">Hạ tầng</a></div>
+      <div class="qd-nav__item" data-nav="xep-hang"><a class="qd-nav__link" href="09-executive-report.html#xep-hang">Xếp hạng</a></div>
+    <div class="qd-nav__right">
+      <div class="qd-role">
+        <button class="qd-role__btn"><span>Quản lý Sở</span></button>
+        <div class="qd-role__menu">
+          <small>Sở Giáo dục và Đào tạo Bắc Ninh</small>
+          <a href="#" data-short="Lãnh đạo Sở">Lãnh đạo Sở</a>
+          <a href="#" class="is-selected" data-short="Quản lý Sở">Chuyên viên Phòng GD Trung học</a>
+          <small>UBND Phường Kinh Bắc</small>
+          <a href="#" data-short="Quản lý phường">Cán bộ phụ trách giáo dục</a>
+          <small>Trường THPT Hàn Thuyên</small>
+          <a href="#" data-short="Hiệu trưởng">Hiệu trưởng</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<main class="qd-wrap">
+  <div class="qd-tabs">
+    <a href="#" class="is-active" data-qd-panel="p-dash">Dashboard</a><a href="#" data-qd-panel="p-list">Nhiệm vụ trọng tâm</a><a href="#" data-qd-panel="p-list">Nhiệm vụ thường xuyên</a><a href="#" data-qd-panel="p-list">Công việc</a><a href="#" data-qd-panel="p-list">Nhóm nhiệm vụ</a>
+    <div class="qd-tabs__right"><a href="#">Thêm</a><a href="#">Xóa</a></div>
+  </div>
+  <div class="qd-filterbar">
+    <span class="qd-filter-tag"><svg class="qd-i "><use href="#qd-funnel"/></svg> Bộ lọc</span>
+    <button class="qd-select" style="width:150px"><span>Tất cả phòng</span></button>
+    <span class="qd-addon">Vai trò <button class="qd-select qd-select--sm" style="width:170px"><span>ĐV chủ trì</span></button></span>
+    <button class="qd-btn qd-btn--success qd-btn--icon" aria-label="Làm mới" data-qd-loading="700"><svg class="qd-i "><use href="#qd-refresh"/></svg></button>
+  </div>
+  <div>
+    <div id="p-dash" data-qd-tabpanel>
+      <div class="qd-kpis">
+        <div class="qd-kpi qd-kpi--red"><span>Công việc chậm tiến độ</span><b>16</b></div>
+        <div class="qd-kpi qd-kpi--blue"><span>Công việc đang thực hiện</span><b>49</b></div>
+        <div class="qd-kpi qd-kpi--green"><span>Công việc đã hoàn thành</span><b>92</b></div>
+      </div>
+      <div class="qd-panel">
+        <div class="qd-panel__head qd-row">Số CV theo trạng thái của các đơn vị<span class="qd-spacer"></span><button class="qd-btn qd-btn--link qd-btn--sm" id="chart-toggle">Xem dạng bảng</button></div>
+        <div class="qd-panel__body">
+          <div class="chart-legend"><span style="--c:var(--qd-kpi-red)">Chậm tiến độ</span><span style="--c:var(--qd-kpi-blue)">Đang thực hiện</span><span style="--c:var(--qd-kpi-green)">Đã hoàn thành</span></div>
+          <div class="chart" id="chart"></div>
+          <div id="chart-table" hidden><table class="qd-table"><thead><tr><th>Đơn vị</th><th class="num">Chậm tiến độ</th><th class="num">Đang thực hiện</th><th class="num">Đã hoàn thành</th><th class="num">Tổng</th></tr></thead><tbody>
+<tr><td>Văn phòng Sở</td><td class="num">2</td><td class="num">8</td><td class="num">15</td><td class="num"><b>25</b></td></tr><tr><td>Phòng GD Trung học</td><td class="num">5</td><td class="num">12</td><td class="num">21</td><td class="num"><b>38</b></td></tr><tr><td>Phòng GD Mầm non - Tiểu học</td><td class="num">2</td><td class="num">9</td><td class="num">17</td><td class="num"><b>28</b></td></tr><tr><td>Phòng Khảo thí & KĐCL</td><td class="num">4</td><td class="num">6</td><td class="num">11</td><td class="num"><b>21</b></td></tr><tr><td>Phòng Tổ chức cán bộ</td><td class="num">1</td><td class="num">4</td><td class="num">9</td><td class="num"><b>14</b></td></tr><tr><td>Phòng Kế hoạch - Tài chính</td><td class="num">0</td><td class="num">7</td><td class="num">13</td><td class="num"><b>20</b></td></tr><tr><td>Thanh tra Sở</td><td class="num">2</td><td class="num">3</td><td class="num">6</td><td class="num"><b>11</b></td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+    </div>
+    <div id="p-list" data-qd-tabpanel hidden>
+      <section id="tbl" style="margin-top:12px">
+        <div class="qd-pagerbar">
+        <label class="qd-selectall"><input type="checkbox" data-qd-selectall="tbl"> Select All</label>
+        <div class="qd-pager"><button disabled aria-label="Trang đầu"><svg class="qd-i "><use href="#qd-first"/></svg></button><button disabled aria-label="Trang trước"><svg class="qd-i "><use href="#qd-prev"/></svg></button><span>1-5 of 5</span><button disabled aria-label="Trang sau"><svg class="qd-i "><use href="#qd-next"/></svg></button><button disabled aria-label="Trang cuối"><svg class="qd-i "><use href="#qd-last"/></svg></button></div>
+        <label class="qd-rows">Số dòng <select class="qd-select-native"><option>50</option><option selected>100</option><option>200</option></select></label>
+      </div>
+        <div class="qd-table-wrap"><table class="qd-table">
+          <thead><tr><th class="w-check"></th><th>STT</th><th>Tên công việc</th><th>ĐV chủ trì</th><th>Người phụ trách</th><th>Hạn</th><th>Trạng thái</th></tr></thead>
+          <tbody>
+          <tr><td class="w-check"><input type="checkbox"></td><td>1</td><td><a href="#">Tổng hợp kế hoạch giáo dục các trường THPT năm học 2026-2027</a></td><td>Phòng GD Trung học</td><td>Nguyễn Văn Sơn</td><td>15/10/2026</td><td><span class="st-dot" style="--c:var(--qd-kpi-red)"></span>Chậm tiến độ</td></tr>
+          <tr><td class="w-check"><input type="checkbox"></td><td>2</td><td><a href="#">Báo cáo số liệu thống kê đầu năm học</a></td><td>Văn phòng Sở</td><td>Trần Nhật Hoá</td><td>30/10/2026</td><td><span class="st-dot" style="--c:var(--qd-kpi-blue)"></span>Đang thực hiện</td></tr>
+          <tr><td class="w-check"><input type="checkbox"></td><td>3</td><td><a href="#">Rà soát hồ sơ đăng ký dự thi HSG cấp tỉnh lớp 12</a></td><td>Phòng Khảo thí & KĐCL</td><td>Như Thị Nga</td><td>10/11/2026</td><td><span class="st-dot" style="--c:var(--qd-kpi-blue)"></span>Đang thực hiện</td></tr>
+          <tr><td class="w-check"><input type="checkbox"></td><td>4</td><td><a href="#">Hướng dẫn kiểm tra, đánh giá giữa học kỳ I</a></td><td>Phòng GD Trung học</td><td>Phạm Văn Hải</td><td>20/10/2026</td><td><span class="st-dot" style="--c:var(--qd-kpi-green)"></span>Đã hoàn thành</td></tr>
+          <tr><td class="w-check"><input type="checkbox"></td><td>5</td><td><a href="#">Kiểm tra công tác bán trú các trường tiểu học</a></td><td>Phòng GD Mầm non - Tiểu học</td><td>Lê Thị Lan</td><td>25/10/2026</td><td><span class="st-dot" style="--c:var(--qd-kpi-red)"></span>Chậm tiến độ</td></tr>
+          </tbody></table></div>
+      </section>
+    </div>
+  </div>
+</main>
+<footer class="qd-footer">
+  <h4>Hệ thống do Sở Giáo dục và Đào tạo Bắc Ninh vận hành</h4>
+</footer>
+<script src="../qldt.js"></script>
+<script>
+// Biểu đồ cột chồng ngang: 1 trục, khe 2px giữa các đoạn, đầu cột bo 4px, tooltip khi rê chuột
+(function () {
+  var units = [["Văn phòng Sở", 2, 8, 15], ["Phòng GD Trung học", 5, 12, 21], ["Phòng GD Mầm non - Tiểu học", 2, 9, 17], ["Phòng Khảo thí & KĐCL", 4, 6, 11], ["Phòng Tổ chức cán bộ", 1, 4, 9], ["Phòng Kế hoạch - Tài chính", 0, 7, 13], ["Thanh tra Sở", 2, 3, 6]];
+  var keys = [['Chậm tiến độ', '#FF3823'], ['Đang thực hiện', '#428BCA'], ['Đã hoàn thành', '#008B10']];
+  var W = Math.max(document.getElementById('chart').clientWidth, 320), L = W < 600 ? 150 : 200, R = 40, rowH = 34, barH = 18, T = 8, H = T + units.length * rowH + 30;
+  var max = Math.ceil(Math.max.apply(null, units.map(function (u) { return u[1] + u[2] + u[3]; })) / 10) * 10;
+  var x = function (v) { return L + v / max * (W - L - R); };
+  var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Số công việc theo trạng thái của từng đơn vị">';
+  for (var g = 0; g <= max; g += 10) s += '<line x1="' + x(g) + '" x2="' + x(g) + '" y1="' + T + '" y2="' + (H - 26) + '" stroke="#e5e5e5"/><text x="' + x(g) + '" y="' + (H - 8) + '" font-size="12" fill="#777" text-anchor="middle">' + g + '</text>';
+  units.forEach(function (u, i) {
+    var y = T + i * rowH + (rowH - barH) / 2, acc = 0, total = u[1] + u[2] + u[3];
+    s += '<text x="' + (L - 10) + '" y="' + (y + barH / 2 + 4) + '" font-size="13" fill="#333" text-anchor="end">' + u[0] + '</text>';
+    s += '<g class="bar" data-i="' + i + '">';
+    var parts = keys.map(function (k, j) { return { v: u[j + 1], c: k[1] }; }).filter(function (p) { return p.v > 0; });
+    parts.forEach(function (p, j) {
+      var x0 = x(acc) + (j ? 1 : 0), x1 = x(acc + p.v) - (j < parts.length - 1 ? 1 : 0); acc += p.v;
+      if (j === parts.length - 1) {
+        var r = Math.min(4, x1 - x0);
+        s += '<path d="M' + x0 + ' ' + y + 'H' + (x1 - r) + 'Q' + x1 + ' ' + y + ' ' + x1 + ' ' + (y + r) + 'V' + (y + barH - r) + 'Q' + x1 + ' ' + (y + barH) + ' ' + (x1 - r) + ' ' + (y + barH) + 'H' + x0 + 'Z" fill="' + p.c + '"/>';
+      } else s += '<rect x="' + x0 + '" y="' + y + '" width="' + (x1 - x0) + '" height="' + barH + '" fill="' + p.c + '"/>';
+    });
+    s += '<rect x="' + L + '" y="' + (T + i * rowH) + '" width="' + (W - L) + '" height="' + rowH + '" fill="transparent"/></g>';
+    s += '<text x="' + (x(total) + 6) + '" y="' + (y + barH / 2 + 4) + '" font-size="12" fill="#555">' + total + '</text>';
+  });
+  var box = document.getElementById('chart');
+  box.innerHTML = s + '</svg><div class="chart-tip" hidden></div>';
+  var tip = box.querySelector('.chart-tip');
+  box.addEventListener('mousemove', function (e) {
+    var g = e.target.closest('.bar');
+    if (!g) { tip.hidden = true; return; }
+    var u = units[+g.dataset.i], r = box.getBoundingClientRect();
+    tip.innerHTML = '<b>' + u[0] + '</b>' + keys.map(function (k, j) { return '<div><span><i style="background:' + k[1] + '"></i>' + k[0] + '</span><span>' + u[j + 1] + '</span></div>'; }).join('');
+    tip.hidden = false;
+    tip.style.left = Math.min(e.clientX - r.left + 14, r.width - 190) + 'px';
+    tip.style.top = (e.clientY - r.top + 14) + 'px';
+  });
+  box.addEventListener('mouseleave', function () { tip.hidden = true; });
+  document.getElementById('chart-toggle').addEventListener('click', function () {
+    var t = document.getElementById('chart-table'), showTable = t.hidden;
+    t.hidden = !showTable; box.hidden = showTable;
+    this.textContent = showTable ? 'Xem dạng biểu đồ' : 'Xem dạng bảng';
+  });
+})();
+</script>
+</body>
+</html>

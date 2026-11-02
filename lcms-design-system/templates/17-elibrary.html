@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LCMS · Thư viện điện tử</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../lcms.css">
+<style>
+  .has-browser .lc-layout, .has-browser .lc-main { height: calc(100vh - 44px); }
+  .has-browser .lc-overlay { top: 44px; }
+  .has-browser .lc-modal { max-height: calc(100vh - 44px - 32px); }
+  .lesson { max-width: 980px; margin: 0 auto; }
+  .lesson-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 16px 18px; }
+  .lesson-head h2 { font-size: 18px; font-weight: 600; color: var(--lc-text-strong); flex: 1; }
+  .mat { display: flex; align-items: center; gap: 12px; padding: 12px 18px; border-top: 1px solid var(--lc-divider); }
+  .mat .lc-thumb { width: 44px; height: 44px; font-size: 11px; }
+  .mat .t { flex: 1; min-width: 0; }
+  .mat b { display: block; color: var(--lc-primary); font-weight: 600; }
+  .mat small { color: var(--lc-text-secondary); font-size: 12px; }
+  .mat.is-new { background: #f6ffed; }
+  .libtag { display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 8px; border-radius: 11px; background: #fff0f6; color: #c41d7f; font-size: 12px; font-weight: 600; }
+  .lc-thumb--lib { background: #fff0f6; color: #c41d7f; }
+  .conn { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; background: var(--lc-success-2-bg); color: var(--lc-success-2); font-size: 13px; font-weight: 600; }
+  .books { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; }
+  .book { border: 2px solid transparent; border-radius: 12px; padding: 8px; cursor: pointer; background: #fff; }
+  .book:hover { border-color: var(--lc-primary-soft); }
+  .book.is-sel { border-color: var(--lc-primary); background: var(--lc-primary-soft); }
+  .cover { aspect-ratio: 3/4; border-radius: 6px; padding: 12px 10px; display: flex; flex-direction: column; justify-content: space-between; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,.15); }
+  .cover b { font-size: 14px; line-height: 1.3; }
+  .cover small { font-size: 10px; opacity: .85; }
+  .book h4 { font-size: 13px; font-weight: 600; margin-top: 8px; line-height: 1.35; color: var(--lc-text-strong); }
+  .book p { font-size: 12px; color: var(--lc-text-secondary); }
+  .ftabs { display: flex; gap: 8px; flex-wrap: wrap; }
+  .ftabs button { height: 30px; padding: 0 12px; border-radius: 15px; border: 1px solid var(--lc-border); background: #fff; font: 600 13px var(--lc-font); color: var(--lc-text-tertiary); cursor: pointer; }
+  .ftabs button.is-on { border-color: var(--lc-primary); background: var(--lc-primary-soft); color: var(--lc-primary); }
+  /* Chuyển sang thư viện */
+  .switch { position: fixed; inset: 0; z-index: 1200; background: #fff; display: flex; flex-direction: column; }
+  .switch .lc-browser { flex: none; }
+  .sso { flex: 1; display: grid; place-items: center; background: #f4f7fb; }
+  .sso__box { width: 100%; max-width: 460px; padding: 28px; border-radius: 16px; background: #fff; box-shadow: var(--lc-sh-pop); }
+  .sso__step { display: flex; gap: 10px; align-items: center; padding: 8px 0; font-size: 14px; color: var(--lc-text-secondary); }
+  .sso__step .d { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: #f0f2f5; font-size: 12px; flex: none; }
+  .sso__step.is-ok { color: var(--lc-text-strong); }
+  .sso__step.is-ok .d { background: var(--lc-success-2); color: #fff; }
+  .sso__step.is-run .d { border: 2px solid var(--lc-primary); border-top-color: transparent; animation: spin .8s linear infinite; background: none; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .lib { flex: 1; overflow: auto; background: #fffaf3; }
+  .lib__top { display: flex; align-items: center; gap: 14px; height: 64px; padding: 0 28px; background: #8c1d40; color: #fff; }
+  .lib__top b { font-size: 18px; }
+  .lib__top .who { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 14px; }
+  .lib__body { max-width: 1100px; margin: 0 auto; padding: 24px; }
+  .shelf { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; margin-top: 12px; }
+  .shelf .cover { cursor: pointer; }
+  @media (max-width: 1000px) { .shelf { grid-template-columns: repeat(3, 1fr); } }
+</style>
+</head>
+<body class="has-browser">
+<div class="lc-browser"><div class="lc-browser__nav"><span>‹</span><span>›</span><span>⟳</span></div><div class="lc-browser__url">🔒 <span><b>https://</b>lcms.bacninh.edu.vn/bai-hoc/toan-10/he-thuc-luong</span></div><span class="lc-browser__tag">Trình duyệt mô phỏng</span></div>
+<div class="lc-layout">
+  <aside class="lc-sider">
+    <div class="lc-sider__logo"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></div>
+    <nav class="lc-menu" data-demo-menu="khoahoc"></nav>
+  </aside>
+  <div class="lc-main">
+    <header class="lc-header">
+      <button class="lc-burger" data-lc-collapse aria-label="Thu gọn menu"><img src="../assets/icons/menu.svg" alt=""></button>
+      <h1 class="lc-page-title"><a href="04-detail-chapters.html" style="color:inherit">Toán 10 – Lớp 10A1</a> › Chương IV › <em>Hệ thức lượng trong tam giác</em></h1>
+      <div class="lc-header__actions" style="margin-left:auto;display:flex;gap:14px;align-items:center">
+        <button class="lc-btn lc-btn--outline lc-btn--sm" data-act="goLib"><i data-lucide="library" style="width:16px"></i>Mở Thư viện điện tử</button>
+        <div class="lc-user"><img class="lc-avatar" src="../assets/default-avatar.jpg" alt=""><div><b>Nguyễn Thị Lan</b><span>Giáo viên Toán · THPT Demo số 1</span></div></div>
+      </div>
+    </header>
+    <main class="lc-content lc-content--soft"><div class="lesson">
+      <a class="lc-btn lc-btn--text lc-btn--sm" href="04-detail-chapters.html" style="margin-bottom:10px;padding:0">← Chi tiết khoá học</a>
+      <section class="lc-card">
+        <div class="lesson-head"><h2>Học liệu của bài học</h2><a class="lc-btn lc-btn--text lc-btn--sm" href="../../design-system/templates/14-elibrary.html?from=lms" target="_blank"><i data-lucide="eye" style="width:15px"></i>Xem như học sinh</a><button class="lc-btn lc-btn--primary lc-btn--sm" data-act="openPick"><i data-lucide="book-plus" style="width:16px"></i>Gán từ Thư viện điện tử</button></div>
+        <div id="mats"></div>
+      </section>
+      <div class="lc-callout" style="margin-top:14px">Học liệu từ Thư viện điện tử được liên kết, không sao chép. Sách vẫn do thư viện quản lý bản quyền và lượt mượn.</div>
+    </div></main>
+  </div>
+</div>
+
+<!-- Chọn sách từ thư viện -->
+<div class="lc-overlay" id="mPick" hidden>
+  <div class="lc-modal lc-modal--lg" role="dialog" aria-labelledby="mPickTitle" style="max-width:980px">
+    <div class="lc-modal__head"><h3 id="mPickTitle">Gán học liệu từ <em>Thư viện điện tử</em></h3><button class="lc-modal__close" data-lc-close aria-label="Đóng">×</button></div>
+    <div class="lc-modal__body lc-stack" style="gap:14px">
+      <div class="conn"><i data-lucide="link-2" style="width:16px"></i>Đã kết nối Thư viện điện tử Bắc Ninh bằng tài khoản giáo viên hiện tại · không cần đăng nhập lại</div>
+      <div class="lc-row" style="flex-wrap:wrap"><div class="lc-search--round" style="flex:1;min-width:240px"><input id="bq" placeholder="Tìm sách, tác giả, chủ đề…" aria-label="Tìm trong thư viện"><button aria-label="Tìm"><i data-lucide="search" style="width:16px"></i></button></div><div class="ftabs" id="ftabs"></div></div>
+      <div class="books" id="books"></div>
+      <div id="pickCfg"></div>
+    </div>
+    <div class="lc-modal__foot"><button class="lc-btn lc-btn--outline" data-lc-close>Huỷ</button><button class="lc-btn lc-btn--primary" data-act="attach" id="attachBtn" disabled>Gắn vào bài học</button></div>
+  </div>
+</div>
+
+<div class="switch" id="sw" hidden></div>
+
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../lcms.js"></script>
+<script src="../lcms-demo.js"></script>
+<script>
+(function () {
+  var D = LcDemo, esc = D.esc, $ = function (id) { return document.getElementById(id); };
+  var BOOKS = [
+    { id: 'b1', type: 'sgk', title: 'Sách giáo khoa Toán 10 – Tập một', sub: 'Chương IV: Hệ thức lượng trong tam giác', pages: 132, color: '#1579ad', chapters: ['Chương IV · Bài 1: Giá trị lượng giác của một góc', 'Chương IV · Bài 2: Định lí côsin và định lí sin', 'Chương IV · Bài 3: Giải tam giác và ứng dụng thực tế'] },
+    { id: 'b2', type: 'tk', title: 'Bài tập Hình học 10 nâng cao', sub: 'Tuyển chọn 300 bài', pages: 210, color: '#2f9e44', chapters: ['Phần 1: Vectơ', 'Phần 2: Hệ thức lượng'] },
+    { id: 'b3', type: 'tk', title: 'Toán học và đời sống: Đo đạc', sub: 'Ứng dụng lượng giác', pages: 96, color: '#d46b08', chapters: ['Đo chiều cao', 'Đo khoảng cách'] },
+    { id: 'b4', type: 'tc', title: 'Tạp chí Toán tuổi trẻ số 10/2026', sub: 'Chuyên đề tam giác', pages: 48, color: '#722ed1', chapters: ['Toàn bộ số tạp chí'] },
+    { id: 'b5', type: 'sgk', title: 'Sách giáo khoa Toán 10 – Tập hai', sub: 'Thống kê và Xác suất', pages: 120, color: '#0958d9', chapters: ['Chương VI: Thống kê'] },
+    { id: 'b6', type: 'tk', title: 'Sổ tay công thức Toán THPT', sub: 'Tra cứu nhanh', pages: 64, color: '#c41d7f', chapters: ['Lượng giác', 'Hình học phẳng'] }
+  ];
+  var TYPES = [['all', 'Tất cả'], ['sgk', 'Sách giáo khoa'], ['tk', 'Sách tham khảo'], ['tc', 'Tạp chí']];
+  var MATS = [
+    { kind: 'video', title: 'Video: Định lí sin trong đo đạc thực tế', meta: '04:15 · Kho Sở' },
+    { kind: 'pdf', title: 'Phiếu bài tập: Giải tam giác', meta: '4 trang · Của tôi' }
+  ];
+  var type = 'all', sel = null, chap = 1, view = 'embed';
+
+  function cover(b) { return '<div class="cover" style="background:linear-gradient(160deg,' + b.color + ',' + b.color + 'cc)"><small>THƯ VIỆN ĐIỆN TỬ BẮC NINH</small><b>' + esc(b.title) + '</b><small>' + b.pages + ' trang</small></div>'; }
+  function renderMats() {
+    $('mats').innerHTML = MATS.map(function (m) {
+      var lib = m.kind === 'lib';
+      return '<div class="mat' + (m.isNew ? ' is-new' : '') + '"><span class="lc-thumb lc-thumb--' + (lib ? 'lib' : m.kind) + '">' + (lib ? 'SÁCH' : m.kind.toUpperCase()) + '</span><div class="t"><b>' + esc(m.title) + '</b><small>' + esc(m.meta) + '</small></div>' +
+        (lib ? '<span class="libtag"><i data-lucide="library" style="width:13px"></i>Thư viện điện tử</span><button class="lc-btn lc-btn--text lc-btn--sm" data-act="goLib">Mở trong thư viện ↗</button>' : '') + '</div>';
+    }).join('');
+    D.icons();
+  }
+  function renderPick() {
+    var q = $('bq').value.trim().toLowerCase();
+    $('ftabs').innerHTML = TYPES.map(function (t) { return '<button class="' + (type === t[0] ? 'is-on' : '') + '" data-type="' + t[0] + '">' + t[1] + '</button>'; }).join('');
+    var list = BOOKS.filter(function (b) { return (type === 'all' || b.type === type) && (!q || (b.title + ' ' + b.sub).toLowerCase().indexOf(q) >= 0); });
+    $('books').innerHTML = list.map(function (b) { return '<div class="book' + (sel === b ? ' is-sel' : '') + '" data-book="' + b.id + '" tabindex="0" role="button">' + cover(b) + '<h4>' + esc(b.title) + '</h4><p>' + esc(b.sub) + '</p></div>'; }).join('') || '<p class="lc-muted">Không tìm thấy sách phù hợp.</p>';
+    $('pickCfg').innerHTML = sel ? '<div class="lc-card lc-card--pad" style="border:1px solid var(--lc-divider);box-shadow:none"><div class="lc-form" style="grid-template-columns:1fr 1fr">' +
+      '<div class="lc-field"><label class="lc-label" for="fChap">Phạm vi gắn</label><select class="lc-select" id="fChap">' + sel.chapters.map(function (c, i) { return '<option value="' + i + '"' + (i === chap ? ' selected' : '') + '>' + esc(c) + '</option>'; }).join('') + '<option value="-1">Cả cuốn sách</option></select></div>' +
+      '<div class="lc-field"><span class="lc-label">Chế độ xem</span><div class="lc-stack" style="gap:6px"><label class="lc-radio"><input type="radio" name="view" value="embed"' + (view === 'embed' ? ' checked' : '') + '>Xem trực tuyến ngay trong bài</label><label class="lc-radio"><input type="radio" name="view" value="tab"' + (view === 'tab' ? ' checked' : '') + '>Mở trong Thư viện điện tử (tab mới)</label></div></div></div></div>' : '';
+    $('attachBtn').disabled = !sel;
+    D.icons();
+  }
+
+  // Chuyển hệ thống: LCMS cấp mã ngắn hạn → Thư viện xác minh → mở phiên, không hiện màn đăng nhập
+  function goLib() {
+    var sw = $('sw');
+    sw.hidden = false;
+    sw.innerHTML = '<div class="lc-browser"><div class="lc-browser__nav"><span>‹</span><span>›</span><span>⟳</span></div><div class="lc-browser__url" id="swUrl">🔒 <span><b>https://</b>lcms.bacninh.edu.vn/lien-thong/thu-vien?redirect=/sach</span></div><span class="lc-browser__tag">Trình duyệt mô phỏng</span></div>' +
+      '<div class="sso"><div class="sso__box"><b style="font-size:16px">Đang chuyển sang Thư viện điện tử…</b><p class="lc-caption" style="margin:4px 0 12px">Xác thực tự động giữa hai hệ thống</p>' +
+      ['LCMS cấp mã truy cập dùng một lần (hiệu lực 60 giây)', 'Thư viện điện tử xác minh mã và ánh xạ tài khoản giáo viên', 'Mở phiên làm việc tại Thư viện'].map(function (s, i) { return '<div class="sso__step" id="ss' + i + '"><span class="d">' + (i + 1) + '</span>' + s + '</div>'; }).join('') + '</div></div>';
+    var urls = ['thuvien.bacninh.edu.vn/xac-thuc/lcms?code=7f3a9c…&state=b21e', 'thuvien.bacninh.edu.vn/xac-thuc/lcms/xac-minh', 'thuvien.bacninh.edu.vn/sach'];
+    [0, 1, 2].forEach(function (i) {
+      setTimeout(function () { if (i) $('ss' + (i - 1)).className = 'sso__step is-ok'; $('ss' + i).className = 'sso__step is-run'; $('swUrl').innerHTML = '🔒 <span><b>https://</b>' + urls[i] + '</span>'; }, 250 + i * 550);
+    });
+    setTimeout(showLibrary, 250 + 3 * 550);
+  }
+  function showLibrary() {
+    var sw = $('sw');
+    sw.innerHTML = '<div class="lc-browser"><div class="lc-browser__nav"><span>‹</span><span>›</span><span>⟳</span></div><div class="lc-browser__url">🔒 <span><b>https://</b>thuvien.bacninh.edu.vn/sach</span></div><span class="lc-browser__tag">Trình duyệt mô phỏng</span></div>' +
+      '<div class="lib"><div class="lib__top"><i data-lucide="library" style="width:26px;height:26px"></i><b>Thư viện điện tử Bắc Ninh</b><div class="who"><span>Xin chào, <b style="font-size:14px">Nguyễn Thị Lan</b></span><img class="lc-avatar" src="../assets/default-avatar.jpg" alt="" style="width:34px;height:34px"><button class="lc-btn lc-btn--sm" style="background:#fff;color:#8c1d40" data-act="backLcms">← Quay lại LCMS</button></div></div>' +
+      '<div class="lib__body"><div class="lc-callout lc-callout--warn" style="margin-bottom:18px"><b>Không có màn hình đăng nhập.</b> Đây là cơ chế xác thực tự động giữa LCMS và Thư viện điện tử; không phải đăng nhập một cửa toàn tỉnh (SSO) hay tích hợp VNeID, hai nội dung này nằm ngoài phạm vi.</div>' +
+      '<h3 class="lc-h3">Sách đã gắn vào bài học của tôi</h3><div class="shelf">' + BOOKS.filter(function (b) { return MATS.some(function (m) { return m.book === b.id; }); }).map(cover).join('') + '</div>' +
+      '<h3 class="lc-h3" style="margin-top:24px">Mới cập nhật</h3><div class="shelf">' + BOOKS.map(cover).join('') + '</div></div></div>';
+    D.icons();
+  }
+
+  document.addEventListener('click', function (e) {
+    var el;
+    if ((el = e.target.closest('[data-book]'))) { sel = BOOKS.find(function (b) { return b.id === el.dataset.book; }); chap = Math.min(1, sel.chapters.length - 1); return renderPick(); }
+    if ((el = e.target.closest('[data-type]'))) { type = el.dataset.type; return renderPick(); }
+    if ((el = e.target.closest('[data-act]'))) {
+      var a = el.dataset.act;
+      if (a === 'openPick') { $('mPick').hidden = false; renderPick(); }
+      if (a === 'attach') {
+        var c = $('fChap').value, scope = c === '-1' ? 'Cả cuốn' : sel.chapters[+c];
+        MATS.forEach(function (m) { m.isNew = false; });
+        MATS.push({ kind: 'lib', book: sel.id, isNew: true, title: sel.title, meta: scope + ' · ' + (view === 'embed' ? 'Nhúng trong bài học' : 'Mở ở tab mới') });
+        $('mPick').hidden = true; renderMats(); D.toast('Đã gắn “' + esc(sel.title) + '” vào bài học');
+      }
+      if (a === 'goLib') goLib();
+      if (a === 'backLcms') { $('sw').hidden = true; $('sw').innerHTML = ''; }
+    }
+  });
+  document.addEventListener('change', function (e) { if (e.target.name === 'view') view = e.target.value; if (e.target.id === 'fChap') chap = +e.target.value; });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.dataset.book) e.target.click(); });
+  $('bq').addEventListener('input', renderPick);
+  renderMats();
+})();
+</script>
+</body>
+</html>

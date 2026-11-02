@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QLĐT · Báo cáo điều hành</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../qldt.css">
+<style>
+.dash-filter { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--qd-divider); }
+.chart svg { width: 100%; height: auto; display: block; font-family: var(--qd-font); }
+.chart { position: relative; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; padding: 0 0 8px; }
+.chart-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.chart-legend span::before { content: ""; width: 10px; height: 10px; border-radius: 2px; background: var(--c); }
+.chart-legend span.line::before { height: 0; border-top: 2px dashed var(--c); background: none; }
+.chart-tip { position: absolute; pointer-events: none; background: #fff; border: 1px solid #ddd; border-radius: 4px; box-shadow: var(--qd-sh-drop); padding: 8px 10px; font-size: 13px; min-width: 170px; z-index: 5; }
+.chart-tip b { display: block; margin-bottom: 4px; }
+.chart-tip div { display: flex; justify-content: space-between; gap: 12px; }
+.chart-tip i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; }
+.panel-tools { margin-left: auto; }
+.qd-report > section { padding-top: 16px; }
+.rep-meta { font-size: 13px; color: var(--qd-text-muted); margin-left: auto; }
+</style>
+</head>
+<body>
+<header class="qd-header">
+  <div class="qd-container qd-header__in">
+    <a class="qd-brand" href="02-home-modules.html">
+      <span class="qd-brand__logo"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></span>
+      <span><span class="qd-brand__name">Sở Giáo dục và Đào tạo Bắc Ninh</span><br><span class="qd-brand__sub">Hệ thống quản trị đào tạo trực tuyến</span></span>
+    </a>
+    <div class="qd-header__right">
+      <div class="qd-header__tools">
+        <button class="qd-hicon" aria-label="Lịch"><svg class="qd-i "><use href="#qd-calendar"/></svg></button>
+        <button class="qd-hicon" aria-label="Cài đặt"><svg class="qd-i "><use href="#qd-settings"/></svg></button>
+        <button class="qd-lang">VI</button>
+        <span class="qd-vsep"></span>
+        <button class="qd-hicon" aria-label="Việc cần làm"><svg class="qd-i "><use href="#qd-clipboard"/></svg></button>
+        <button class="qd-hicon qd-hicon--bell" aria-label="Thông báo"><svg class="qd-i "><use href="#qd-bell"/></svg><span class="qd-hicon__badge">6</span></button>
+        <button class="qd-user"><img src="../assets/default-avatar.jpg" alt=""><span>Nguyễn Văn Sơn</span><svg class="qd-i "><use href="#qd-chevron-down"/></svg></button>
+      </div>
+      <div class="qd-week">Năm học <b>2026-2027</b> · Tuần <b>9</b> (Học kỳ <b>I</b>): <a href="#">02/11 - 07/11</a></div>
+    </div>
+  </div>
+</header>
+<nav class="qd-nav">
+  <div class="qd-container qd-nav__in">
+      <div class="qd-nav__item" data-nav="dashboard"><a class="qd-nav__link" href="08-management-dashboard.html">Dashboard</a></div>
+      <div class="qd-nav__item" data-nav="tong-quan"><a class="qd-nav__link" href="09-executive-report.html#tong-quan">Tổng quan</a></div>
+      <div class="qd-nav__item" data-nav="nguoi-dung"><button class="qd-nav__link">Người dùng</button><div class="qd-menu"><a href="09-executive-report.html#nguoi-dung">Hoạt động người dùng</a><a href="09-executive-report.html#khao-sat">Khảo sát người dùng</a></div></div>
+      <div class="qd-nav__item" data-nav="day-hoc"><button class="qd-nav__link">Dạy và học</button><div class="qd-menu"><a href="09-executive-report.html#day-hoc">Hoạt động dạy và học</a><a href="09-executive-report.html#chat-luong">Chất lượng dạy và học</a></div></div>
+      <div class="qd-nav__item" data-nav="tan-suat"><button class="qd-nav__link">Tần suất</button><div class="qd-menu"><a href="09-executive-report.html#tan-suat-hs">Tần suất học tập của học sinh</a><a href="09-executive-report.html#tan-suat-gv">Giảng dạy online của giáo viên</a></div></div>
+      <div class="qd-nav__item" data-nav="ky-thi"><a class="qd-nav__link" href="09-executive-report.html#ky-thi">Kỳ thi chung</a></div>
+      <div class="qd-nav__item" data-nav="hoc-lieu"><a class="qd-nav__link" href="09-executive-report.html#hoc-lieu">Học liệu</a></div>
+      <div class="qd-nav__item" data-nav="ha-tang"><a class="qd-nav__link" href="09-executive-report.html#ha-tang">Hạ tầng</a></div>
+      <div class="qd-nav__item" data-nav="xep-hang"><a class="qd-nav__link" href="09-executive-report.html#xep-hang">Xếp hạng</a></div>
+    <div class="qd-nav__right">
+      <div class="qd-role">
+        <button class="qd-role__btn"><span>Quản lý Sở</span></button>
+        <div class="qd-role__menu">
+          <small>Sở Giáo dục và Đào tạo Bắc Ninh</small>
+          <a href="#" data-short="Lãnh đạo Sở">Lãnh đạo Sở</a>
+          <a href="#" class="is-selected" data-short="Quản lý Sở">Chuyên viên Phòng GD Trung học</a>
+          <small>UBND Phường Kinh Bắc</small>
+          <a href="#" data-short="Quản lý phường">Cán bộ phụ trách giáo dục</a>
+          <small>Trường THPT Hàn Thuyên</small>
+          <a href="#" data-short="Hiệu trưởng">Hiệu trưởng</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<main class="qd-wrap">
+  <div class="dash-filter">
+    <span class="qd-filter-tag"><svg class="qd-i "><use href="#qd-funnel"/></svg> Phạm vi</span>
+    <div class="qd-seg" aria-label="Cấp quản lý"><button class="is-active">Toàn tỉnh</button><button>Xã/phường</button><button>Trường</button></div>
+    <select class="qd-select-native" aria-label="Cấp học"><option>Tất cả cấp học</option><option>Tiểu học</option><option>THCS</option><option>THPT</option><option>GDTX</option></select>
+    <label class="qd-muted" for="range" style="font-size:14px">Kỳ báo cáo</label>
+    <select class="qd-select-native" aria-label="Kỳ báo cáo" id="range">
+      <optgroup label="Tháng"><option data-cmp="tháng 9/2026" data-end="31/10/2026">Tháng 10/2026</option><option data-cmp="tháng 8/2026" data-end="30/09/2026">Tháng 9/2026</option></optgroup>
+      <optgroup label="Học kỳ"><option data-cmp="HK I 2025-2026" data-end="31/05/2026">HK II 2025-2026</option><option data-cmp="HK II 2024-2025" data-end="15/01/2026">HK I 2025-2026</option></optgroup>
+      <optgroup label="Năm học"><option data-cmp="năm học 2024-2025" data-end="31/05/2026">Năm học 2025-2026</option></optgroup>
+    </select>
+    <span class="rep-meta" id="rep-meta"></span>
+    <a class="qd-btn qd-btn--link qd-btn--sm" href="#" onclick="QD.toast('Đang tạo file PDF báo cáo…', 'info');return false">Xuất PDF</a>
+    <a class="qd-btn qd-btn--link qd-btn--sm" href="#" onclick="QD.toast('Đang tạo file Excel báo cáo…', 'info');return false">Xuất Excel</a>
+  </div>
+  <div class="qd-report">
+    <section id="sec-tong-quan" data-sec-panel="tong-quan">
+      <div class="qd-rhead"><h2>Tổng quan điều hành</h2><div class="qd-basis">Căn cứ: <span>QĐ 4725/QĐ-BGDĐT · Nhóm 1 "Chuyển đổi số trong dạy, học"</span></div><p>Báo cáo tổng hợp định kỳ: số liệu chốt cuối kỳ báo cáo, so sánh với kỳ trước. Bấm từng mục trên menu để xem báo cáo chi tiết.</p></div>
+      <div class="qd-stats-row" id="tong-quan-stats"></div>
+      <div class="qd-dash-grid">
+      <div class="qd-panel">
+        <div class="qd-panel__head qd-row"><span>Tỉ lệ sử dụng hệ thống theo cấp học (%)</span><button class="qd-btn qd-btn--link qd-btn--sm panel-tools" data-table="ov1">Xem dạng bảng</button></div>
+        <div class="qd-panel__body"><div class="chart" id="ov1"></div><div id="ov1-table" hidden></div></div>
+      </div><div class="qd-panel">
+        <div class="qd-panel__head qd-row"><span>Mức hoàn thành khoá học theo tiến độ (%)</span><button class="qd-btn qd-btn--link qd-btn--sm panel-tools" data-table="ov2">Xem dạng bảng</button></div>
+        <div class="qd-panel__body"><div class="chart-legend" id="ov2-legend"></div><div class="chart" id="ov2"></div><div id="ov2-table" hidden></div></div>
+      </div><div class="qd-panel">
+        <div class="qd-panel__head qd-row"><span>Kỳ thi chung trong kỳ</span><span class="panel-tools qd-muted" style="font-size:13px"></span></div>
+        <div class="qd-table-wrap" style="border:0"><table class="qd-table" id="ov-exam"></table></div>
+      </div><div class="qd-panel">
+        <div class="qd-panel__head qd-row"><span>Đơn vị dẫn đầu (theo trọng số ở mục Xếp hạng)</span><span class="panel-tools qd-muted" style="font-size:13px"></span></div>
+        <div class="qd-table-wrap" style="border:0"><table class="qd-table" id="ov-top"></table></div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-nguoi-dung" data-sec-panel="nguoi-dung" hidden>
+      <div class="qd-rhead"><h2>Hoạt động người dùng trên hệ thống</h2><div class="qd-basis">Căn cứ: <span>QĐ 4725/QĐ-BGDĐT · 1.6 (tài khoản GV)</span><span>QĐ 4725/QĐ-BGDĐT · 1.3</span></div><p>Tần suất và tỉ lệ sử dụng trong kỳ báo cáo theo ngày, theo tổ chức; thời lượng và khung giờ sử dụng. Tỉ lệ sử dụng = tài khoản có ít nhất 1 phiên trong kỳ / tài khoản đã cấp tại ngày chốt.</p></div>
+      <div class="qd-stats-row" id="nguoi-dung-stats"></div>
+      <div class="qd-dash-grid">
+      <div class="qd-panel wide">
+        <div class="qd-panel__head qd-row"><span>Tỉ lệ người dùng hoạt động theo ngày trong kỳ, theo vai trò (%)</span><button class="qd-btn qd-btn--link qd-btn--sm panel-tools" data-table="u1">Xem dạng bảng</button></div>
+        <div class="qd-panel__body"><div class="chart-legend" id="u1-legend"></div><div class="chart" id="u1"></div><div id="u1-table" hidden></div></div>
+      </div><div class="qd-panel wide">
+        <div class="qd-panel__head qd-row"><span>Khung giờ sử dụng trong kỳ: số phiên trung bình (nghìn) theo thứ và giờ</span><button class="qd-btn qd-btn--link qd-btn--sm panel-tools" data-table="u2">Xem dạng bảng</button></div>
+        <div class="qd-panel__body"><div class="chart-legend" id="u2-legend"></div><div class="chart" id="u2"></div><div id="u2-table" hidden></div></div>
+      </div><div class="qd-panel wide">
+        <div class="qd-panel__head qd-row"><span>Tỉ lệ sử dụng trong kỳ theo tổ chức</span><span class="panel-tools qd-muted" style="font-size:13px">Đỏ: tỉ lệ sử dụng dưới 50%</span></div>
+        <div class="qd-table-wrap" style="border:0"><table class="qd-table" id="u-tbl"></table></div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-day-hoc" data-sec-panel="day-hoc" hidden>
+      <div class="qd-rhead"><h2>Hoạt động dạy và học</h2><div class="qd-basis">Căn cứ: <span>QĐ 4725/QĐ-BGDĐT · 1.3 (LMS: 4 chức năng)</span><span>QĐ 4725/QĐ-BGDĐT · 1.6</span></div><p>Khoá học, tài nguyên được tạo, lượt tương tác với tài nguyên, tỉ lệ học sinh tham gia, tỉ lệ dùng chế độ học có AI, mức hoàn thành khoá học theo tiến độ.</p></div>
+      <div class="qd-stats-row" id="day-hoc-stats"></div>
+      <div class="qd-dash-grid">
+      <div class="qd-panel">
+        <div class="qd-panel__head qd-row"><span>Lượt tương tác với tài nguyên học tập trong kỳ</span><button class="qd-btn qd-btn--link qd-btn--sm panel-tools" data-table="d1">Xem dạng bảng</button></div>
+        <div class="qd-panel__body"><div class="chart" id="d1"></div><div id="d1-table" hidden></div></div>
+      </div><div class="qd-panel">
+        <div class="qd-panel__head qd-row"><span>Tỉ lệ học sinh dùng chế độ học có AI (%)</span><button class="qd-btn qd-btn--link qd-btn--sm panel-tools" data-table="d2">Xem dạng bảng</button></div>
+        <div class="qd-panel__body"><div class="chart" id="d2"></div><div id="d2-table" hidden></div></div>
+      </div><div class="qd-panel">
+        <div class="qd-panel__head qd-row"><span>Tỉ lệ học sinh tham gia khoá học theo tuần của học kỳ (%)</span><button class="qd-btn qd-btn--link qd-btn--sm panel-tools" data-table="d3">Xem dạng bảng</button></div>
+        <div class="qd-panel__body"><div class="chart-legend" id="d3-legend"></div><div class="chart" id="d3"></div><div id="d3-table" hidden></div></div>
+      </div><div class="qd-panel">
+        <div class="qd-panel__head qd-row"><span>Mức hoàn thành khoá học theo tiến độ tại ngày chốt (%)</span><button class="qd-btn qd-btn--link qd-btn--sm panel-tools" data-table="d4">Xem dạng bảng</button></div>
+        <div class="qd-panel__body"><div class="chart-legend" id="d4-legend"></div><div class="chart" id="d4"></div><div id="d4-table" hidden></div></div>
+      </div><div class="qd-panel wide">
+        <div class="qd-panel__head qd-row"><span>Tiêu chí 1.3: mức sử dụng 4 chức năng LMS</span><span class="panel-tools qd-muted" style="font-size:13px">Mỗi chức năng tối đa 6 điểm</span></div>
+        <div class="qd-table-wrap" style="border:0"><table class="qd-table" id="d-tbl"></table></div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-chat-luong" data-sec-panel="chat-luong" hidden>
+      <div class="qd-rhead"><h2>Chất lượng dạy và học</h2><div class="qd-basis">Căn cứ: <span>CT GDPT 2018 · YCCĐ</span><span>TT 22/2021/TT-BGDĐT</span></div><p>Kết quả học tập theo TT 22/2021 và mức độ đáp ứng yêu cầu cần đạt (YCCĐ) của Chương trình GDPT 2018, tính từ bài kiểm tra trên hệ thống có gắn YCCĐ.</p></div>
+      <div class="qd-stats-row" id="chat-luong-stats"></div>
+      <div class="qd-dash-grid">
+      <div class="qd-panel">
+        <div class="qd-panel__head qd-row"><span>Kết quả học tập HK gần nhất theo cấp học (%)</span><button class="qd-btn qd-btn--link qd-btn--sm panel-tools" data-table="q1">Xem dạng bảng</button></div>
+        <div class="qd-panel__body"><div class="chart-legend" id="q1-legend"></div><div class="chart" id="q1"></div><div id="q1-table" hidden></div></div>
+      </div><div class="qd-panel">
+        <div class="qd-panel__head qd-row"><span>Mức đáp ứng yêu cầu cần đạt theo môn (%)</span><button class="qd-btn qd-btn--link qd-btn--sm panel-tools" data-table="q2">Xem dạng bảng</button></div>
+        <div class="qd-panel__body"><div class="chart-legend" id="q2-legend"></div><div class="chart" id="q2"></div><div id="q2-table" hidden></div></div>
+      </div><div class="qd-panel wide">
+        <div class="qd-panel__head qd-row"><span>Đáp ứng YCCĐ theo khối</span><span class="panel-tools qd-muted" style="font-size:13px">Chưa đạt > 10% được đánh dấu</span></div>
+        <div class="qd-table-wrap" style="border:0"><table class="qd-table" id="q-tbl"></table></div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-khao-sat" data-sec-panel="khao-sat" hidden>
+      <div class="qd-rhead"><h2>Hoạt động khảo sát người dùng</h2><div class="qd-basis">Căn cứ: <span>TT 09/2021/TT-BGDĐT · đánh giá dạy học trực tuyến</span></div><p>Các đợt khảo sát giáo viên, học sinh, phụ huynh trên hệ thống: tỉ lệ phản hồi và mức hài lòng (thang 5).</p></div>
+      <div class="qd-stats-row" id="khao-sat-stats"></div>
+      <div class="qd-dash-grid">
+      <div class="qd-panel wide">
+        <div class="qd-panel__head qd-row"><span>Các đợt khảo sát</span><span class="panel-tools qd-muted" style="font-size:13px"></span></div>
+        <div class="qd-table-wrap" style="border:0"><table class="qd-table" id="s-tbl"></table></div>
+      </div><div class="qd-panel wide">
+        <div class="qd-panel__head qd-row"><span>Mức hài lòng trung bình theo nội dung (điểm / 5)</span><button class="qd-btn qd-btn--link qd-btn--sm panel-tools" data-table="s1">Xem dạng bảng</button></div>
+        <div class="qd-panel__body"><div class="chart" id="s1"></div><div id="s1-table" hidden></div></div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-ky-thi" data-sec-panel="ky-thi" hidden>
+      <div class="qd-rhead"><h2>Báo cáo kỳ thi chung</h2><div class="qd-basis">Căn cứ: <span>QĐ 4725/QĐ-BGDĐT · 1.5 (thi, kiểm tra trên máy)</span></div><p>Tổng hợp công tác tổ chức thi, kết quả và phổ điểm của các kỳ thi chung đã chấm xong trong kỳ báo cáo.</p></div>
+      <div class="qd-stats-row" id="ky-thi-stats"></div>
+      <div class="qd-dash-grid">
+      <div class="wide dash-filter" style="border:0;padding:0"><label class="qd-muted" for="exam-sel">Kỳ thi</label><select class="qd-select-native" id="exam-sel"><option>Khảo sát chất lượng lớp 12 lần 1 · Toán (24/10/2026)</option><option>Khảo sát chất lượng lớp 12 lần 1 · Tiếng Anh (25/10/2026)</option></select></div><div class="qd-panel wide">
+        <div class="qd-panel__head qd-row"><span>Tổ chức thi theo điểm thi</span><span class="panel-tools qd-muted" style="font-size:13px"></span></div>
+        <div class="qd-table-wrap" style="border:0"><table class="qd-table" id="e-tbl"></table></div>
+      </div><div class="qd-panel wide">
+        <div class="qd-panel__head qd-row"><span>Phổ điểm (số thí sinh theo khoảng điểm 0,5)</span><button class="qd-btn qd-btn--link qd-btn--sm panel-tools" data-table="e1">Xem dạng bảng</button></div>
+        <div class="qd-panel__body"><div class="chart" id="e1"></div><div id="e1-table" hidden></div></div>
+      </div><div class="qd-panel wide">
+        <div class="qd-panel__head qd-row"><span>Thống kê kết quả theo điểm thi</span><span class="panel-tools qd-muted" style="font-size:13px">Đỏ: tỉ lệ dưới 5 điểm trên 20%</span></div>
+        <div class="qd-table-wrap" style="border:0"><table class="qd-table" id="e-st"></table></div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-hoc-lieu" data-sec-panel="hoc-lieu" hidden>
+      <div class="qd-rhead"><h2>Học liệu và tài nguyên thư viện</h2><div class="qd-basis">Căn cứ: <span>QĐ 4725/QĐ-BGDĐT · 1.4 (học liệu được phê duyệt)</span><span>QĐ 4725/QĐ-BGDĐT · 1.6 (GV xây dựng học liệu)</span></div><p>Số lượng, tình trạng, hiệu quả sử dụng và chất lượng của kho học liệu và kho tài nguyên thư viện. Bộ lọc dưới đây có thể lưu lại để dùng cho các lần đánh giá sau.</p></div>
+      <div class="qd-stats-row" id="hoc-lieu-stats"></div>
+      <div class="qd-dash-grid">
+      <div class="wide qd-filterbar" style="padding:0">
+        <span class="qd-filter-tag"><svg class="qd-i "><use href="#qd-funnel"/></svg> Bộ lọc</span>
+        <select class="qd-select-native" aria-label="Kho"><option>Kho học liệu + Thư viện</option><option>Kho học liệu</option><option>Thư viện số</option></select>
+        <select class="qd-select-native" aria-label="Loại"><option>[Loại học liệu]</option><option>Bài giảng điện tử</option><option>Video</option><option>Ngân hàng câu hỏi</option></select>
+        <select class="qd-select-native" aria-label="Môn"><option>[Môn học]</option><option>Toán</option><option>Ngữ văn</option></select>
+        <select class="qd-select-native" aria-label="Khối"><option>[Khối]</option><option>10</option><option>11</option><option>12</option></select>
+        <select class="qd-select-native" aria-label="Trạng thái"><option>[Trạng thái duyệt]</option><option>Đã phê duyệt</option><option>Chờ duyệt</option></select>
+        <select class="qd-select-native" aria-label="Sử dụng"><option>[Mức sử dụng]</option><option>Không được dùng trong kỳ</option><option>Top 10%</option></select>
+        <button class="qd-btn qd-btn--primary qd-btn--sm" data-qd-loading="600">Áp dụng</button>
+        <button class="qd-btn qd-btn--default qd-btn--sm" onclick="QD.toast('Đã lưu bộ lọc &quot;Học liệu THPT chờ duyệt&quot;', 'success')">Lưu bộ lọc</button>
+      </div><div class="qd-panel">
+        <div class="qd-panel__head qd-row"><span>Số học liệu theo loại</span><button class="qd-btn qd-btn--link qd-btn--sm panel-tools" data-table="l1">Xem dạng bảng</button></div>
+        <div class="qd-panel__body"><div class="chart" id="l1"></div><div id="l1-table" hidden></div></div>
+      </div><div class="qd-panel">
+        <div class="qd-panel__head qd-row"><span>Tình trạng phê duyệt theo cấp học (%)</span><button class="qd-btn qd-btn--link qd-btn--sm panel-tools" data-table="l2">Xem dạng bảng</button></div>
+        <div class="qd-panel__body"><div class="chart-legend" id="l2-legend"></div><div class="chart" id="l2"></div><div id="l2-table" hidden></div></div>
+      </div><div class="qd-panel wide">
+        <div class="qd-panel__head qd-row"><span>Hiệu quả sử dụng trong kỳ theo môn</span><span class="panel-tools qd-muted" style="font-size:13px">Đỏ: hơn 40% học liệu không được dùng trong kỳ</span></div>
+        <div class="qd-table-wrap" style="border:0"><table class="qd-table" id="l-tbl"></table></div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-ha-tang" data-sec-panel="ha-tang" hidden>
+      <div class="qd-rhead"><h2>Quản lý hạ tầng triển khai</h2><div class="qd-basis">Căn cứ: <span>QĐ 4725/QĐ-BGDĐT · 1.7 (hạ tầng, thiết bị)</span><span>TT 09/2021 · hạ tầng kỹ thuật</span></div><p>Tổng hợp vận hành hạ tầng hệ thống trong kỳ báo cáo và hạ tầng, thiết bị tại các cơ sở giáo dục tại ngày chốt.</p></div>
+      <div class="qd-stats-row" id="ha-tang-stats"></div>
+      <div class="qd-dash-grid">
+      <div class="qd-panel wide">
+        <div class="qd-panel__head qd-row"><span>Người dùng đồng thời cao nhất mỗi ngày trong kỳ so với năng lực hệ thống</span><button class="qd-btn qd-btn--link qd-btn--sm panel-tools" data-table="h1">Xem dạng bảng</button></div>
+        <div class="qd-panel__body"><div class="chart-legend" id="h1-legend"></div><div class="chart" id="h1"></div><div id="h1-table" hidden></div></div>
+      </div><div class="qd-panel">
+        <div class="qd-panel__head qd-row"><span>Mức sử dụng tài nguyên theo dịch vụ trong kỳ</span><span class="panel-tools qd-muted" style="font-size:13px"></span></div>
+        <div class="qd-table-wrap" style="border:0"><table class="qd-table" id="h-srv"></table></div>
+      </div><div class="qd-panel">
+        <div class="qd-panel__head qd-row"><span>Tiêu chí 1.7: hạ tầng tại cơ sở giáo dục</span><span class="panel-tools qd-muted" style="font-size:13px"></span></div>
+        <div class="qd-table-wrap" style="border:0"><table class="qd-table" id="h-sch"></table></div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-tan-suat-hs" data-sec-panel="tan-suat-hs" hidden>
+      <div class="qd-rhead"><h2>Yêu cầu cần đạt về tần suất học tập của học sinh</h2><div class="qd-basis">Căn cứ: <span>Yêu cầu do Sở thiết lập</span></div><p>Thiết lập yêu cầu tối thiểu cho từng môn, từng khối. Với mỗi học sinh, % hoàn thành = trung bình các tiêu chí đang áp dụng, mỗi tiêu chí tính bằng thực tế / yêu cầu (tối đa 100%).</p></div>
+      <div class="qd-stats-row" id="tan-suat-hs-stats"></div>
+      <div class="qd-dash-grid">
+      <div class="qd-panel wide">
+        <div class="qd-panel__head qd-row"><span>Thiết lập yêu cầu theo môn, khối</span><span class="panel-tools"></span></div>
+        <div class="qd-panel__body">
+          <div class="dash-filter" style="border:0;padding:0 0 10px">
+            <div class="qd-seg" id="hs-khoi"><button data-k="10" class="is-active">Khối 10</button><button data-k="11">Khối 11</button><button data-k="12">Khối 12</button></div>
+            <select class="qd-select-native" aria-label="Áp dụng cho"><option>Áp dụng: toàn tỉnh</option><option>Áp dụng: Phường Kinh Bắc</option><option>Áp dụng: THPT Hàn Thuyên</option></select>
+            <button class="qd-btn qd-btn--primary qd-btn--sm" onclick="QD.toast('Đã lưu yêu cầu tần suất học tập ' + document.querySelector('#hs-khoi .is-active').textContent, 'success')">Lưu thiết lập</button>
+          </div>
+          <div class="qd-table-wrap"><table class="qd-table qd-reqtbl" id="hs-req"></table></div>
+        </div>
+      </div>
+      <div class="qd-panel wide">
+        <div class="qd-panel__head qd-row"><span id="hs-title">Tỉ lệ hoàn thành của học sinh</span><span class="panel-tools qd-muted" style="font-size:13px" id="hs-sum"></span></div>
+        <div class="qd-panel__body" style="padding-bottom:0">
+          <div class="dash-filter" style="border:0;padding:0 0 10px">
+            <select class="qd-select-native" id="hs-lop" aria-label="Lớp"><option value="10">10A1 · THPT Hàn Thuyên</option><option value="11">11A2 · THPT Hàn Thuyên</option><option value="12">12A3 · THPT Hàn Thuyên</option></select>
+            <select class="qd-select-native" id="hs-ky" aria-label="Kỳ"><option value="hk1">HK I 2026-2027 (đến tuần 9)</option><option value="hk2p">HK II 2025-2026</option><option value="nam">Năm học 2025-2026</option></select>
+            <span class="qd-muted" style="font-size:13px">Đỏ: dưới 70% · Rê chuột vào ô để xem chi tiết</span>
+          </div>
+        </div>
+        <div class="qd-table-wrap" style="border:0"><table class="qd-table" id="hs-tbl"></table></div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-tan-suat-gv" data-sec-panel="tan-suat-gv" hidden>
+      <div class="qd-rhead"><h2>Yêu cầu cần đạt về tần suất giảng dạy online của giáo viên</h2><div class="qd-basis">Căn cứ: <span>Yêu cầu do Sở thiết lập</span></div><p>Thiết lập yêu cầu tối thiểu mỗi tháng cho từng lớp giáo viên phụ trách. Với mỗi giáo viên, % hoàn thành được tính riêng theo từng lớp: trung bình 5 tiêu chí, mỗi tiêu chí = thực tế / yêu cầu (tối đa 100%).</p></div>
+      <div class="qd-stats-row" id="tan-suat-gv-stats"></div>
+      <div class="qd-dash-grid">
+      <div class="qd-panel wide">
+        <div class="qd-panel__head qd-row"><span>Thiết lập yêu cầu (mỗi lớp, mỗi tháng)</span></div>
+        <div class="qd-panel__body">
+          <div class="dash-filter" style="border:0;padding:0 0 10px">
+            <select class="qd-select-native" aria-label="Cấp học"><option>Áp dụng: THPT</option><option>Áp dụng: THCS</option><option>Áp dụng: Tiểu học</option></select>
+            <button class="qd-btn qd-btn--primary qd-btn--sm" onclick="QD.toast('Đã lưu yêu cầu giảng dạy online', 'success')">Lưu thiết lập</button>
+          </div>
+          <div class="qd-table-wrap"><table class="qd-table qd-reqtbl" id="gv-req"></table></div>
+        </div>
+      </div>
+      <div class="qd-panel wide">
+        <div class="qd-panel__head qd-row"><span>Tỉ lệ hoàn thành của giáo viên theo lớp</span><span class="panel-tools qd-muted" style="font-size:13px" id="gv-sum"></span></div>
+        <div class="qd-panel__body" style="padding-bottom:0">
+          <div class="dash-filter" style="border:0;padding:0 0 10px">
+            <select class="qd-select-native" aria-label="Trường"><option>THPT Hàn Thuyên</option><option>THPT Lý Thái Tổ</option></select>
+            <select class="qd-select-native" id="gv-ky" aria-label="Kỳ"><option value="1">Tháng 10/2026</option><option value="0">Tháng 9/2026</option><option value="hk">HK I (luỹ kế tháng 9-10)</option></select>
+            <span class="qd-muted" style="font-size:13px">Ô: thực tế / yêu cầu · Đỏ: chưa đạt</span>
+          </div>
+        </div>
+        <div class="qd-table-wrap" style="border:0"><table class="qd-table" id="gv-tbl"></table></div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-xep-hang" data-sec-panel="xep-hang" hidden>
+      <div class="qd-rhead"><h2>Báo cáo tuỳ chỉnh, xếp hạng đơn vị</h2><div class="qd-basis">Căn cứ: <span>QĐ 4725/QĐ-BGDĐT · Nhóm 1, Nhóm 2</span><span>Thi đua khen thưởng</span></div><p>Chọn tiêu chí và trọng số để xếp hạng đơn vị phục vụ đánh giá, thi đua, khen thưởng. Điểm từng tiêu chí quy về thang 100 trước khi nhân trọng số.</p></div>
+      <div class="qd-stats-row" id="xep-hang-stats"></div>
+      <div class="qd-dash-grid">
+      <div class="qd-panel wide">
+        <div class="qd-panel__head qd-row"><span>Tiêu chí và trọng số</span><span class="panel-tools qd-muted" style="font-size:13px" id="w-sum"></span></div>
+        <div class="qd-panel__body">
+          <div class="dash-filter" style="border:0;padding:0 0 12px">
+            <div class="qd-seg" id="rank-dim"><button class="is-active" data-dim="thpt">Trường THPT</button><button data-dim="xa">Xã/phường</button></div>
+            <select class="qd-select-native" aria-label="Kỳ đánh giá"><option>HK I 2026-2027</option><option>Năm học 2025-2026</option></select>
+            <button class="qd-btn qd-btn--default qd-btn--sm" onclick="QD.toast('Đã lưu mẫu báo cáo &quot;Xếp hạng CĐS HK I&quot;', 'success')">Lưu mẫu báo cáo</button>
+            <button class="qd-btn qd-btn--success qd-btn--sm" onclick="QD.toast('Đang xuất Excel…', 'info')"><svg class="qd-i "><use href="#qd-download"/></svg> Xuất Excel</button>
+          </div>
+          <div class="qd-weights" id="weights"></div>
+        </div>
+      </div><div class="qd-panel wide">
+        <div class="qd-panel__head qd-row"><span>Bảng xếp hạng</span><span class="panel-tools qd-muted" style="font-size:13px">Top 3 và cả 2 nhóm đạt Mức 3: đề xuất khen thưởng</span></div>
+        <div class="qd-table-wrap" style="border:0"><table class="qd-table" id="r-tbl"></table></div>
+      </div>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="qd-footer">
+  <h4>Hệ thống do Sở Giáo dục và Đào tạo Bắc Ninh vận hành</h4>
+</footer>
+<script src="../qldt.js"></script>
+<script>
+// Toàn bộ số liệu là minh hoạ. Mốc điểm, mức theo QĐ 4725/QĐ-BGDĐT (30/12/2022).
+var $ = function (id) { return document.getElementById(id); };
+var fmt = function (n, d) { return typeof n === 'number' ? n.toLocaleString('vi-VN', { maximumFractionDigits: d == null ? 1 : d }) : n; };
+var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+var seed = 7; function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+var ICON = function (n) { return '<svg class="qd-i"><use href="#qd-' + n + '"/></svg>'; };
+
+// Màu: chuỗi danh mục (đã kiểm tra CVD), thang tuần tự 1 sắc xanh, thang phân kỳ cam ↔ xám ↔ xanh
+var CAT = ['#2566BF', '#C07A2C', '#1E8C6E'];
+var KQ = [['Tốt', '#0B3C7A'], ['Khá', '#2566BF'], ['Đạt', '#7FA8DE'], ['Chưa đạt', '#C9D9F0']];
+var DIV = [['Chưa đạt', '#C2622D'], ['Đạt', '#BDBDBD'], ['Vượt', '#2566BF']];
+
+// ---------- helpers biểu đồ ----------
+function tipAt(box, html, e) {
+  var tip = box.querySelector('.chart-tip'), r = box.getBoundingClientRect();
+  tip.innerHTML = html; tip.hidden = false;
+  tip.style.left = Math.max(0, Math.min(e.clientX - r.left + 14, r.width - 190)) + 'px';
+  tip.style.top = (e.clientY - r.top + 14) + 'px';
+}
+function bindTip(box, fn) {
+  box.onmousemove = function (e) { var g = e.target.closest('[data-i]'); if (!g) { box.querySelector('.chart-tip').hidden = true; return; } tipAt(box, fn(g.dataset.i), e); };
+  box.onmouseleave = function () { box.querySelector('.chart-tip').hidden = true; };
+}
+function finish(box, svg) { box.innerHTML = svg + '</svg><div class="chart-tip" hidden></div>'; }
+function W(box) { return Math.max(box.clientWidth, 300); }
+function row(k, v, c) { return '<div><span>' + (c ? '<i style="background:' + c + '"></i>' : '') + k + '</span><span>' + v + '</span></div>'; }
+function legend(id, keys, dashed) { $(id + '-legend').innerHTML = keys.map(function (k, i) { return '<span' + (dashed && dashed[i] ? ' class="line"' : '') + ' style="--c:' + k[1] + '">' + k[0] + '</span>'; }).join(''); }
+function table(id, head, rows) {
+  $(id + '-table').innerHTML = '<div class="qd-table-wrap"><table class="qd-table"><thead><tr>' + head.map(function (h, i) { return '<th' + (i ? ' class="num"' : '') + '>' + h + '</th>'; }).join('') + '</tr></thead><tbody>' +
+    rows.map(function (r) { return '<tr>' + r.map(function (c, i) { return '<td' + (i ? ' class="num"' : '') + '>' + esc(fmt(c)) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
+}
+function niceMax(v) { var p = Math.pow(10, Math.floor(Math.log10(v))), m = v / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 3 ? 3 : m <= 4 ? 4 : m <= 5 ? 5 : m <= 6 ? 6 : m <= 8 ? 8 : 10) * p; }
+function roundEnd(x0, y, x1, h) { var r = Math.min(4, x1 - x0); return 'M' + x0 + ' ' + y + 'H' + (x1 - r) + 'Q' + x1 + ' ' + y + ' ' + x1 + ' ' + (y + r) + 'V' + (y + h - r) + 'Q' + x1 + ' ' + (y + h) + ' ' + (x1 - r) + ' ' + (y + h) + 'H' + x0 + 'Z'; }
+function roundTop(x, y0, w, y1) { var r = Math.min(4, y0 - y1, w / 2); return 'M' + x + ' ' + y0 + 'V' + (y1 + r) + 'Q' + x + ' ' + y1 + ' ' + (x + r) + ' ' + y1 + 'H' + (x + w - r) + 'Q' + (x + w) + ' ' + y1 + ' ' + (x + w) + ' ' + (y1 + r) + 'V' + y0 + 'Z'; }
+
+// Cột ngang 1 chuỗi
+function hbar(id, rows, unit, max) {
+  var box = $(id), w = W(box), L = w < 480 ? 130 : 190, R = 76, rh = 34, bh = 18, H = rows.length * rh + 8;
+  max = max || Math.max.apply(null, rows.map(function (r) { return r[1]; }));
+  var x = function (v) { return L + v / max * (w - L - R); }, s = '<svg viewBox="0 0 ' + w + ' ' + H + '" role="img">';
+  rows.forEach(function (r, i) {
+    var y = 4 + i * rh + (rh - bh) / 2;
+    s += '<g data-i="' + i + '"><rect x="0" y="' + (4 + i * rh) + '" width="' + w + '" height="' + rh + '" fill="transparent"/><text x="' + (L - 10) + '" y="' + (y + 13) + '" font-size="13" fill="#333" text-anchor="end">' + esc(r[0]) + '</text>';
+    s += '<path d="' + roundEnd(L, y, Math.max(x(r[1]), L + 1), bh) + '" fill="#2566BF"/><text x="' + (x(r[1]) + 6) + '" y="' + (y + 13) + '" font-size="12" fill="#555">' + fmt(r[1]) + (unit === '%' ? '%' : '') + '</text></g>';
+  });
+  finish(box, s);
+  bindTip(box, function (i) { return '<b>' + esc(rows[i][0]) + '</b>' + row(unit === '%' ? 'Tỉ lệ' : unit, fmt(rows[i][1]) + (unit === '%' ? '%' : '')); });
+  table(id, ['', unit === '%' ? 'Tỉ lệ (%)' : unit], rows);
+}
+
+// Cột chồng 100%, khe 2px giữa các đoạn
+function stack(id, rows, keys) {
+  var box = $(id), w = W(box), L = w < 480 ? 90 : 110, R = 18, rh = 36, bh = 20, H = rows.length * rh + 28;
+  var x = function (v) { return L + v / 100 * (w - L - R); }, s = '<svg viewBox="0 0 ' + w + ' ' + H + '" role="img">';
+  [0, 25, 50, 75, 100].forEach(function (g) { s += '<line x1="' + x(g) + '" x2="' + x(g) + '" y1="4" y2="' + (H - 22) + '" stroke="#e5e5e5"/><text x="' + x(g) + '" y="' + (H - 6) + '" font-size="11" fill="#777" text-anchor="middle">' + g + '%</text>'; });
+  rows.forEach(function (r, i) {
+    var y = 4 + i * rh + (rh - bh) / 2, acc = 0, n = r[1].length;
+    s += '<g data-i="' + i + '"><rect x="0" y="' + (4 + i * rh) + '" width="' + w + '" height="' + rh + '" fill="transparent"/><text x="' + (L - 10) + '" y="' + (y + 14) + '" font-size="13" fill="#333" text-anchor="end">' + esc(r[0]) + '</text>';
+    r[1].forEach(function (v, j) { var x0 = x(acc) + (j ? 1 : 0); acc += v; var x1 = x(acc) - (j < n - 1 ? 1 : 0); if (x1 > x0) s += '<rect x="' + x0 + '" y="' + y + '" width="' + (x1 - x0) + '" height="' + bh + '" fill="' + keys[j][1] + '"/>'; });
+    s += '</g>';
+  });
+  finish(box, s);
+  bindTip(box, function (i) { return '<b>' + esc(rows[i][0]) + '</b>' + keys.map(function (k, j) { return row(k[0], fmt(rows[i][1][j]) + '%', k[1]); }).join(''); });
+  legend(id, keys);
+  table(id, [''].concat(keys.map(function (k) { return k[0] + ' (%)'; })), rows.map(function (r) { return [r[0]].concat(r[1]); }));
+}
+
+// Đường nhiều chuỗi, 1 trục y; series: {name, color, values, dash}; ref: đường tham chiếu cùng đơn vị
+function line(id, labels, series, opt) {
+  opt = opt || {};
+  var box = $(id), w = W(box), L = 52, R = 28, T = 12, B = 28, H = opt.h || 240;
+  var all = []; series.forEach(function (s) { s.values.forEach(function (v) { if (v != null) all.push(v); }); }); if (opt.ref) all.push(opt.ref.value);
+  var max = opt.max || niceMax(Math.max.apply(null, all)), min = opt.min || 0;
+  var x = function (i) { return L + i / (labels.length - 1) * (w - L - R); }, y = function (v) { return T + (1 - (v - min) / (max - min)) * (H - T - B); };
+  var s = '<svg viewBox="0 0 ' + w + ' ' + H + '" role="img">';
+  for (var g = 0; g <= 4; g++) { var gv = min + (max - min) * g / 4; s += '<line x1="' + L + '" x2="' + (w - R) + '" y1="' + y(gv) + '" y2="' + y(gv) + '" stroke="#ececec"/><text x="' + (L - 8) + '" y="' + (y(gv) + 4) + '" font-size="11" fill="#777" text-anchor="end">' + fmt(gv) + (opt.unit || '') + '</text>'; }
+  var step = Math.ceil(labels.length / (w < 600 ? 5 : 10));
+  labels.forEach(function (l, i) { if (i % step === 0 || i === labels.length - 1) s += '<text x="' + x(i) + '" y="' + (H - 8) + '" font-size="11" fill="#777" text-anchor="middle">' + esc(l) + '</text>'; });
+  if (opt.band) s += '<rect x="' + x(opt.band[0]) + '" y="' + T + '" width="' + (x(opt.band[1]) - x(opt.band[0])) + '" height="' + (H - T - B) + '" fill="#f4f6fa"/><text x="' + (x(opt.band[0]) + 6) + '" y="' + (T + 12) + '" font-size="11" fill="#777">' + opt.band[2] + '</text>';
+  if (opt.ref) s += '<line x1="' + L + '" x2="' + (w - R) + '" y1="' + y(opt.ref.value) + '" y2="' + y(opt.ref.value) + '" stroke="#b42318" stroke-width="1.5" stroke-dasharray="6 4"/><text x="' + (w - R) + '" y="' + (y(opt.ref.value) - 6) + '" font-size="11" fill="#b42318" text-anchor="end">' + esc(opt.ref.label) + '</text>';
+  series.forEach(function (sr) {
+    var d = ''; sr.values.forEach(function (v, i) { if (v == null) return; d += (d && sr.values[i - 1] != null ? 'L' : 'M') + x(i) + ' ' + y(v); });
+    s += '<path d="' + d + '" fill="none" stroke="' + sr.color + '" stroke-width="2"' + (sr.dash ? ' stroke-dasharray="5 4"' : '') + ' stroke-linejoin="round"/>';
+  });
+  s += '<line class="xh" x1="0" x2="0" y1="' + T + '" y2="' + (H - B) + '" stroke="#999" stroke-dasharray="3 3" visibility="hidden"/>';
+  series.forEach(function (sr, k) { s += '<circle class="pt' + k + '" r="4" fill="' + sr.color + '" stroke="#fff" stroke-width="2" visibility="hidden"/>'; });
+  box.innerHTML = s + '</svg><div class="chart-tip" hidden></div>';
+  var svg = box.querySelector('svg'), tip = box.querySelector('.chart-tip');
+  box.onmousemove = function (e) {
+    var r = svg.getBoundingClientRect(), px = (e.clientX - r.left) * w / r.width, i = Math.round((px - L) / (w - L - R) * (labels.length - 1));
+    if (i < 0 || i >= labels.length) { box.onmouseleave(); return; }
+    var xh = svg.querySelector('.xh'); xh.setAttribute('x1', x(i)); xh.setAttribute('x2', x(i)); xh.setAttribute('visibility', 'visible');
+    var html = '<b>' + esc(labels[i]) + '</b>';
+    series.forEach(function (sr, k) { var c = svg.querySelector('.pt' + k), v = sr.values[i]; if (v == null) { c.setAttribute('visibility', 'hidden'); return; } c.setAttribute('cx', x(i)); c.setAttribute('cy', y(v)); c.setAttribute('visibility', 'visible'); html += row(sr.name, fmt(v) + (opt.unit || ''), sr.color); });
+    if (opt.ref) html += row(opt.ref.label, fmt(opt.ref.value) + (opt.unit || ''));
+    tipAt(box, html, e);
+  };
+  box.onmouseleave = function () { tip.hidden = true; svg.querySelectorAll('.xh, circle').forEach(function (c) { c.setAttribute('visibility', 'hidden'); }); };
+  table(id, [''].concat(series.map(function (s) { return s.name; })), labels.map(function (l, i) { return [l].concat(series.map(function (s) { return s.values[i] == null ? '–' : s.values[i]; })); }));
+}
+
+// Bản đồ nhiệt thứ × giờ: thang tuần tự 5 bậc của một sắc xanh
+var HEAT = ['#EAF1FB', '#C9D9F0', '#7FA8DE', '#2566BF', '#0B3C7A'];
+function heat(id, rowsL, colsL, m) {
+  var box = $(id), w = W(box), L = 40, T = 4, B = 22, cw = (w - L - 4) / colsL.length, ch = 26, H = T + rowsL.length * ch + B;
+  var max = Math.max.apply(null, m.map(function (r) { return Math.max.apply(null, r); }));
+  var s = '<svg viewBox="0 0 ' + w + ' ' + H + '" role="img">';
+  m.forEach(function (r, i) {
+    s += '<text x="' + (L - 8) + '" y="' + (T + i * ch + 17) + '" font-size="12" fill="#333" text-anchor="end">' + rowsL[i] + '</text>';
+    r.forEach(function (v, j) { var k = Math.min(4, Math.floor(v / max * 5)); s += '<rect data-i="' + i + ',' + j + '" x="' + (L + j * cw + 1) + '" y="' + (T + i * ch + 1) + '" width="' + (cw - 2) + '" height="' + (ch - 2) + '" rx="2" fill="' + HEAT[k] + '"/>'; });
+  });
+  colsL.forEach(function (c, j) { if (w > 600 || j % 2 === 0) s += '<text x="' + (L + j * cw + cw / 2) + '" y="' + (H - 6) + '" font-size="11" fill="#777" text-anchor="middle">' + c + '</text>'; });
+  finish(box, s);
+  bindTip(box, function (k) { var p = k.split(','); return '<b>' + rowsL[p[0]] + ', ' + colsL[p[1]] + ' giờ</b>' + row('Phiên TB', fmt(m[p[0]][p[1]]) + ' nghìn'); });
+  $(id + '-legend').innerHTML = 'Ít ' + HEAT.map(function (c) { return '<i style="display:inline-block;width:18px;height:10px;border-radius:2px;background:' + c + '"></i>'; }).join(' ') + ' Nhiều';
+  table(id, ['Thứ'].concat(colsL.map(function (c) { return c + 'h'; })), m.map(function (r, i) { return [rowsL[i]].concat(r); }));
+}
+
+// Cột đứng (phổ điểm) + vạch điểm trung bình
+function vbar(id, labels, vals, mean) {
+  var box = $(id), w = W(box), L = 48, R = 10, T = 16, B = 28, H = 240, n = vals.length, bw = (w - L - R) / n;
+  var max = niceMax(Math.max.apply(null, vals)), y = function (v) { return T + (1 - v / max) * (H - T - B); };
+  var s = '<svg viewBox="0 0 ' + w + ' ' + H + '" role="img">';
+  for (var g = 0; g <= 4; g++) { var gv = max * g / 4; s += '<line x1="' + L + '" x2="' + (w - R) + '" y1="' + y(gv) + '" y2="' + y(gv) + '" stroke="#ececec"/><text x="' + (L - 8) + '" y="' + (y(gv) + 4) + '" font-size="11" fill="#777" text-anchor="end">' + fmt(gv) + '</text>'; }
+  vals.forEach(function (v, i) {
+    s += '<g data-i="' + i + '"><rect x="' + (L + i * bw) + '" y="' + T + '" width="' + bw + '" height="' + (H - T - B) + '" fill="transparent"/>';
+    if (v) s += '<path d="' + roundTop(L + i * bw + 1, y(0), bw - 2, y(v)) + '" fill="' + (parseFloat(labels[i].replace(',', '.')) < 5 ? '#C2622D' : '#2566BF') + '"/>';
+    s += '</g>';
+    if (i % 2 === 0) s += '<text x="' + (L + i * bw + bw / 2) + '" y="' + (H - 8) + '" font-size="11" fill="#777" text-anchor="middle">' + labels[i] + '</text>';
+  });
+  var mx = L + (mean / 10) * (n - 1) / n * (w - L - R) + bw / 2;
+  s += '<line x1="' + mx + '" x2="' + mx + '" y1="' + T + '" y2="' + (H - B) + '" stroke="#333" stroke-dasharray="4 3"/><text x="' + (mx + 6) + '" y="' + (T + 2) + '" font-size="11" fill="#333">TB ' + fmt(mean, 2) + '</text>';
+  finish(box, s);
+  bindTip(box, function (i) { return '<b>Điểm ' + labels[i] + '</b>' + row('Thí sinh', fmt(vals[i])); });
+  table(id, ['Điểm', 'Thí sinh'], labels.map(function (l, i) { return [l, vals[i]]; }));
+}
+
+function flag(v, bad, suffix) { var t = fmt(v) + (suffix || ''); return bad ? '<span class="qd-flag">' + ICON('warning') + t + '</span>' : t; }
+function htable(id, head, rows, numFrom) {
+  numFrom = numFrom == null ? 1 : numFrom;
+  $(id).innerHTML = '<thead><tr>' + head.map(function (h, i) { return '<th' + (i >= numFrom ? ' class="num"' : '') + '>' + h + '</th>'; }).join('') + '</tr></thead><tbody>' +
+    rows.map(function (r) { return '<tr>' + r.map(function (c, i) { return '<td' + (i >= numFrom ? ' class="num"' : '') + '>' + (typeof c === 'number' ? fmt(c) : c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody>';
+}
+function stats(key, list) { $(key + '-stats').innerHTML = list.map(function (s) { return '<div class="qd-stat"><span>' + s[0] + '</span><b>' + s[1] + '</b><small class="' + (s[3] || '') + '">' + s[2] + '</small></div>'; }).join(''); }
+
+// ---------- dữ liệu minh hoạ ----------
+var UNITS = {
+  thpt: [['THPT Chuyên Bắc Ninh', 88, 84, 92.1, 94, 7.8], ['THPT Hàn Thuyên', 82, 79, 88.4, 91, 7.1], ['THPT Lý Thái Tổ', 79, 81, 85.2, 89, 6.9], ['THPT Chuyên Bắc Giang', 86, 77, 90.3, 92, 7.6], ['THPT Thuận Thành số 1', 71, 68, 76.5, 82, 6.4], ['THPT Gia Bình số 1', 58, 62, 61.8, 74, 5.9], ['THPT Lương Tài', 46, 55, 49.7, 63, 5.6], ['THPT Từ Sơn', 74, 70, 80.1, 85, 6.6]],
+  xa: [['Phường Kinh Bắc', 84, 80, 86.3, 90, 6.9], ['Phường Từ Sơn', 77, 74, 79.8, 86, 6.6], ['Phường Bắc Giang', 81, 83, 84.0, 88, 6.8], ['Xã Gia Bình', 55, 58, 57.4, 71, 6.0], ['Xã Lương Tài', 42, 49, 38.2, 60, 5.7], ['Phường Thuận Thành', 69, 66, 72.5, 80, 6.3]]
+};
+var WEIGHTS = [['n1', 'CĐS nhóm 1 "Dạy, học" (QĐ 4725)', 30], ['n2', 'CĐS nhóm 2 "Quản trị" (QĐ 4725)', 20], ['use', 'Tỉ lệ sử dụng hệ thống', 20], ['done', 'Hoàn thành khoá học đúng tiến độ', 15], ['exam', 'Điểm TB kỳ thi chung', 15]];
+var dim = 'thpt';
+function lvl(v) { var m = v > 75 ? 3 : v >= 50 ? 2 : 1; return '<span class="qd-level qd-level--' + m + '">' + v + ' · M' + m + '</span>'; }
+function ranked() {
+  var w = WEIGHTS.map(function (x) { return +x[2]; }), sum = w.reduce(function (a, b) { return a + b; }, 0) || 1;
+  return UNITS[dim].map(function (u) { var sc = [u[1], u[2], u[3], u[4], u[5] * 10]; return { u: u, total: sc.reduce(function (a, v, i) { return a + v * w[i]; }, 0) / sum }; }).sort(function (a, b) { return b.total - a.total; });
+}
+function renderRank() {
+  var r = ranked(), sum = WEIGHTS.reduce(function (a, x) { return a + +x[2]; }, 0);
+  $('w-sum').textContent = 'Tổng trọng số: ' + sum + (sum !== 100 ? ' (tự quy về 100)' : '');
+  htable('r-tbl', ['Hạng', 'Đơn vị', 'Nhóm 1', 'Nhóm 2', 'Tỉ lệ sử dụng', 'Hoàn thành KH', 'Điểm thi TB', 'Tổng điểm', 'Đề xuất'], r.map(function (x, i) {
+    var u = x.u, m3 = u[1] > 75 && u[2] > 75, m1 = u[1] < 50 || u[2] < 50;
+    return ['<span class="qd-rank' + (i < 3 ? ' is-top' : '') + '">' + (i + 1) + '</span>', '<b>' + u[0] + '</b>', lvl(u[1]), lvl(u[2]), flag(u[3], u[3] < 50, '%'), u[4] + '%', fmt(u[5]), '<b>' + fmt(x.total) + '</b>',
+      i < 3 && m3 ? '<span class="qd-status qd-status--done">Khen thưởng</span>' : m1 ? '<span class="qd-flag">' + ICON('warning') + 'Cần hỗ trợ</span>' : ''];
+  }), 2);
+  htable('ov-top', ['Hạng', 'Đơn vị', 'Tổng điểm'], r.slice(0, 5).map(function (x, i) { return ['<span class="qd-rank' + (i < 3 ? ' is-top' : '') + '">' + (i + 1) + '</span>', x.u[0], '<b>' + fmt(x.total) + '</b>']; }), 2);
+}
+
+// Kỳ báo cáo mẫu: tháng 10/2026
+var DAYS = []; for (var i = 1; i <= 31; i++) DAYS.push(i + '/10');
+function series(base, amp, weekendDrop) { return DAYS.map(function (d, i) { var dow = new Date(2026, 9, i + 1).getDay(), v = base + Math.sin(i / 3) * amp + (rnd() - .5) * amp; if (dow === 0 || dow === 6) v *= weekendDrop; return Math.round(v * 10) / 10; }); }
+
+var R = {
+  'tong-quan': function () {
+    stats('tong-quan', [['Người dùng hoạt động trong kỳ', '742.300', '69,3% tài khoản · +2,4 điểm %', 'up'], ['Khoá học có hoạt động', '39.870', '+2.140 so với kỳ trước', 'up'], ['Học liệu cuối kỳ', '386.400', '71,3% đã phê duyệt', ''], ['Lượt tương tác trong kỳ', '21,4 tr', '+8,6% so với kỳ trước', 'up'], ['HS dùng chế độ AI', '37,2%', '+5,4 điểm %', 'up'], ['Kỳ thi chung đã tổ chức', '2', '47.180 lượt thí sinh', '']]);
+    hbar('ov1', [['Tiểu học', 64.8], ['THCS', 71.2], ['THPT', 83.3], ['GDTX', 52.6]], '%', 100);
+    stack('ov2', [['Tiểu học', [72, 19, 9]], ['THCS', [64, 23, 13]], ['THPT', [70, 21, 9]], ['GDTX', [51, 28, 21]]], [['Đúng tiến độ', '#0B3C7A'], ['Chậm ≤ 2 tuần', '#5B8BD0'], ['Chậm > 2 tuần', '#C9D9F0']]);
+    htable('ov-exam', ['Kỳ thi', 'Ngày thi', 'Dự thi', 'Điểm TB'], [['KSCL lớp 12 lần 1 · Toán', '24/10/2026', 24312, '6,42'], ['KSCL lớp 12 lần 1 · Tiếng Anh', '25/10/2026', 22868, '6,15']], 2);
+    renderRank();
+  },
+  'nguoi-dung': function () {
+    stats('nguoi-dung', [['Tài khoản đã cấp', '1.071.400', 'GV 52.300 · HS 1.012.500 · PH 6.600', ''], ['Hoạt động trong kỳ', '742.300', '69,3% · +2,4 điểm %', 'up'], ['Hoạt động TB mỗi tuần', '512.900', '47,9% tài khoản', ''], ['Thời lượng TB / phiên', '24 phút', '+3 phút so với kỳ trước', 'up'], ['Số phiên / người / tuần', '3,6', 'GV 5,8 · HS 3,4', ''], ['Đăng nhập SSO', '81%', 'Office 365, Gmail', '']]);
+    line('u1', DAYS, [{ name: 'Giáo viên', color: CAT[0], values: series(62, 6, .55) }, { name: 'Học sinh', color: CAT[1], values: series(41, 6, .7) }, { name: 'Phụ huynh', color: CAT[2], values: series(12, 3, 1.2) }], { unit: '%', max: 80 });
+    legend('u1', [['Giáo viên', CAT[0]], ['Học sinh', CAT[1]], ['Phụ huynh', CAT[2]]]);
+    var hrs = []; for (var h = 6; h <= 23; h++) hrs.push(String(h));
+    var m = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'].map(function (d, di) { return hrs.map(function (h) { h = +h; var v = (h >= 7 && h <= 11 ? 30 : h >= 14 && h <= 17 ? 26 : h >= 19 && h <= 22 ? 44 : 6) * (di >= 5 ? (h >= 19 ? .8 : .45) : 1); return Math.round(v * (0.85 + rnd() * .3)); }); });
+    heat('u2', ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'], hrs, m);
+    htable('u-tbl', ['Tổ chức', 'Tài khoản', 'Hoạt động trong kỳ', 'Tỉ lệ sử dụng', 'Thời lượng TB/tuần', 'Giờ cao điểm'],
+      [['Phường Kinh Bắc', 15540, 13410, flag(86.3, false, '%'), '1 giờ 52', '20-21h'], ['Phường Bắc Giang', 22410, 18830, flag(84.0, false, '%'), '1 giờ 46', '20-21h'], ['Phường Từ Sơn', 20520, 16380, flag(79.8, false, '%'), '1 giờ 31', '19-20h'], ['Phường Thuận Thành', 17280, 12530, flag(72.5, false, '%'), '1 giờ 18', '20-21h'], ['Xã Gia Bình', 9580, 5500, flag(57.4, false, '%'), '0 giờ 54', '19-20h'], ['Xã Lương Tài', 9110, 3480, flag(38.2, true, '%'), '0 giờ 31', '20-21h'], ['Khối THPT do Sở quản lý', 118400, 98620, flag(83.3, false, '%'), '2 giờ 04', '21-22h']]);
+  },
+  'day-hoc': function () {
+    stats('day-hoc', [['Khoá học', '48.260', '39.870 có hoạt động trong kỳ', ''], ['Tài nguyên tạo mới trong kỳ', '41.200', 'GV tạo 71% · +6%', 'up'], ['Lượt xem bài giảng', '3,4 tr', '+12% so với kỳ trước', 'up'], ['Lượt làm câu hỏi', '6,5 tr', '+9%', 'up'], ['Lượt làm bài kiểm tra', '0,9 tr', '+4%', 'up'], ['HS tham gia khoá học', '81,6%', 'mục tiêu 85%', 'down']]);
+    hbar('d1', [['Làm câu hỏi luyện tập', 6.5], ['Xem bài giảng', 3.4], ['Nộp bài tự học', 1.2], ['Làm bài kiểm tra', 0.9], ['Hỏi đáp, thảo luận', 0.4]], 'Triệu lượt');
+    hbar('d2', [['Gia sư AI hỏi đáp', 28.4], ['Luyện tập thích ứng', 21.7], ['Gợi ý lộ trình học', 15.2], ['Nhận xét bài viết bằng AI', 9.8]], '%', 50);
+    var wk = []; for (var i = 1; i <= 9; i++) wk.push('Tuần ' + i);
+    line('d3', wk, [{ name: 'Tiểu học', color: CAT[0], values: [61, 66, 70, 72, 74, 75, 77, 76, 78] }, { name: 'THCS', color: CAT[1], values: [68, 73, 77, 79, 80, 81, 83, 82, 84] }, { name: 'THPT', color: CAT[2], values: [74, 80, 83, 85, 86, 86, 88, 87, 89] }], { unit: '%', max: 100, min: 50, h: 220 });
+    legend('d3', [['Tiểu học', CAT[0]], ['THCS', CAT[1]], ['THPT', CAT[2]]]);
+    stack('d4', [['Tiểu học', [72, 19, 9]], ['THCS', [64, 23, 13]], ['THPT', [70, 21, 9]], ['GDTX', [51, 28, 21]]], [['Đúng tiến độ', '#0B3C7A'], ['Chậm ≤ 2 tuần', '#5B8BD0'], ['Chậm > 2 tuần', '#C9D9F0']]);
+    htable('d-tbl', ['Chức năng LMS (tiêu chí 1.3)', 'Trường sử dụng', 'Tỉ lệ trường', 'Điểm TB / 6', 'Lượt dùng trong kỳ'],
+      [['Giao nhiệm vụ, bài tập tự học', 1498, flag(91.2, false, '%'), 5.4, '1,2 tr'], ['Giải đáp câu hỏi của học sinh', 1206, flag(73.4, false, '%'), 4.3, '0,4 tr'], ['Kiểm tra, đánh giá thường xuyên', 1387, flag(84.5, false, '%'), 5.0, '0,9 tr'], ['Phụ huynh tham gia hoạt động học tập', 702, flag(42.8, true, '%'), 2.5, '0,15 tr']]);
+  },
+  'chat-luong': function () {
+    stats('chat-luong', [['HS mức Tốt', '45,2%', '+1,8 điểm %', 'up'], ['HS chưa đạt', '1,6%', '−0,3 điểm %', 'up'], ['Bài KT có gắn YCCĐ', '68,4%', 'mục tiêu 80%', 'down'], ['YCCĐ đạt trở lên', '89,7%', 'trên 1.240 YCCĐ được đo', ''], ['YCCĐ vượt', '27,3%', '', ''], ['Môn cần chú ý', '2', 'Toán 8, Tiếng Anh 9', 'down']]);
+    stack('q1', [['Tiểu học', [62, 30, 7.5, .5]], ['THCS', [38, 41, 18.6, 2.4]], ['THPT', [41, 43, 14.8, 1.2]]], KQ);
+    stack('q2', [['Toán', [12.4, 61.2, 26.4]], ['Ngữ văn', [7.8, 67.0, 25.2]], ['Tiếng Anh', [13.6, 58.1, 28.3]], ['KHTN', [9.9, 63.5, 26.6]], ['Lịch sử và Địa lí', [6.2, 66.4, 27.4]], ['Tin học', [5.1, 59.7, 35.2]], ['Công nghệ', [4.8, 68.9, 26.3]]], DIV);
+    htable('q-tbl', ['Khối', 'Số YCCĐ đo', 'Chưa đạt', 'Đạt', 'Vượt', 'Môn chưa đạt cao nhất'],
+      [['Khối 6', 212, flag(7.4, false, '%'), '64,1%', '28,5%', 'Tiếng Anh (11,2%)'], ['Khối 7', 208, flag(8.1, false, '%'), '63,6%', '28,3%', 'Toán (12,0%)'], ['Khối 8', 214, flag(11.6, true, '%'), '62,0%', '26,4%', 'Toán (16,8%)'], ['Khối 9', 205, flag(10.3, true, '%'), '62,9%', '26,8%', 'Tiếng Anh (15,1%)'], ['Khối 10', 198, flag(9.2, false, '%'), '63,4%', '27,4%', 'Vật lí (13,3%)'], ['Khối 11', 203, flag(8.7, false, '%'), '64,0%', '27,3%', 'Hoá học (12,1%)']]);
+  },
+  'khao-sat': function () {
+    stats('khao-sat', [['Đợt khảo sát trong kỳ', '4', '3 đã kết thúc', ''], ['Phản hồi nhận được', '186.420', '+21% so với kỳ trước', 'up'], ['Tỉ lệ phản hồi TB', '62,4%', 'mục tiêu 70%', 'down'], ['Mức hài lòng TB', '4,12 / 5', '+0,08', 'up']]);
+    htable('s-tbl', ['Đợt khảo sát', 'Đối tượng', 'Thời gian', 'Phản hồi', 'Tỉ lệ phản hồi', 'Hài lòng TB', 'Trạng thái'],
+      [['Đánh giá học tập trực tuyến HK I', 'Học sinh THCS, THPT', '01/10 - 20/10', 98640, '71,2%', '4,05', 'Đã kết thúc'], ['Mức độ sẵn sàng chuyển đổi số', 'Giáo viên', '05/10 - 25/10', 38210, '73,1%', '3,94', 'Đã kết thúc'], ['Phụ huynh tham gia học tập cùng con', 'Phụ huynh', '10/10 - 31/10', 41870, flag(38.6, true, '%'), '4,31', 'Đã kết thúc'], ['Chất lượng học liệu số', 'Giáo viên, học sinh', '20/10 - 20/11', 7700, '—', '4,18', 'Số liệu đến 31/10']], 3);
+    hbar('s1', [['Dễ đăng nhập, sử dụng', 4.36], ['Tốc độ, ổn định của hệ thống', 3.82], ['Chất lượng bài giảng, học liệu', 4.21], ['Hỗ trợ của giáo viên khi học trực tuyến', 4.27], ['Chế độ học có AI', 4.02], ['Thông tin cho phụ huynh', 3.88]], 'Điểm', 5);
+  },
+  'ky-thi': function () {
+    stats('ky-thi', [['Thí sinh đăng ký', '24.860', '48 điểm thi', ''], ['Dự thi', '24.312', '97,8%', 'up'], ['Vắng thi', '548', '2,2%', ''], ['Điểm trung bình', '6,42', '+0,18 so với cùng kỳ năm trước', 'up'], ['Dưới 5 điểm', '14,6%', '−1,9 điểm %', 'up'], ['Vi phạm quy chế', '37', 'đã lập biên bản', 'down']]);
+    htable('e-tbl', ['Điểm thi', 'Phòng thi', 'Đăng ký', 'Dự thi', 'Vắng', 'Vi phạm quy chế', 'Sự cố kỹ thuật'],
+      [['THPT Hàn Thuyên', 24, 960, 951, 9, 0, 0], ['THPT Chuyên Bắc Ninh', 18, 702, 700, 2, 0, 0], ['THPT Lý Thái Tổ', 22, 880, 864, 16, 3, flag(2, true)], ['THPT Gia Bình số 1', 20, 798, 771, 27, 6, flag(1, true)], ['THPT Lương Tài', 19, 744, 712, 32, 4, 0]], 1);
+    var labels = [], vals = [], mean = 6.42; for (var i = 0; i <= 20; i++) { var sc = i / 2; labels.push(fmt(sc, 1)); vals.push(Math.round(2900 * Math.exp(-Math.pow(sc - mean, 2) / (2 * 1.58 * 1.58)))); }
+    vbar('e1', labels, vals, mean);
+    htable('e-st', ['Điểm thi', 'Đã chấm', 'Điểm TB', 'Trung vị', 'Độ lệch chuẩn', 'Dưới 5 điểm', 'Từ 8 điểm'],
+      [['Toàn tỉnh', 23108, '6,42', '6,5', '1,58', '14,6%', '18,9%'], ['THPT Hàn Thuyên', 929, '7,08', '7,25', '1,41', '7,9%', '28,4%'], ['THPT Chuyên Bắc Ninh', 696, '8,21', '8,5', '1,12', '1,3%', '61,2%'], ['THPT Lý Thái Tổ', 803, '6,74', '6,75', '1,49', '11,2%', '21,6%'], ['THPT Gia Bình số 1', 631, '5,62', '5,5', '1,63', flag(24.1, true, '%'), '9,8%'], ['THPT Lương Tài', 524, '5,31', '5,25', '1,70', flag(29.6, true, '%'), '7,1%']], 1);
+  },
+  'hoc-lieu': function () {
+    stats('hoc-lieu', [['Học liệu + tài nguyên', '386.400', 'Kho học liệu 312.900 · Thư viện 73.500', ''], ['Đã phê duyệt (tiêu chí 1.4)', '71,3%', '18.420 chờ duyệt', ''], ['Lượt sử dụng trong kỳ', '5,1 tr', '+11% so với kỳ trước', 'up'], ['Học liệu có lượt dùng trong kỳ', '58,6%', '41,4% không được dùng', 'down'], ['Đánh giá TB', '4,3 / 5', '62.100 lượt đánh giá', ''], ['GV xây dựng học liệu', '64,8%', 'tiêu chí 1.6: > 60% đạt điểm tối đa', 'up']]);
+    hbar('l1', [['Ngân hàng câu hỏi', 142300], ['Bài giảng điện tử', 88600], ['Video bài giảng', 61400], ['Sách, tài liệu tham khảo', 48200], ['Mô phỏng, thí nghiệm ảo', 12900], ['Khoá học E-learning', 33000]], 'Học liệu');
+    stack('l2', [['Tiểu học', [74, 18, 8]], ['THCS', [70, 21, 9]], ['THPT', [73, 19, 8]], ['GDTX', [58, 27, 15]]], [['Đã phê duyệt', '#0B3C7A'], ['Chờ duyệt', '#5B8BD0'], ['Cần chỉnh sửa', '#C9D9F0']]);
+    htable('l-tbl', ['Môn', 'Số học liệu', 'Đã duyệt', 'Lượt dùng trong kỳ', 'Lượt dùng / học liệu', 'Không được dùng trong kỳ', 'Đánh giá TB'],
+      [['Toán', 58200, '76%', 1020000, 17.5, flag(28, false, '%'), '4,4'], ['Ngữ văn', 44100, '72%', 690000, 15.6, flag(31, false, '%'), '4,3'], ['Tiếng Anh', 51800, '69%', 810000, 15.6, flag(33, false, '%'), '4,2'], ['KHTN', 39600, '71%', 530000, 13.4, flag(36, false, '%'), '4,3'], ['Lịch sử và Địa lí', 27400, '68%', 220000, 8.0, flag(47, true, '%'), '4,1'], ['Công nghệ', 14900, '63%', 83000, 5.6, flag(58, true, '%'), '4,0'], ['GD địa phương Bắc Ninh', 3200, '81%', 35000, 10.9, flag(39, false, '%'), '4,5']]);
+  },
+  'ha-tang': function () {
+    stats('ha-tang', [['Thời gian hoạt động trong kỳ', '99,94%', 'SLA 99,9% · gián đoạn 26 phút', 'up'], ['Đồng thời cao nhất', '86.400', 'ngày 24/10 · năng lực 120.000', ''], ['CPU TB giờ cao điểm', '58%', '+4 điểm % so với kỳ trước', ''], ['RAM TB giờ cao điểm', '64%', '+2 điểm %', ''], ['Băng thông cao nhất', '7,8 Gbps', 'trên 10 Gbps', ''], ['Lưu trữ cuối kỳ', '182 / 250 TB', '73% · +4,1 TB trong kỳ', 'down']]);
+    var cu = DAYS.map(function (d, i) { var dow = new Date(2026, 9, i + 1).getDay(); return Math.round((dow === 0 || dow === 6 ? 52000 : 74000) * (0.92 + rnd() * .14)); });
+    cu[23] = 86400;
+    line('h1', DAYS, [{ name: 'Đồng thời cao nhất trong ngày', color: CAT[0], values: cu }], { ref: { value: 120000, label: 'Năng lực 120.000' }, h: 230 });
+    legend('h1', [['Đồng thời cao nhất trong ngày', CAT[0]], ['Năng lực hệ thống', '#b42318']], [0, 1]);
+    htable('h-srv', ['Dịch vụ', 'Node', 'CPU TB / cao nhất', 'RAM TB / cao nhất', 'Sự cố', 'Gián đoạn'], [['Ứng dụng web', 8, '42% / 61%', '55% / 66%', 0, '0 phút'], ['Phòng thi trực tuyến', 4, '35% / ' + flag(83, true, '%'), '48% / 71%', flag(2, true), '18 phút'], ['Cơ sở dữ liệu', 3, '31% / 48%', '60% / 72%', 0, '0 phút'], ['Lưu trữ học liệu', 6, '15% / 22%', '33% / 40%', 1, '8 phút'], ['Dịch vụ AI', 2, '44% / 67%', '62% / 78%', 0, '0 phút']], 1);
+    htable('h-sch', ['Cấp học', 'Phòng học có máy chiếu + Internet', 'HS / máy Tin học', 'Mức Tin học (1.7b)', 'Trường có studio'], [['Tiểu học', '64%', '2,6', 'Mức 2', '3%'], ['THCS', '71%', '1,9', 'Mức 2', '6%'], ['THPT', '88%', '1,1', 'Mức 2', '21%'], ['GDTX', '52%', flag(1.8, true), 'Mức 1', '0%']], 1);
+  },
+  'tan-suat-hs': function () {
+    stats('tan-suat-hs', [['HS đạt ≥ 80% (HK I)', '68,4%', 'toàn tỉnh, khối 10-12', 'up'], ['HS dưới 50%', '7,9%', '12.800 học sinh', 'down'], ['Môn có tỉ lệ đạt thấp nhất', 'Vật lí 11', 'TB 61%', 'down'], ['Lượt học TB / HS / tuần', '9,4', 'trên 6 môn đang áp dụng', '']]);
+    renderReqHS(); renderHS();
+  },
+  'tan-suat-gv': function () {
+    stats('tan-suat-gv', [['GV đạt 100% ở mọi lớp', '54,2%', 'THPT, tháng 10/2026', 'up'], ['Lớp có GV dưới 70%', '1.126', '8,1% số lớp-môn', 'down'], ['Bài học online đã đăng ký', '61.300', '+9% so với tháng 9', 'up'], ['HS tham gia TB / bài học', '84,7%', 'yêu cầu ≥ 80%', 'up']]);
+    renderReqGV(); renderGV();
+  },
+  'xep-hang': function () {
+    $('weights').innerHTML = WEIGHTS.map(function (w, i) { return '<label>' + w[1] + '<output id="wo' + i + '">' + w[2] + '</output><input type="range" min="0" max="50" step="5" value="' + w[2] + '" data-w="' + i + '" aria-label="Trọng số ' + w[1] + '"></label>'; }).join('');
+    renderRank();
+  }
+};
+
+// ---------- tần suất học tập (HS) ----------
+var SUBJ = ['Toán', 'Ngữ văn', 'Tiếng Anh', 'Vật lí', 'Hoá học', 'Tin học'];
+var CRIT_HS = [['Lượt học / tuần', 'lượt'], ['Thời lượng / tuần', 'phút'], ['Hoàn thành bài được giao', '%']];
+var REQ = {};
+[10, 11, 12].forEach(function (k) { REQ[k] = [[3, 90, 80, 1], [2, 60, 80, 1], [3, 75, 80, 1], [2, 45, 70, 1], [2, 45, 70, 1], [1, 30, 70, k === 12 ? 0 : 1]]; });
+var hsKhoi = 10;
+var NAMES = ['Nguyễn Minh Anh', 'Trần Gia Bảo', 'Lê Thu Hà', 'Phạm Đức Huy', 'Đỗ Khánh Linh', 'Vũ Hoàng Long', 'Ngô Phương Mai', 'Bùi Quang Minh', 'Hoàng Bảo Ngọc', 'Đặng Tuấn Phong', 'Nguyễn Thanh Tâm', 'Trịnh Hải Yến'];
+var ACT = {};  // ACT[khoi][ky][hs][subj] = [lượt, phút, %]
+[10, 11, 12].forEach(function (k) { ACT[k] = {}; ['hk1', 'hk2p', 'nam'].forEach(function (ky) { ACT[k][ky] = NAMES.map(function (n, i) { var f = 0.55 + ((i * 37 + k * 11) % 50) / 100 + (ky === 'hk1' ? -0.05 : 0); return REQ[k].map(function (r, j) { var g = Math.max(0.2, f + (rnd() - .5) * .35 - (j === 3 && k === 11 ? .25 : 0)); return [Math.round(r[0] * g * 10) / 10, Math.round(r[1] * g), Math.min(100, Math.round(r[2] * Math.min(1.25, g)))]; }); }); }); });
+function pctHS(k, act, j) { var r = REQ[k][j], v = 0; for (var c = 0; c < 3; c++) v += Math.min(1, act[c] / r[c]); return Math.round(v / 3 * 100); }
+function meter(p, low) { return '<span class="qd-meter' + (p < (low || 70) ? ' is-low' : '') + '"><i><b style="width:' + p + '%"></b></i>' + (p < (low || 70) ? ICON('warning') : '') + p + '%</span>'; }
+function renderReqHS() {
+  var k = hsKhoi;
+  $('hs-req').innerHTML = '<thead><tr><th>Môn (khối ' + k + ')</th>' + CRIT_HS.map(function (c) { return '<th class="num">' + c[0] + ' (' + c[1] + ')</th>'; }).join('') + '<th class="num">Áp dụng</th></tr></thead><tbody>' +
+    SUBJ.map(function (sj, j) { var r = REQ[k][j]; return '<tr><td>' + sj + '</td>' + [0, 1, 2].map(function (c) { return '<td class="num"><input class="qd-input qd-num" type="number" min="0" step="' + (c ? 5 : 1) + '" value="' + r[c] + '" data-hs="' + j + ',' + c + '" aria-label="' + sj + ' ' + CRIT_HS[c][0] + '"' + (r[3] ? '' : ' disabled') + '></td>'; }).join('') + '<td class="num"><input type="checkbox" data-hs="' + j + ',3"' + (r[3] ? ' checked' : '') + ' aria-label="Áp dụng ' + sj + '"></td></tr>'; }).join('') + '</tbody>';
+}
+function renderHS() {
+  var k = +$('hs-lop').value, ky = $('hs-ky').value, on = SUBJ.map(function (s, j) { return REQ[k][j][3] ? j : -1; }).filter(function (j) { return j >= 0; });
+  var lop = $('hs-lop').selectedOptions[0].textContent.split(' · ')[0], ok = 0;
+  var rows = ACT[k][ky].map(function (a, i) {
+    var ps = on.map(function (j) { return pctHS(k, a[j], j); }), avg = ps.length ? Math.round(ps.reduce(function (x, y) { return x + y; }, 0) / ps.length) : 0;
+    if (avg >= 80) ok++;
+    return '<tr><td>' + (i + 1) + '</td><td>HS' + k + '0' + String(i + 1).padStart(2, '0') + '</td><td><b>' + NAMES[i] + '</b></td>' + on.map(function (j, n) { var x = a[j], r = REQ[k][j]; return '<td class="num" title="' + SUBJ[j] + ': ' + fmt(x[0]) + '/' + r[0] + ' lượt · ' + x[1] + '/' + r[1] + ' phút · ' + x[2] + '/' + r[2] + '% bài giao">' + meter(ps[n]) + '</td>'; }).join('') + '<td class="num"><b>' + meter(avg) + '</b></td></tr>';
+  });
+  $('hs-tbl').innerHTML = '<thead><tr><th>STT</th><th>Mã HS</th><th>Họ tên</th>' + on.map(function (j) { return '<th class="num">' + SUBJ[j] + '</th>'; }).join('') + '<th class="num">Trung bình</th></tr></thead><tbody>' + rows.join('') + '</tbody>';
+  $('hs-title').textContent = 'Tỉ lệ hoàn thành của học sinh lớp ' + lop + ' (yêu cầu khối ' + k + ')';
+  $('hs-sum').textContent = ok + '/' + NAMES.length + ' học sinh đạt từ 80% trở lên';
+}
+
+// ---------- giảng dạy online (GV) ----------
+var REQG = [['Đăng ký bài học online', 'bài', 4], ['Số tiết dạy online', 'tiết', 6], ['Tạo bài học', 'bài', 4], ['Giao bài học', 'bài', 4], ['HS tham gia tối thiểu', '% sĩ số lớp', 80]];
+var TEACH = [['Nguyễn Thị Hương', 'Toán', [['10A1', 42], ['10A3', 41], ['11A2', 43]]], ['Trần Văn Nam', 'Ngữ văn', [['10A1', 42], ['12A3', 40]]], ['Lê Minh Châu', 'Tiếng Anh', [['10A1', 42], ['11A2', 43], ['12A3', 40]]], ['Phạm Quốc Việt', 'Vật lí', [['11A2', 43], ['11A5', 44]]], ['Đỗ Thu Trang', 'Hoá học', [['10A3', 41], ['12A3', 40]]]];
+var GACT = TEACH.map(function (t, ti) { return t[2].map(function (c, ci) { return [0, 1].map(function (m) { var f = 0.6 + ((ti * 23 + ci * 17 + m * 9) % 55) / 100; return [Math.round(4 * f), Math.round(6 * f), Math.round(4 * Math.min(1.2, f + .1)), Math.round(4 * f), Math.min(100, Math.round(70 + f * 22 + (rnd() - .5) * 8))]; }); }); });
+function renderReqGV() {
+  $('gv-req').innerHTML = '<thead><tr><th>Tiêu chí</th><th class="num">Yêu cầu tối thiểu</th><th>Đơn vị</th><th>Cách tính</th></tr></thead><tbody>' +
+    REQG.map(function (r, i) { return '<tr><td>' + r[0] + '</td><td class="num"><input class="qd-input qd-num" type="number" min="0" value="' + r[2] + '" data-gv="' + i + '" aria-label="' + r[0] + '"></td><td>' + r[1] + (i < 4 ? ' / lớp / tháng' : '') + '</td><td class="qd-muted">' + ['Bài học đăng ký trên lịch dạy online', 'Tiết dạy trực tuyến đã tổ chức', 'Bài học tạo mới trên hệ thống', 'Bài học đã giao cho lớp', 'TB tỉ lệ HS của lớp tham gia mỗi bài học'][i] + '</td></tr>'; }).join('') + '</tbody>';
+}
+function renderGV() {
+  var ky = $('gv-ky').value, rows = [], full = 0, n = 0;
+  TEACH.forEach(function (t, ti) {
+    var ps = t[2].map(function (c, ci) {
+      var a = ky === 'hk' ? [0, 1, 2, 3].map(function (j) { return GACT[ti][ci][0][j] + GACT[ti][ci][1][j]; }).concat([Math.round((GACT[ti][ci][0][4] + GACT[ti][ci][1][4]) / 2)]) : GACT[ti][ci][+ky];
+      var req = REQG.map(function (r, j) { return j < 4 && ky === 'hk' ? r[2] * 2 : r[2]; });
+      var p = Math.round(a.reduce(function (s, v, j) { return s + Math.min(1, req[j] ? v / req[j] : 1); }, 0) / 5 * 100);
+      return { a: a, req: req, p: p };
+    });
+    if (ps.every(function (x) { return x.p === 100; })) full++;
+    t[2].forEach(function (c, ci) {
+      var x = ps[ci]; n++;
+      rows.push('<tr>' + (ci === 0 ? '<td rowspan="' + t[2].length + '"><b>' + t[0] + '</b><br><span class="qd-muted">' + t[1] + '</span></td>' : '') + '<td>' + c[0] + ' <span class="qd-muted">(' + c[1] + ' HS)</span></td>' +
+        x.a.map(function (v, j) { var t2 = v + (j === 4 ? '%' : '') + ' / ' + x.req[j] + (j === 4 ? '%' : ''); return '<td class="num">' + (v < x.req[j] ? '<span class="qd-flag">' + t2 + '</span>' : t2) + '</td>'; }).join('') + '<td class="num">' + meter(x.p) + '</td></tr>');
+    });
+  });
+  $('gv-tbl').innerHTML = '<thead><tr><th>Giáo viên</th><th>Lớp</th>' + REQG.map(function (r) { return '<th class="num">' + r[0] + '</th>'; }).join('') + '<th class="num">% hoàn thành</th></tr></thead><tbody>' + rows.join('') + '</tbody>';
+  $('gv-sum').textContent = full + '/' + TEACH.length + ' giáo viên đạt 100% ở mọi lớp · ' + n + ' lớp-môn';
+}
+
+var done = {};
+function show(key) {
+  if (!R[key]) key = 'tong-quan';
+  document.querySelectorAll('[data-sec-panel]').forEach(function (p) { p.hidden = p.dataset.secPanel !== key; });
+  var grp = { 'khao-sat': 'nguoi-dung', 'chat-luong': 'day-hoc', 'tan-suat-hs': 'tan-suat', 'tan-suat-gv': 'tan-suat' }[key] || key;
+  document.querySelectorAll('.qd-nav [data-nav]').forEach(function (n) { n.classList.toggle('is-active', n.dataset.nav === grp); n.classList.remove('is-open'); });
+  R[key](); done[key] = true;
+}
+window.addEventListener('hashchange', function () { show(location.hash.slice(1)); window.scrollTo({ top: 0 }); });
+document.addEventListener('input', function (e) {
+  var hs = e.target.dataset.hs, gv = e.target.dataset.gv;
+  if (hs) { var p = hs.split(','), r = REQ[hsKhoi][+p[0]]; if (p[1] === '3') { r[3] = e.target.checked ? 1 : 0; renderReqHS(); } else r[+p[1]] = Math.max(0.1, +e.target.value || 0); if (+$('hs-lop').value === hsKhoi) renderHS(); return; }
+  if (gv) { REQG[+gv][2] = Math.max(0, +e.target.value || 0); renderGV(); return; }
+  var i = e.target.dataset.w; if (i == null) return;
+  WEIGHTS[i][2] = +e.target.value; $('wo' + i).textContent = e.target.value; renderRank();
+});
+document.addEventListener('click', function (e) {
+  var kb = e.target.closest('#hs-khoi button');
+  if (kb) { hsKhoi = +kb.dataset.k; document.querySelectorAll('#hs-khoi button').forEach(function (b) { b.classList.toggle('is-active', b === kb); }); renderReqHS(); return; }
+  var dimBtn = e.target.closest('#rank-dim button');
+  if (dimBtn) { dim = dimBtn.dataset.dim; document.querySelectorAll('#rank-dim button').forEach(function (b) { b.classList.toggle('is-active', b === dimBtn); }); renderRank(); return; }
+  var tb = e.target.closest('[data-table]');
+  if (tb) { var id = tb.dataset.table, t = $(id + '-table'), on = t.hidden; t.hidden = !on; $(id).hidden = on; var lg = $(id + '-legend'); if (lg) lg.hidden = on; tb.textContent = on ? 'Xem dạng biểu đồ' : 'Xem dạng bảng'; }
+});
+$('hs-lop').onchange = function () { hsKhoi = +this.value; document.querySelectorAll('#hs-khoi button').forEach(function (b) { b.classList.toggle('is-active', +b.dataset.k === hsKhoi); }); renderReqHS(); renderHS(); };
+$('hs-ky').onchange = renderHS;
+$('gv-ky').onchange = renderGV;
+function meta() { var o = $('range').selectedOptions[0]; $('rep-meta').textContent = 'Số liệu chốt ngày ' + o.dataset.end + ' · so sánh với ' + o.dataset.cmp; }
+$('range').onchange = function () { meta(); QD.loading(600); };
+meta();
+var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { show(location.hash.slice(1) || 'tong-quan'); }, 150); });
+show(location.hash.slice(1) || 'tong-quan');
+</script>
+</body>
+</html>

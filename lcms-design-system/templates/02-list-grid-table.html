@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LCMS · Khoá học</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../lcms.css">
+</head>
+<body>
+<div class="lc-layout">
+  <aside class="lc-sider">
+    <div class="lc-sider__logo"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></div>
+    <nav class="lc-menu" data-demo-menu="khoahoc"></nav>
+  </aside>
+
+  <div class="lc-main">
+    <header class="lc-header">
+      <button class="lc-burger" data-lc-collapse aria-label="Thu gọn menu"><img src="../assets/icons/menu.svg" alt=""></button>
+      <h1 class="lc-page-title">Khoá học</h1>
+      <div style="margin-left:auto;position:relative">
+        <img class="lc-avatar" src="../assets/default-avatar.jpg" alt="" data-lc-toggle="userMenu" style="cursor:pointer">
+        <div class="lc-menu-pop" id="userMenu" data-lc-pop hidden style="position:absolute;right:0;top:48px;z-index:10"><a href="01-login.html">Đăng xuất</a></div>
+      </div>
+    </header>
+
+    <main class="lc-content">
+      <div class="lc-listbar">
+        <div class="lc-tabs"><a href="#">Tất cả (8)</a><a href="#" class="is-active">Đang dạy (6)</a><a href="#">Đã kết thúc (2)</a></div>
+        <div class="lc-view-toggle"><button data-lc-view="table" aria-label="Dạng bảng"><img src="../assets/icons/list-mode.svg" alt=""></button><button class="is-active" data-lc-view="grid" aria-label="Dạng lưới"><img src="../assets/icons/grid-mode.svg" alt=""></button></div>
+        <select class="lc-select lc-select--flat" style="width:110px" aria-label="Lọc theo khối"><option>Tất cả khối</option><option>Khối 10</option><option>Khối 11</option><option>Khối 12</option></select>
+        <div class="lc-search"><input placeholder="Tên khoá học, lớp" aria-label="Tìm khoá học"><button aria-label="Tìm">⌕</button></div>
+      </div>
+
+      <!-- Dạng lưới -->
+      <div class="lc-grid lc-grid-3" data-lc-view-panel="grid">
+        <div class="lc-course">
+          <div class="lc-course__media"><img class="cover" src="../assets/background-course.jpg" alt=""><div class="tools"><button class="lc-icon-btn" data-lc-toggle="menu1" aria-label="Tuỳ chọn"><img src="../assets/icons/three-dots-vertical.svg" alt=""></button></div>
+            <div class="lc-dropdown" id="menu1" data-lc-pop hidden style="position:absolute;right:-60px;top:44px;z-index:5"><button>Chỉnh sửa</button><button>Nhân bản sang lớp khác</button><button>Ẩn với học sinh</button><button class="danger">Xoá</button></div></div>
+          <div class="lc-course__body">
+            <a class="lc-course__title" href="04-detail-chapters.html">Toán 10 – Lớp 10A1</a>
+            <div class="lc-course__price">Năm học 2026–2027 · <b>Học kì I</b></div>
+            <div class="lc-course__meta"><div><img src="../assets/icons/lecture.svg" alt="">Khối: <b>10</b> · Lớp: <b>10A1</b></div><div><img src="../assets/icons/student.svg" alt="">Học sinh: <b>42</b></div></div>
+            <a class="lc-btn lc-btn--primary lc-btn--block" href="04-detail-chapters.html">Vào ngay →</a>
+          </div>
+        </div>
+        <a class="lc-course" href="04-detail-chapters.html">
+          <div class="lc-course__media"><img class="cover" src="../assets/background-course.jpg" alt=""><div class="tools"><span class="lc-icon-btn"><img src="../assets/icons/three-dots-vertical.svg" alt=""></span></div></div>
+          <div class="lc-course__body">
+            <div class="lc-course__title">Toán 10 – Lớp 10A2</div>
+            <div class="lc-course__price">Năm học 2026–2027 · <b>Học kì I</b></div>
+            <div class="lc-course__meta"><div><img src="../assets/icons/lecture.svg" alt="">Khối: <b>10</b> · Lớp: <b>10A2</b></div><div><img src="../assets/icons/student.svg" alt="">Học sinh: <b>40</b></div></div>
+            <span class="lc-btn lc-btn--primary lc-btn--block">Vào ngay →</span>
+          </div>
+        </a>
+        <a class="lc-course" href="04-detail-chapters.html">
+          <div class="lc-course__media"><img class="cover" src="../assets/background-course.jpg" alt=""><div class="tools"><span class="lc-icon-btn"><img src="../assets/icons/three-dots-vertical.svg" alt=""></span></div></div>
+          <div class="lc-course__body">
+            <div class="lc-course__title">Toán 11 – Lớp 11B3</div>
+            <div class="lc-course__price">Năm học 2026–2027 · <b>Học kì I</b></div>
+            <div class="lc-course__meta"><div><img src="../assets/icons/lecture.svg" alt="">Khối: <b>11</b> · Lớp: <b>11B3</b></div><div><img src="../assets/icons/student.svg" alt="">Học sinh: <b>38</b></div></div>
+            <span class="lc-btn lc-btn--primary lc-btn--block">Vào ngay →</span>
+          </div>
+        </a>
+        <a class="lc-course" href="04-detail-chapters.html">
+          <div class="lc-course__media"><img class="cover" src="../assets/background-course.jpg" alt=""><div class="tools"><span class="lc-chip">Còn 12 ngày</span><span class="lc-icon-btn"><img src="../assets/icons/three-dots-vertical.svg" alt=""></span></div></div>
+          <div class="lc-course__body">
+            <div class="lc-course__title">Ôn tập giữa kì I – Toán 10</div>
+            <div class="lc-course__price">Năm học 2026–2027 · <b>Học kì I</b></div>
+            <div class="lc-course__meta"><div><img src="../assets/icons/lecture.svg" alt="">Khối: <b>10</b> · Lớp: <b>10A1, 10A2</b></div><div><img src="../assets/icons/student.svg" alt="">Học sinh: <b>82</b></div></div>
+            <span class="lc-btn lc-btn--primary lc-btn--block">Vào ngay →</span>
+          </div>
+        </a>
+        <a class="lc-course" href="04-detail-chapters.html">
+          <div class="lc-course__media"><img class="cover" src="../assets/background-course.jpg" alt=""><div class="tools"><span class="lc-icon-btn"><img src="../assets/icons/three-dots-vertical.svg" alt=""></span></div></div>
+          <div class="lc-course__body">
+            <div class="lc-course__title">Chuyên đề: Hàm số bậc hai và đồ thị</div>
+            <div class="lc-course__price">Năm học 2026–2027 · <b>Học kì I</b></div>
+            <div class="lc-course__meta"><div><img src="../assets/icons/lecture.svg" alt="">Khối: <b>10</b> · Lớp: <b>Tổ Toán dùng chung</b></div><div><img src="../assets/icons/student.svg" alt="">Học sinh: <b>0</b></div></div>
+            <span class="lc-btn lc-btn--primary lc-btn--block">Vào ngay →</span>
+          </div>
+        </a>
+        <a class="lc-course" href="04-detail-chapters.html">
+          <div class="lc-course__media"><img class="cover" src="../assets/background-course.jpg" alt=""><div class="tools"><span class="lc-icon-btn"><img src="../assets/icons/three-dots-vertical.svg" alt=""></span></div></div>
+          <div class="lc-course__body">
+            <div class="lc-course__title">Bồi dưỡng học sinh giỏi Toán 10</div>
+            <div class="lc-course__price">Năm học 2026–2027 · <b>Học kì I</b></div>
+            <div class="lc-course__meta"><div><img src="../assets/icons/lecture.svg" alt="">Khối: <b>10</b> · Lớp: <b>Đội tuyển trường</b></div><div><img src="../assets/icons/student.svg" alt="">Học sinh: <b>18</b></div></div>
+            <span class="lc-btn lc-btn--primary lc-btn--block">Vào ngay →</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Dạng bảng -->
+      <div data-lc-view-panel="table" hidden>
+        <div class="lc-table-wrap"><table class="lc-table">
+          <thead><tr><th class="c"><input type="checkbox" aria-label="Chọn tất cả"></th><th class="c">Mã</th><th>Tên khoá học</th><th class="c">Khối</th><th class="c">Lớp</th><th class="c">Học<br>sinh</th><th class="c">Trạng thái</th><th class="c">Vào<br>khoá</th></tr></thead>
+          <tbody>
+            <tr><td class="c"><input type="checkbox" aria-label="Chọn"></td><td class="c">TOAN10-10A1</td><td><a class="title" href="04-detail-chapters.html">Toán 10 – Lớp 10A1</a><span class="sub">Môn Toán · Cô Nguyễn Thị Lan</span></td><td class="c">10</td><td class="c">10A1</td><td class="c">42</td><td class="c"><span class="lc-tag lc-tag--success">Đang dạy</span></td><td class="c"><a href="04-detail-chapters.html">Vào ngay →</a></td></tr>
+            <tr><td class="c"><input type="checkbox" aria-label="Chọn"></td><td class="c">TOAN10-10A2</td><td><a class="title" href="04-detail-chapters.html">Toán 10 – Lớp 10A2</a><span class="sub">Môn Toán · Cô Nguyễn Thị Lan</span></td><td class="c">10</td><td class="c">10A2</td><td class="c">40</td><td class="c"><span class="lc-tag lc-tag--success">Đang dạy</span></td><td class="c"><a href="04-detail-chapters.html">Vào ngay →</a></td></tr>
+            <tr><td class="c"><input type="checkbox" aria-label="Chọn"></td><td class="c">TOAN11-11B3</td><td><a class="title" href="04-detail-chapters.html">Toán 11 – Lớp 11B3</a><span class="sub">Môn Toán · Cô Nguyễn Thị Lan</span></td><td class="c">11</td><td class="c">11B3</td><td class="c">38</td><td class="c"><span class="lc-tag lc-tag--success">Đang dạy</span></td><td class="c"><a href="04-detail-chapters.html">Vào ngay →</a></td></tr>
+            <tr><td class="c"><input type="checkbox" aria-label="Chọn"></td><td class="c">ONTAP-GK1-T10</td><td><a class="title" href="04-detail-chapters.html">Ôn tập giữa kì I – Toán 10</a><span class="sub">Môn Toán · Cô Nguyễn Thị Lan</span></td><td class="c">10</td><td class="c">10A1, 10A2</td><td class="c">82</td><td class="c"><span class="lc-tag lc-tag--success">Đang dạy</span></td><td class="c"><a href="04-detail-chapters.html">Vào ngay →</a></td></tr>
+            <tr><td class="c"><input type="checkbox" aria-label="Chọn"></td><td class="c">CD-HSBH-T10</td><td><a class="title" href="04-detail-chapters.html">Chuyên đề: Hàm số bậc hai và đồ thị</a><span class="sub">Môn Toán · Cô Nguyễn Thị Lan</span></td><td class="c">10</td><td class="c">Tổ Toán dùng chung</td><td class="c">0</td><td class="c"><span class="lc-tag lc-tag--warning">Bản nháp</span></td><td class="c"><a href="04-detail-chapters.html">Vào ngay →</a></td></tr>
+            <tr><td class="c"><input type="checkbox" aria-label="Chọn"></td><td class="c">HSG-T10</td><td><a class="title" href="04-detail-chapters.html">Bồi dưỡng học sinh giỏi Toán 10</a><span class="sub">Môn Toán · Cô Nguyễn Thị Lan</span></td><td class="c">10</td><td class="c">Đội tuyển trường</td><td class="c">18</td><td class="c"><span class="lc-tag lc-tag--success">Đang dạy</span></td><td class="c"><a href="04-detail-chapters.html">Vào ngay →</a></td></tr>
+            <tr><td class="c"><input type="checkbox" aria-label="Chọn"></td><td class="c">TOAN10-10A3-2526</td><td><a class="title" href="04-detail-chapters.html">Toán 10 – Lớp 10A3 (năm học 2025–2026)</a><span class="sub">Môn Toán · Cô Nguyễn Thị Lan</span></td><td class="c">10</td><td class="c">10A3</td><td class="c">41</td><td class="c"><span class="lc-tag lc-tag--default">Đã kết thúc</span></td><td class="c"><a href="04-detail-chapters.html">Vào ngay →</a></td></tr>
+          </tbody></table></div>
+      </div>
+
+      <ul class="lc-pagination" style="margin-top:12px"><li class="is-disabled">‹</li><li class="is-active">1</li><li>2</li><li>›</li></ul>
+    </main>
+
+    <footer class="lc-footer"><a class="lc-btn lc-btn--primary" href="05-form-settings.html">+ Tạo khoá mới</a></footer>
+  </div>
+</div>
+<script src="../lcms.js"></script>
+<script src="../lcms-demo.js"></script>
+</body>
+</html>

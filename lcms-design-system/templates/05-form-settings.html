@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LCMS · Cài đặt khoá học</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../lcms.css">
+<style>
+  .settings { display: grid; grid-template-columns: minmax(0, 1fr) 348px; gap: 44px; align-items: start; margin-top: 24px; }
+  .preview { position: sticky; top: 0; margin-top: 28px; }
+  @media (max-width: 1100px) { .settings { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="lc-layout">
+  <aside class="lc-sider">
+    <div class="lc-sider__logo"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></div>
+    <nav class="lc-menu" data-demo-menu="khoahoc"></nav>
+  </aside>
+
+  <div class="lc-main">
+    <header class="lc-header">
+      <button class="lc-burger" data-lc-collapse aria-label="Thu gọn menu"><img src="../assets/icons/menu.svg" alt=""></button>
+      <h1 class="lc-page-title">Cài đặt khoá học <em>Toán 10 – Lớp 10A1</em></h1>
+      <img class="lc-avatar" src="../assets/default-avatar.jpg" alt="">
+    </header>
+
+    <main class="lc-content">
+      <div class="lc-tabs lc-tabs--full"><a href="04-detail-chapters.html">Chương trình học</a><a href="#">Tài liệu (6)</a><a href="#" class="is-active">Cài đặt khoá học</a></div>
+
+      <div class="settings">
+        <form onsubmit="event.preventDefault()">
+          <h2 class="lc-section-title"><span class="dot">i</span>Thông tin khoá học</h2>
+          <div class="lc-form" style="padding:28px 0 0 20px;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px 16px">
+            <div class="lc-field" style="grid-column:1/-1"><label class="lc-label" for="f-name">Tên khoá học<span class="req">*</span></label><input class="lc-input" id="f-name" value="Toán 10 – Lớp 10A1"></div>
+            <div class="lc-field" style="grid-column:1/-1"><label class="lc-label" for="f-code">Mã khoá học</label><input class="lc-input" id="f-code" value="TOAN10-10A1"></div>
+            <div class="lc-field" style="grid-column:span 2"><label class="lc-label" for="f-p1">Môn học</label><select class="lc-select" id="f-p1"><option>Toán</option><option>Ngữ văn</option><option>Tiếng Anh</option><option>Vật lí</option></select></div>
+            <div class="lc-field" style="grid-column:span 2"><label class="lc-label" for="f-p2">Khối</label><select class="lc-select" id="f-p2"><option>Khối 10</option><option>Khối 11</option><option>Khối 12</option></select></div>
+            <div class="lc-field" style="grid-column:span 2"><label class="lc-label" for="f-p3">Lớp học</label><input class="lc-input" id="f-p3" value="10A1"></div>
+            <div class="lc-field" style="grid-column:span 2"><label class="lc-label" for="f-d">Năm học · Học kì</label><select class="lc-select" id="f-d"><option>2026–2027 · Học kì I</option><option>2026–2027 · Học kì II</option><option>2026–2027 · Cả năm</option></select></div>
+            <div class="lc-field" style="grid-column:span 2"><label class="lc-label" for="f-k">Kiểu khoá học</label><select class="lc-select" id="f-k"><option>Theo môn học</option><option>Chuyên đề</option><option>Ôn tập</option><option>Bồi dưỡng HSG</option></select></div>
+            <div class="lc-field"><label class="lc-label" for="f-s">Hiển thị với học sinh</label><select class="lc-select" id="f-s"><option>Đang mở</option><option>Ẩn</option></select></div>
+            <div class="lc-field"><span class="lc-label">Chọn danh mục</span><button type="button" class="lc-btn lc-btn--primary" style="height:44px;width:98px;padding:0;font-weight:400;font-size:14px" data-lc-toggle="catModal">Chọn</button></div>
+            <div class="lc-field" style="grid-column:1/-1"><label class="lc-label" for="f-t">Tags</label><select class="lc-select" id="f-t" style="height:46px"><option></option></select></div>
+            <div class="lc-field" style="grid-column:1/-1"><label class="lc-label" for="f-desc">Mô tả</label><textarea class="lc-textarea" id="f-desc" rows="5" placeholder="Giới thiệu khoá học">Toán 10 cho lớp 10A1, năm học 2026–2027, học kì I. Giáo viên: Cô Nguyễn Thị Lan.</textarea></div>
+            <div class="lc-field" style="grid-column:1/-1"><span class="lc-label">Ảnh khoá học</span>
+              <label style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:28px;border:1px dashed var(--lc-border);border-radius:8px;background:var(--lc-bg-subtle);cursor:pointer;color:var(--lc-text-secondary)"><img src="../assets/upload-img.svg" alt="" style="width:48px">Kéo thả hoặc bấm để tải ảnh lên<input type="file" accept="image/*" hidden></label></div>
+          </div>
+        </form>
+
+        <!-- Card xem trước + nút submit -->
+        <aside class="preview lc-course">
+          <div class="lc-course__media"><img class="cover" src="../assets/background-course.jpg" alt=""><div class="tools"><span class="lc-icon-btn"><img src="../assets/icons/three-dots-vertical.svg" alt=""></span></div></div>
+          <div class="lc-course__body">
+            <div class="lc-course__title">Toán 10 – Lớp 10A1</div>
+            <div class="lc-course__price">Năm học 2026–2027 · <b>Học kì I</b></div>
+            <button class="lc-btn lc-btn--primary lc-btn--block" style="height:43px">Lưu thay đổi</button>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="lc-footer"><a class="lc-btn lc-btn--outline" href="02-list-grid-table.html">Quay lại danh sách khoá học</a></footer>
+  </div>
+</div>
+
+<!-- Modal lớn: chọn danh mục (checklist) -->
+<div class="lc-overlay" id="catModal" hidden>
+  <div class="lc-modal lc-modal--lg" role="dialog" aria-label="Chọn danh mục" style="height:min(810px,calc(100vh - 32px))">
+    <button class="lc-modal__close" data-lc-close style="position:absolute;right:20px;top:18px" aria-label="Đóng">×</button>
+    <div class="lc-modal__body lc-stack" style="gap:10px;padding-top:4px">
+      <label class="lc-check"><input type="checkbox" checked>Môn học · Toán</label>
+      <label class="lc-check"><input type="checkbox">Môn học · Ngữ văn</label>
+      <label class="lc-check"><input type="checkbox">Môn học · Tiếng Anh</label>
+      <label class="lc-check"><input type="checkbox">Môn học · Vật lí</label>
+      <label class="lc-check"><input type="checkbox">Môn học · Hoá học</label>
+      <label class="lc-check"><input type="checkbox" checked>Khối 10</label>
+      <label class="lc-check"><input type="checkbox">Khối 11</label>
+      <label class="lc-check"><input type="checkbox">Khối 12</label>
+      <label class="lc-check"><input type="checkbox">Ôn tập giữa kì</label>
+      <label class="lc-check"><input type="checkbox">Ôn tập cuối kì</label>
+      <label class="lc-check"><input type="checkbox">Bồi dưỡng học sinh giỏi</label>
+      <label class="lc-check"><input type="checkbox">Ôn thi tốt nghiệp THPT</label>
+    </div>
+    <div class="lc-modal__foot"><button class="lc-btn lc-btn--text" data-lc-close style="height:40px">Huỷ</button><button class="lc-btn lc-btn--primary" data-lc-close style="height:40px;padding:0 30px">Lưu</button></div>
+  </div>
+</div>
+<script src="../lcms.js"></script>
+<script src="../lcms-demo.js"></script>
+</body>
+</html>

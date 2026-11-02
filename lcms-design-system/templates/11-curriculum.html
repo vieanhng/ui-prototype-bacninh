@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LCMS · Khung chương trình</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../lcms.css">
+<style>
+  .levels { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; font-size: 13px; color: var(--lc-text-secondary); }
+  .levels .lvchip { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px; border-radius: 14px; background: #fff; box-shadow: var(--lc-sh-card); font-weight: 600; color: var(--lc-text-tertiary); white-space: nowrap; }
+  .levels .lvchip i { font-style: normal; width: 18px; height: 18px; border-radius: 50%; background: var(--lc-primary-soft); color: var(--lc-primary); display: grid; place-items: center; font-size: 11px; }
+  .levels .lvchip.is-on { background: var(--lc-primary); color: #fff; }
+  .levels .lvchip.is-on i { background: #fff; }
+  .cf { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 20px; align-items: start; margin-top: 16px; }
+  .cf > .lc-card { min-width: 0; }
+  .tree-head { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--lc-divider); }
+  .tree-head .lc-search--round { flex: 1; }
+  .tree { list-style: none; margin: 0; padding: 8px 8px 12px; max-height: calc(100vh - 64px - 230px); min-height: 360px; overflow: auto; }
+  .tree ul { list-style: none; margin: 0; padding: 0; }
+  .node { display: flex; align-items: flex-start; gap: 6px; padding: 7px 8px; border-radius: 8px; cursor: pointer; line-height: 1.45; }
+  .node:hover { background: var(--lc-bg-subtle); }
+  .node.is-sel { background: var(--lc-primary-soft); }
+  .node .tw { width: 20px; height: 20px; flex: none; display: grid; place-items: center; border: 0; background: none; padding: 0; color: var(--lc-text-secondary); cursor: pointer; transition: transform .15s; }
+  .node .tw svg { width: 16px; height: 16px; }
+  .node.is-open > .tw { transform: rotate(90deg); }
+  .node .tw.leaf { visibility: hidden; }
+  .lv { flex: none; height: 20px; padding: 0 6px; border-radius: 4px; font-size: 11px; font-weight: 700; line-height: 20px; white-space: nowrap; }
+  .node .nm { flex: 1; min-width: 0; color: var(--lc-text-strong); }
+  .node.is-leaf .nm { font-size: 13px; color: var(--lc-text-tertiary); }
+  .node .nm code, .kids code { font-size: 12px; font-weight: 700; color: var(--lc-success-2); margin-right: 4px; }
+  .node .ct { flex: none; font-size: 12px; color: var(--lc-text-secondary); }
+  .node mark { background: #fff1b8; color: inherit; padding: 0 1px; }
+  .node .skip { flex: none; font-size: 11px; color: #722ed1; }
+  .node.is-new .nm::after { content: "Mới"; margin-left: 6px; padding: 1px 6px; border-radius: 4px; background: var(--lc-success-bg); color: var(--lc-success-2); font-size: 11px; font-weight: 700; }
+  .detail { padding: 18px 20px; position: sticky; top: 0; }
+  .path { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; font-size: 13px; color: var(--lc-text-secondary); }
+  .path b { font-weight: 500; color: var(--lc-text-tertiary); }
+  .stat3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .stat3 div { padding: 10px 12px; border-radius: 10px; background: var(--lc-bg-soft); }
+  .stat3 b { display: block; font-size: 20px; color: var(--lc-primary); }
+  .stat3 span { font-size: 12px; color: var(--lc-text-secondary); }
+  .kids { border: 1px solid var(--lc-divider); border-radius: 10px; overflow: hidden; }
+  .kids div { display: flex; align-items: flex-start; gap: 10px; padding: 9px 12px; border-bottom: 1px solid var(--lc-divider); font-size: 14px; cursor: pointer; }
+  .kids div:last-child { border-bottom: 0; }
+  .kids div:hover { background: var(--lc-bg-subtle); }
+  /* Cấu hình cấp */
+  .lvcfg { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .lvcfg th { text-align: left; font-weight: 600; color: var(--lc-text-secondary); font-size: 12px; padding: 0 6px 8px; }
+  .lvcfg td { padding: 6px; border-top: 1px solid var(--lc-divider); vertical-align: middle; }
+  .lvcfg .lc-input { height: 36px; font-size: 14px; }
+  .lvcfg .n { color: var(--lc-text-secondary); font-size: 12px; white-space: nowrap; }
+  .lvcfg .ins td { padding: 0; border-top: 0; }
+  .lvcfg .ins button { display: block; width: 100%; height: 14px; border: 0; background: none; color: transparent; font-size: 11px; cursor: pointer; }
+  .lvcfg .ins button:hover { height: 22px; color: var(--lc-primary); background: var(--lc-primary-soft); border-radius: 4px; }
+  .tpl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .tpl .lc-radio-card { padding: 10px 12px; }
+  .tpl .lc-radio-card b { font-size: 14px; }
+  .tpl .lc-radio-card p { font-size: 12px; }
+  @media (max-width: 1100px) { .cf { grid-template-columns: 1fr; } .detail { position: static; } .tree { max-height: none; } }
+</style>
+</head>
+<body>
+<div class="lc-layout">
+  <aside class="lc-sider">
+    <div class="lc-sider__logo"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></div>
+    <nav class="lc-menu" data-demo-menu="khung"></nav>
+  </aside>
+  <div class="lc-main">
+    <header class="lc-header">
+      <button class="lc-burger" data-lc-collapse aria-label="Thu gọn menu"><img src="../assets/icons/menu.svg" alt=""></button>
+      <h1 class="lc-page-title">Khung chương trình <em>CTGDPT 2018</em></h1>
+      <div class="lc-header__actions" style="margin-left:auto;display:flex;align-items:center;gap:14px">
+        <span class="lc-tag lc-tag--success lc-tag--sm">Áp dụng toàn tỉnh · 128 trường</span>
+        <div class="lc-user"><img class="lc-avatar" src="../assets/default-avatar.jpg" alt=""><div><b id="userName">Phạm Văn Đức</b><span id="userTitle">Quản trị cấp Sở</span></div></div>
+      </div>
+    </header>
+    <main class="lc-content lc-content--soft">
+      <div class="lc-callout" id="roNote" hidden style="margin-bottom:12px">Khung chương trình do <b>Sở GD&amp;ĐT</b> ban hành và soạn thảo, áp dụng chung toàn tỉnh. Nhà trường và giáo viên chỉ tra cứu để gán nhãn học liệu, câu hỏi; đề nghị sửa đổi gửi về Sở.</div>
+      <div class="lc-listbar" style="margin-bottom:10px;gap:10px">
+        <select class="lc-select lc-select--sm" id="subject" style="width:160px" aria-label="Môn học"></select>
+        <button class="lc-btn lc-btn--text lc-btn--sm" style="padding:0 6px" data-act="addSubject" data-edit><i data-lucide="plus" style="width:15px"></i>Thêm môn</button>
+        <select class="lc-select lc-select--sm" id="grade" style="width:130px" aria-label="Lớp"></select>
+        <span class="lc-spacer"></span>
+        <button class="lc-btn lc-btn--outline lc-btn--sm" data-act="import" data-edit><i data-lucide="file-spreadsheet" style="width:16px"></i>Nhập từ Excel</button>
+        <button class="lc-btn lc-btn--primary lc-btn--sm" data-act="addTop" id="addTopBtn" data-edit></button>
+      </div>
+      <div class="lc-row" style="gap:10px;flex-wrap:wrap">
+        <div class="levels" id="levels"></div>
+        <button class="lc-btn lc-btn--text lc-btn--sm" style="padding:0 6px" data-act="cfgLevels" data-edit><i data-lucide="settings-2" style="width:15px"></i>Cấu hình cấp</button>
+      </div>
+
+      <div class="cf">
+        <section class="lc-card">
+          <div class="tree-head">
+            <div class="lc-search--round"><input id="q" placeholder="Tìm theo tên hoặc mã..." aria-label="Tìm trong khung"><button aria-label="Tìm"><i data-lucide="search" style="width:16px"></i></button></div>
+            <button class="lc-btn lc-btn--text lc-btn--sm" data-act="expandAll">Mở hết</button>
+            <button class="lc-btn lc-btn--text lc-btn--sm" data-act="collapseAll">Thu gọn</button>
+          </div>
+          <ul class="tree" id="tree" role="tree" aria-label="Cây khung chương trình"></ul>
+        </section>
+        <section class="lc-card detail" id="detail"></section>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Modal thêm / sửa nút -->
+<div class="lc-overlay" id="mNode" hidden>
+  <div class="lc-modal" role="dialog" aria-labelledby="mNodeTitle" style="max-width:600px">
+    <div class="lc-modal__head"><h3 id="mNodeTitle"></h3><button class="lc-modal__close" data-lc-close aria-label="Đóng">×</button></div>
+    <div class="lc-modal__body lc-form" id="mNodeBody"></div>
+    <div class="lc-modal__foot"><button class="lc-btn lc-btn--outline" data-lc-close>Huỷ</button><button class="lc-btn lc-btn--primary" data-act="saveNode">Lưu</button></div>
+  </div>
+</div>
+
+<!-- Modal cấu hình cấp của môn -->
+<div class="lc-overlay" id="mLevels" hidden>
+  <div class="lc-modal" role="dialog" aria-labelledby="mLevelsTitle" style="max-width:720px">
+    <div class="lc-modal__head"><h3 id="mLevelsTitle"></h3><button class="lc-modal__close" data-lc-close aria-label="Đóng">×</button></div>
+    <div class="lc-modal__body" id="mLevelsBody"></div>
+    <div class="lc-modal__foot"><button class="lc-btn lc-btn--outline" data-lc-close>Huỷ</button><button class="lc-btn lc-btn--primary" data-act="saveLevels">Lưu cấu hình</button></div>
+  </div>
+</div>
+
+<!-- Modal thêm môn -->
+<div class="lc-overlay" id="mSubject" hidden>
+  <div class="lc-modal" role="dialog" aria-labelledby="mSubjectTitle" style="max-width:600px">
+    <div class="lc-modal__head"><h3 id="mSubjectTitle">Thêm môn học</h3><button class="lc-modal__close" data-lc-close aria-label="Đóng">×</button></div>
+    <div class="lc-modal__body lc-form" id="mSubjectBody"></div>
+    <div class="lc-modal__foot"><button class="lc-btn lc-btn--outline" data-lc-close>Huỷ</button><button class="lc-btn lc-btn--primary" data-act="saveSubject">Tạo môn</button></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../lcms.js"></script>
+<script src="../lcms-demo.js"></script>
+<script>
+(function () {
+  var D = LcDemo, esc = D.esc, $ = function (id) { return document.getElementById(id); };
+  // Chỉ cấp Sở được soạn khung; vai trò khác chỉ xem
+  function canEdit() { return D.role() === 'so'; }
+  var WHO = { so: ['Phạm Văn Đức', 'Quản trị cấp Sở'], gv: ['Nguyễn Thị Lan', 'Giáo viên Toán'], gvcn: ['Nguyễn Thị Lan', 'Giáo viên chủ nhiệm 10A1'], tt: ['Trần Văn Minh', 'Tổ trưởng Tổ Toán'], ht: ['Nguyễn Văn Thành', 'Hiệu trưởng'], ct: ['Đỗ Văn Hùng', 'Cán bộ coi thi'] };
+  function applyRole() {
+    var ed = canEdit(), w = WHO[D.role()] || WHO.gv;
+    document.querySelectorAll('[data-edit]').forEach(function (b) { b.hidden = !ed; });
+    $('roNote').hidden = ed; $('userName').textContent = w[0]; $('userTitle').textContent = w[1];
+  }
+  var PALETTE = [['var(--lc-primary)', '#fff'], ['#f0f2f5', 'var(--lc-text-tertiary)'], ['#f9f0ff', '#722ed1'], ['#fff7e6', '#d46b08'], ['var(--lc-primary-soft)', 'var(--lc-primary)'], ['var(--lc-success-2-bg)', 'var(--lc-success-2)'], ['#fff0f6', '#c41d7f'], ['#e6fffb', '#08979c']];
+  var seq = 0;
+  function node(level, name, extra) { var n = { id: 'n' + (++seq), level: level, name: name, kids: [], log: [] }; for (var k in extra) n[k] = extra[k]; return n; }
+  function lvDef(name, short, coded) { return { id: 'l' + (++seq), name: name, short: short, coded: !!coded }; }
+
+  /* ---------- Dữ liệu mô phỏng: mỗi môn có bộ cấp riêng ---------- */
+  // Cấp 0 (Môn) và cấp 1 (Lớp) cố định; các cấp sau quản trị tự đặt. Nút được phép bỏ qua cấp.
+  function makeSubject(name, levels, grades) {
+    var s = { id: 's' + (++seq), name: name, levels: levels, root: node(0, name) };
+    grades.forEach(function (g) { s.root.kids.push(node(1, 'Lớp ' + g)); });
+    return s;
+  }
+  function add(p, level, name, extra) { var n = node(level, name, extra); p.kids.push(n); return n; }
+  function grade(s, g) { return s.root.kids.find(function (x) { return x.name === 'Lớp ' + g; }); }
+
+  var SUBJECTS = [];
+  // Toán: Môn › Lớp › Mạch › Chủ đề › Bài › YCCĐ (dùng chung với template 09)
+  var toan = makeSubject('Toán', [lvDef('Môn', 'Môn'), lvDef('Lớp', 'Lớp'), lvDef('Mạch nội dung', 'Mạch'), lvDef('Chủ đề', 'Chủ đề'), lvDef('Bài', 'Bài'), lvDef('Yêu cầu cần đạt', 'YCCĐ', true)], ['10', '11', '12']);
+  D.KHUNG.forEach(function (k, i) {
+    var g = grade(toan, '10');
+    var m = g.kids.find(function (x) { return x.name === k.mach; }) || add(g, 2, k.mach);
+    var c = m.kids.find(function (x) { return x.name === k.chude; }) || add(m, 3, k.chude);
+    var b = add(c, 4, k.bai);
+    k.yccd.forEach(function (y, j) { add(b, 5, y[1], { code: y[0], ml: (i * 3 + j * 5) % 9 + 2, qs: (i * 7 + j * 11) % 23 + 6 }); });
+  });
+  var tk = add(grade(toan, '10'), 2, 'Thống kê và Xác suất');
+  // Ví dụ bỏ qua cấp "Chủ đề": Bài nằm ngay dưới Mạch
+  add(add(tk, 4, 'Số gần đúng và sai số'), 5, 'Hiểu được khái niệm số gần đúng, sai số tuyệt đối.', { code: 'T10.TK.1', ml: 1, qs: 4 });
+  SUBJECTS.push(toan);
+
+  // Ngữ văn: Môn › Lớp › Bài học › Thể loại › Văn bản › YCCĐ
+  var van = makeSubject('Ngữ văn', [lvDef('Môn', 'Môn'), lvDef('Lớp', 'Lớp'), lvDef('Bài học', 'Bài học'), lvDef('Thể loại', 'Thể loại'), lvDef('Văn bản', 'Văn bản'), lvDef('Yêu cầu cần đạt', 'YCCĐ', true)], ['10', '11', '12']);
+  var b1 = add(grade(van, '10'), 2, 'Bài 1: Sức hấp dẫn của truyện kể');
+  var tl = add(b1, 3, 'Thần thoại');
+  var vb = add(tl, 4, 'Thần trụ trời');
+  add(vb, 5, 'Nhận biết và phân tích được một số yếu tố của truyện thần thoại: không gian, thời gian, cốt truyện, nhân vật, lời người kể chuyện.', { code: 'NV10.ĐH.1', ml: 5, qs: 12 });
+  add(vb, 5, 'Nêu được ý nghĩa của truyện thần thoại đối với người đọc hôm nay.', { code: 'NV10.ĐH.2', ml: 2, qs: 7 });
+  add(add(add(grade(van, '10'), 2, 'Bài 2: Vẻ đẹp của thơ ca'), 3, 'Thơ trữ tình'), 4, 'Thu hứng');
+  SUBJECTS.push(van);
+
+  // Tiếng Anh: chỉ 5 cấp — Môn › Lớp › Unit › Kỹ năng › YCCĐ
+  var anh = makeSubject('Tiếng Anh', [lvDef('Môn', 'Môn'), lvDef('Lớp', 'Lớp'), lvDef('Đơn vị bài học', 'Unit'), lvDef('Kỹ năng', 'Kỹ năng'), lvDef('Yêu cầu cần đạt', 'YCCĐ', true)], ['10', '11', '12']);
+  var u1 = add(grade(anh, '10'), 2, 'Unit 1: Family life');
+  add(add(u1, 3, 'Reading'), 4, 'Đọc hiểu ý chính và thông tin chi tiết trong đoạn văn khoảng 220–250 từ về chủ đề gia đình.', { code: 'TA10.U1.R1', ml: 3, qs: 15 });
+  add(add(u1, 3, 'Speaking'), 4, 'Trao đổi về việc chia sẻ công việc nhà trong gia đình.', { code: 'TA10.U1.S1', ml: 2, qs: 4 });
+  add(add(u1, 3, 'Listening'), 4, 'Nghe hiểu nội dung chính đoạn hội thoại về nếp sống gia đình.', { code: 'TA10.U1.L1', ml: 1, qs: 9 });
+  add(grade(anh, '10'), 2, 'Unit 2: Humans and the environment');
+  SUBJECTS.push(anh);
+
+  /* ---------- Trạng thái ---------- */
+  var cur = toan, gradeFilter = 'Lớp 10', sel = null, q = '', open = {}, editing = null, cfgDraft = null;
+  var byId = {}, parent = {};
+  function reindex() { byId = {}; parent = {}; (function walk(n, p) { byId[n.id] = n; parent[n.id] = p; n.kids.forEach(function (k) { walk(k, n); }); })(cur.root, null); }
+  function L(i) { return cur.levels[i] || { name: '?', short: '?' }; }
+  function leafIdx() { return cur.levels.length - 1; }
+  // Cấp dùng để gán nhãn và thống kê: cấp có mã sâu nhất (thường là YCCĐ); không có thì lấy cấp cuối
+  function tagIdx() { for (var i = cur.levels.length - 1; i >= 0; i--) if (cur.levels[i].coded) return i; return leafIdx(); }
+  function chip(level) { var p = PALETTE[level % PALETTE.length]; return '<span class="lv" style="background:' + p[0] + ';color:' + p[1] + '">' + esc(L(level).short) + '</span>'; }
+  function sum(n, key) { return (n[key] || 0) + n.kids.reduce(function (s, k) { return s + sum(k, key); }, 0); }
+  function count(n, level) { return (n.level === level ? 1 : 0) + n.kids.reduce(function (s, k) { return s + count(k, level); }, 0); }
+  function countLevel(level) { return count(cur.root, level); }
+  function pathOf(n) { var p = []; while (n) { p.unshift(n); n = parent[n.id]; } return p; }
+  function hl(s) { s = esc(s); if (!q) return s; var i = s.toLowerCase().indexOf(q.toLowerCase()); return i < 0 ? s : s.slice(0, i) + '<mark>' + s.slice(i, i + q.length) + '</mark>' + s.slice(i + q.length); }
+  function matches(n) { return !q || (n.name + ' ' + (n.code || '')).toLowerCase().indexOf(q.toLowerCase()) >= 0 || n.kids.some(matches); }
+  function visibleRoots() { return gradeFilter ? cur.root.kids.filter(function (g) { return g.name === gradeFilter; }) : [cur.root]; }
+
+  function switchSubject(s) {
+    cur = s; reindex(); q = ''; $('q').value = '';
+    gradeFilter = cur.root.kids[0] ? cur.root.kids[0].name : '';
+    var g = cur.root.kids[0];
+    open[cur.root.id] = true; if (g) { open[g.id] = true; g.kids.forEach(function (k) { open[k.id] = true; }); }
+    sel = g && g.kids[0] ? g.kids[0] : (g || cur.root);
+    render();
+  }
+
+  /* ---------- Vẽ ---------- */
+  function renderBar() {
+    $('subject').innerHTML = SUBJECTS.map(function (s) { return '<option value="' + s.id + '"' + (s === cur ? ' selected' : '') + '>' + esc(s.name) + '</option>'; }).join('');
+    $('grade').innerHTML = '<option value="">Tất cả lớp</option>' + cur.root.kids.map(function (g) { return '<option' + (g.name === gradeFilter ? ' selected' : '') + '>' + esc(g.name) + '</option>'; }).join('');
+    $('levels').innerHTML = cur.levels.map(function (l, i) { return '<span class="lvchip' + (sel && sel.level === i ? ' is-on' : '') + '"><i>' + (i + 1) + '</i>' + esc(l.name) + '</span>'; }).join('<span>›</span>');
+    $('addTopBtn').innerHTML = '<i data-lucide="plus" style="width:16px"></i>Thêm ' + esc(L(2).name.toLowerCase());
+  }
+  function renderTree() {
+    function li(n, depth) {
+      if (!matches(n)) return '';
+      var isOpen = q ? true : open[n.id], leaf = !n.kids.length, p = parent[n.id];
+      var skipped = p && n.level - p.level > 1 ? cur.levels.slice(p.level + 1, n.level).map(function (l) { return l.short; }).join(', ') : '';
+      var ct = n.level < tagIdx() ? count(n, tagIdx()) + ' ' + esc(L(tagIdx()).short) : '';
+      return '<li role="treeitem" aria-expanded="' + (leaf ? 'false' : !!isOpen) + '" aria-selected="' + (sel === n) + '">' +
+        '<div class="node' + (sel === n ? ' is-sel' : '') + (isOpen && !leaf ? ' is-open' : '') + (n.isNew ? ' is-new' : '') + (n.level >= tagIdx() ? ' is-leaf' : '') + '" data-id="' + n.id + '" style="padding-left:' + (8 + depth * 18) + 'px">' +
+        '<button class="tw' + (leaf ? ' leaf' : '') + '" data-tw="' + n.id + '" aria-label="Mở/đóng"><i data-lucide="chevron-right"></i></button>' + chip(n.level) +
+        '<span class="nm">' + (n.code ? '<code>' + hl(n.code) + '</code>' : '') + hl(n.name) + '</span>' + (skipped ? '<span class="skip" title="Bỏ qua cấp ' + esc(skipped) + '">↷ ' + esc(skipped) + '</span>' : '') + '<span class="ct">' + ct + '</span></div>' +
+        (leaf || !isOpen ? '' : '<ul role="group">' + n.kids.map(function (k) { return li(k, depth + 1); }).join('') + '</ul>') + '</li>';
+    }
+    $('tree').innerHTML = visibleRoots().map(function (r) { return li(r, 0); }).join('') || '<div class="lc-empty" style="padding:40px 16px">Không có nút nào khớp “' + esc(q) + '”.</div>';
+  }
+  function renderDetail() {
+    var n = sel, p = pathOf(n), canAdd = n.level < leafIdx();
+    var kidsHtml = n.kids.length ? '<div class="kids">' + n.kids.map(function (k) { return '<div data-id="' + k.id + '">' + (k.code ? '<code>' + esc(k.code) + '</code>' : chip(k.level)) + '<span>' + esc(k.name) + '</span></div>'; }).join('') + '</div>'
+      : '<div class="lc-callout">' + (canEdit() ? 'Chưa có nút con. Bấm “Thêm nút con” để tạo.' : 'Chưa có nút con.') + '</div>';
+    $('detail').innerHTML =
+      '<div class="path">' + p.slice(0, -1).map(function (x) { return '<b>' + esc(x.code || x.name) + '</b><span>›</span>'; }).join('') + '</div>' +
+      '<div class="lc-row" style="margin-top:10px;gap:8px"><span class="lc-tag lc-tag--info lc-tag--sm">Cấp ' + (n.level + 1) + '/' + cur.levels.length + ' · ' + esc(L(n.level).name) + '</span>' + (n.code ? '<span class="lc-tag lc-tag--success-2 lc-tag--sm">' + esc(n.code) + '</span>' : '') + '</div>' +
+      '<h2 class="lc-h3" style="font-size:18px;margin-top:10px;line-height:1.45">' + esc(n.name) + '</h2>' +
+      '<div class="stat3" style="margin-top:16px"><div><b>' + count(n, tagIdx()) + '</b><span>' + esc(L(tagIdx()).name) + '</span></div><div><b>' + sum(n, 'ml') + '</b><span>Học liệu đã gắn nhãn</span></div><div><b>' + sum(n, 'qs') + '</b><span>Câu hỏi đã gắn nhãn</span></div></div>' +
+      '<div class="lc-row" style="margin:18px 0 10px;flex-wrap:wrap;gap:8px">' +
+        (canAdd && canEdit() ? '<button class="lc-btn lc-btn--primary lc-btn--sm" data-act="addChild"><i data-lucide="plus" style="width:16px"></i>Thêm nút con</button>' : '') +
+        (n.level > 1 && canEdit() ? '<button class="lc-btn lc-btn--outline lc-btn--sm" data-act="edit"><i data-lucide="pencil" style="width:15px"></i>Sửa</button>' : '') +
+        (n.level > 1 && canEdit() ? '<button class="lc-btn lc-btn--text lc-btn--sm" style="color:var(--lc-danger)" data-act="del"><i data-lucide="trash-2" style="width:15px"></i>Xoá</button>' : '') + '</div>' +
+      (canAdd ? '<div class="lc-sec-title">Nút con (' + n.kids.length + ')</div>' + kidsHtml : '') +
+      '<div class="lc-sec-title">Lịch sử thay đổi</div>' +
+      '<ul class="lc-tl">' + n.log.map(function (l) { return '<li class="send"><b>' + esc(l[0]) + '</b><small>' + l[1] + ' · Phạm Văn Đức</small></li>'; }).join('') + '<li class="ok"><b>Nạp từ văn bản CTGDPT 2018</b><small>08:00 15/08/2026 · Hệ thống</small></li></ul>' +
+      '<div class="lc-callout" style="margin-top:6px">Khung này là danh mục chọn khi giáo viên gán nhãn học liệu và câu hỏi, nên tìm kiếm và thống kê ở mọi trường đều theo cùng một chuẩn. <a href="09-content-approval.html" style="font-weight:600">Mở màn gán nhãn →</a></div>';
+  }
+  function render() { renderBar(); renderTree(); renderDetail(); D.icons(); }
+
+  /* ---------- Thêm / sửa nút ---------- */
+  function now() { var d = new Date(); return D.pad(d.getHours()) + ':' + D.pad(d.getMinutes()) + ' ' + D.pad(d.getDate()) + '/' + D.pad(d.getMonth() + 1) + '/' + d.getFullYear(); }
+  function levelOptions(from, selected) {
+    var out = '';
+    for (var i = from; i <= leafIdx(); i++) out += '<option value="' + i + '"' + (i === selected ? ' selected' : '') + '>' + (i + 1) + '. ' + esc(L(i).name) + (i > from ? ' (bỏ qua ' + (i - from) + ' cấp)' : '') + '</option>';
+    return out;
+  }
+  function openNodeModal(mode) {
+    var p = mode === 'edit' ? parent[sel.id] : (mode === 'addTop' ? (cur.root.kids.find(function (g) { return g.name === gradeFilter; }) || cur.root.kids[0]) : sel);
+    editing = { mode: mode, parent: p };
+    var n = mode === 'edit' ? sel : {}, level = mode === 'edit' ? sel.level : p.level + 1;
+    $('mNodeTitle').innerHTML = (mode === 'edit' ? 'Sửa nút' : 'Thêm nút vào') + ' <em>' + esc(cur.name) + '</em>';
+    $('mNodeBody').innerHTML =
+      '<div class="lc-field"><label class="lc-label">Thuộc</label><input class="lc-input" readonly value="' + esc(pathOf(p).map(function (x) { return x.code || x.name; }).join(' › ')) + '"></div>' +
+      '<div class="lc-field"><label class="lc-label" for="fLevel">Cấp</label><select class="lc-select" id="fLevel"' + (mode === 'edit' && sel.kids.length ? ' disabled' : '') + '>' + levelOptions(p.level + 1, level) + '</select>' +
+      '<span class="lc-caption">Có thể bỏ qua cấp không dùng, ví dụ thêm Bài ngay dưới Mạch.</span></div>' +
+      '<div class="lc-field" id="fCodeWrap"><label class="lc-label" for="fCode">Mã<span class="req">*</span></label><input class="lc-input" id="fCode" value="' + esc(n.code || '') + '" placeholder="VD: T10.TK.2"></div>' +
+      '<div class="lc-field"><label class="lc-label" for="fName">Tên / nội dung<span class="req">*</span></label><textarea class="lc-textarea" id="fName" style="min-height:70px">' + esc(n.name || '') + '</textarea></div>' +
+      '<div class="lc-callout lc-callout--warn" style="font-size:13px">Thay đổi có hiệu lực ngay cho toàn tỉnh. Học liệu và câu hỏi đã gắn nhãn vào nút này vẫn giữ liên kết.</div>';
+    syncCode();
+    $('mNode').hidden = false;
+    setTimeout(function () { $('fName').focus(); }, 30);
+  }
+  function syncCode() { var lv = +$('fLevel').value; $('fCodeWrap').hidden = !L(lv).coded; }
+  function saveNode() {
+    var name = $('fName').value.trim(), level = +$('fLevel').value, code = L(level).coded ? $('fCode').value.trim() : '';
+    if (!name) return $('fName').focus();
+    if (L(level).coded && !code) return $('fCode').focus();
+    if (editing.mode === 'edit') {
+      sel.name = name; sel.level = level; sel.code = code || undefined;
+      sel.log.unshift(['Sửa nội dung', now()]);
+      D.toast('Đã cập nhật nút');
+    } else {
+      var n = node(level, name, { code: code || undefined, isNew: true });
+      n.log.unshift(['Tạo mới', now()]);
+      editing.parent.kids.push(n); open[editing.parent.id] = true; reindex(); sel = n;
+      D.toast('Đã thêm ' + esc(L(level).name.toLowerCase()) + ' vào khung ' + esc(cur.name));
+    }
+    $('mNode').hidden = true;
+    render();
+  }
+
+  /* ---------- Cấu hình cấp ---------- */
+  function openLevels() {
+    cfgDraft = cur.levels.map(function (l) { return { id: l.id, name: l.name, short: l.short, coded: l.coded }; });
+    $('mLevelsTitle').innerHTML = 'Cấu hình cấp của môn <em>' + esc(cur.name) + '</em>';
+    renderLevels();
+    $('mLevels').hidden = false;
+  }
+  function usedCount(id) { var i = cur.levels.findIndex(function (l) { return l.id === id; }); return i < 0 ? 0 : countLevel(i); }
+  function renderLevels() {
+    var rows = cfgDraft.map(function (l, i) {
+      var used = usedCount(l.id), locked = i < 2;
+      return '<tr><td style="width:34px;font-weight:700;color:var(--lc-primary)">' + (i + 1) + '</td>' +
+        '<td><input class="lc-input" data-cfg="' + i + ':name" value="' + esc(l.name) + '"' + (locked ? ' readonly' : '') + ' aria-label="Tên cấp ' + (i + 1) + '"></td>' +
+        '<td style="width:120px"><input class="lc-input" data-cfg="' + i + ':short" value="' + esc(l.short) + '"' + (locked ? ' readonly' : '') + ' aria-label="Tên ngắn cấp ' + (i + 1) + '"></td>' +
+        '<td style="width:70px;text-align:center"><input type="checkbox" data-cfg="' + i + ':coded"' + (l.coded ? ' checked' : '') + (locked ? ' disabled' : '') + ' aria-label="Có mã"></td>' +
+        '<td class="n" style="width:70px">' + (l.id ? used + ' nút' : 'Mới') + '</td>' +
+        '<td style="width:84px;white-space:nowrap">' + (i >= 1 ? '<button class="lc-icon-btn" data-cfgins="' + (i + 1) + '" title="Chèn cấp mới ngay dưới cấp này"><i data-lucide="list-plus" style="width:16px;color:var(--lc-primary)"></i></button>' : '') +
+        (locked ? '' : '<button class="lc-icon-btn" data-cfgdel="' + i + '" title="' + (used ? 'Cấp đang có nút, không xoá được' : 'Xoá cấp') + '"' + (used ? ' disabled style="opacity:.3"' : '') + '><i data-lucide="trash-2" style="width:16px;color:var(--lc-danger)"></i></button>') + '</td></tr>';
+    }).join('');
+    $('mLevelsBody').innerHTML = '<p class="lc-caption" style="margin-bottom:12px">Mỗi môn có số cấp và tên cấp riêng, <b>không giới hạn số cấp</b>. Cấp <b>có mã</b> sâu nhất (thường là Yêu cầu cần đạt) dùng để gán nhãn và thống kê; các cấp dưới nó dùng để chia nhỏ thêm. Bấm <i data-lucide="list-plus" style="width:13px;vertical-align:-2px"></i> để chèn cấp ngay dưới một cấp. Môn và Lớp là hai cấp cố định.</p>' +
+      '<table class="lvcfg"><thead><tr><th>#</th><th>Tên cấp</th><th>Tên ngắn</th><th style="text-align:center">Có mã</th><th>Đang dùng</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>' +
+      '<button class="lc-dashed-btn" style="margin-top:10px;height:38px" data-cfgins="' + cfgDraft.length + '">+ Thêm cấp cuối (hiện có ' + cfgDraft.length + ' cấp)</button>' +
+      '<div class="lc-callout" style="margin-top:14px;font-size:13px">Chèn cấp mới không làm thay đổi các nút đã có: chúng được xem là bỏ qua cấp mới cho tới khi quản trị sắp xếp lại.</div>';
+    D.icons();
+  }
+  function saveLevels() {
+    var bad = cfgDraft.findIndex(function (l) { return !l.name.trim() || !l.short.trim(); });
+    if (bad >= 0) { var el = $('mLevelsBody').querySelector('[data-cfg="' + bad + ':name"]'); el.focus(); return; }
+    var oldIdx = {}; cur.levels.forEach(function (l, i) { oldIdx[l.id] = i; });
+    var map = {}; cfgDraft.forEach(function (l, i) { if (l.id) map[oldIdx[l.id]] = i; });
+    (function walk(n) { n.level = map[n.level]; n.kids.forEach(walk); })(cur.root);
+    cur.levels = cfgDraft.map(function (l) { return { id: l.id || 'l' + (++seq), name: l.name.trim(), short: l.short.trim(), coded: l.coded }; });
+    $('mLevels').hidden = true;
+    D.toast('Đã lưu cấu hình ' + cur.levels.length + ' cấp cho môn ' + esc(cur.name));
+    render();
+  }
+
+  /* ---------- Thêm môn ---------- */
+  function openSubject() {
+    $('mSubjectBody').innerHTML =
+      '<div class="lc-field"><label class="lc-label" for="sName">Tên môn<span class="req">*</span></label><input class="lc-input" id="sName" placeholder="VD: Lịch sử"></div>' +
+      '<div class="lc-field"><label class="lc-label" for="sGrades">Các lớp</label><input class="lc-input" id="sGrades" value="10, 11, 12"></div>' +
+      '<div class="lc-field"><span class="lc-label">Bộ cấp ban đầu</span><div class="tpl">' +
+      SUBJECTS.map(function (s, i) { return '<label class="lc-radio-card"><input type="radio" name="tpl" value="' + i + '"' + (i === 0 ? ' checked' : '') + '><div><b>Giống ' + esc(s.name) + '</b><p>' + s.levels.map(function (l) { return esc(l.short); }).join(' › ') + '</p></div></label>'; }).join('') +
+      '<label class="lc-radio-card"><input type="radio" name="tpl" value="min"><div><b>Tối giản</b><p>Môn › Lớp › Chủ đề › YCCĐ</p></div></label></div><span class="lc-caption">Có thể đổi trong “Cấu hình cấp” sau khi tạo.</span></div>';
+    $('mSubject').hidden = false;
+    setTimeout(function () { $('sName').focus(); }, 30);
+  }
+  function saveSubject() {
+    var name = $('sName').value.trim();
+    if (!name) return $('sName').focus();
+    var t = document.querySelector('[name=tpl]:checked').value;
+    var levels = t === 'min' ? [lvDef('Môn', 'Môn'), lvDef('Lớp', 'Lớp'), lvDef('Chủ đề', 'Chủ đề'), lvDef('Yêu cầu cần đạt', 'YCCĐ', true)]
+      : SUBJECTS[+t].levels.map(function (l) { return lvDef(l.name, l.short, l.coded); });
+    levels[0] = lvDef('Môn', 'Môn');
+    var grades = $('sGrades').value.split(',').map(function (x) { return x.trim(); }).filter(Boolean);
+    var s = makeSubject(name, levels, grades.length ? grades : ['10']);
+    SUBJECTS.push(s);
+    $('mSubject').hidden = true;
+    switchSubject(s);
+    D.toast('Đã tạo môn ' + esc(name) + ' với ' + levels.length + ' cấp');
+  }
+
+  /* ---------- Sự kiện ---------- */
+  document.addEventListener('click', function (e) {
+    var el;
+    if ((el = e.target.closest('[data-tw]'))) { open[el.dataset.tw] = !open[el.dataset.tw]; renderTree(); return D.icons(); }
+    if ((el = e.target.closest('.node, .kids [data-id]'))) { sel = byId[el.dataset.id]; var p = parent[sel.id]; while (p) { open[p.id] = true; p = parent[p.id]; } return render(); }
+    if ((el = e.target.closest('[data-cfgdel]'))) { cfgDraft.splice(+el.dataset.cfgdel, 1); return renderLevels(); }
+    if ((el = e.target.closest('[data-cfgins]'))) { cfgDraft.splice(+el.dataset.cfgins, 0, { id: null, name: 'Cấp mới', short: 'Mới', coded: false }); renderLevels(); var inp = $('mLevelsBody').querySelector('[data-cfg="' + el.dataset.cfgins + ':name"]'); inp.focus(); inp.select(); return; }
+    if ((el = e.target.closest('[data-act]'))) {
+      var a = el.dataset.act;
+      if (!canEdit() && ['addChild', 'edit', 'addTop', 'saveNode', 'cfgLevels', 'saveLevels', 'addSubject', 'saveSubject', 'del', 'import'].indexOf(a) >= 0) return D.toast('Chỉ cấp Sở được soạn khung chương trình');
+      if (a === 'addChild' || a === 'edit' || a === 'addTop') openNodeModal(a);
+      else if (a === 'saveNode') saveNode();
+      else if (a === 'cfgLevels') openLevels();
+      else if (a === 'saveLevels') saveLevels();
+      else if (a === 'addSubject') openSubject();
+      else if (a === 'saveSubject') saveSubject();
+      else if (a === 'del') {
+        if (sum(sel, 'ml') + sum(sel, 'qs') > 0 && !confirm('Nút này đang có học liệu/câu hỏi gắn nhãn. Vẫn xoá?')) return;
+        var pp = parent[sel.id]; pp.kids.splice(pp.kids.indexOf(sel), 1); sel = pp; reindex(); D.toast('Đã xoá khỏi khung'); render();
+      }
+      else if (a === 'expandAll') { Object.keys(byId).forEach(function (k) { open[k] = true; }); renderTree(); D.icons(); }
+      else if (a === 'collapseAll') { open = {}; open[cur.root.id] = true; cur.root.kids.forEach(function (g) { open[g.id] = true; }); renderTree(); D.icons(); }
+      else if (a === 'import') D.toast('Bản mẫu: nhập khung từ tệp Excel theo mẫu của Sở');
+    }
+  });
+  document.addEventListener('input', function (e) {
+    var c = e.target.dataset && e.target.dataset.cfg;
+    if (c) { var p = c.split(':'); cfgDraft[+p[0]][p[1]] = e.target.type === 'checkbox' ? e.target.checked : e.target.value; }
+  });
+  document.addEventListener('change', function (e) {
+    var c = e.target.dataset && e.target.dataset.cfg;
+    if (c && e.target.type === 'checkbox') cfgDraft[+c.split(':')[0]].coded = e.target.checked;
+    if (e.target.id === 'fLevel') syncCode();
+  });
+  $('q').addEventListener('input', function () { q = this.value.trim(); renderTree(); D.icons(); });
+  $('subject').onchange = function () { switchSubject(SUBJECTS.find(function (s) { return s.id === this.value; }, this)); };
+  $('grade').onchange = function () { gradeFilter = this.value; renderTree(); D.icons(); };
+  $('mNode').addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.tagName === 'INPUT') saveNode(); });
+
+  document.addEventListener('lcdemo:role', function () { document.querySelectorAll('.lc-overlay').forEach(function (o) { o.hidden = true; }); applyRole(); render(); });
+  applyRole();
+  switchSubject(toan);
+})();
+</script>
+</body>
+</html>

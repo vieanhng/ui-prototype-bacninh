@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LCMS · Gán nhãn và duyệt kho dùng chung</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../lcms.css">
+<style>
+  .shared-grid { display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 24px; align-items: start; }
+  .review-grid { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 24px; align-items: start; }
+  .label-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 24px; }
+  .icon-btn-plain { border: 0; background: none; padding: 0; cursor: pointer; display: inline-grid; place-items: center; }
+  .icon-btn-plain:disabled { opacity: .3; cursor: not-allowed; }
+  .lc-menu__item .badge { margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px; background: #ff4d4f; color: #fff; font-size: 12px; line-height: 20px; text-align: center; }
+  .lc-layout.is-collapsed .lc-menu__item .badge { display: none; }
+  .lc-mcard__foot { display: flex; justify-content: flex-end; margin-top: auto; }
+  .as-cls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .as-cls label { display: flex; gap: 8px; align-items: center; padding: 10px 12px; border: 1px solid var(--lc-divider); border-radius: 10px; cursor: pointer; font-size: 14px; }
+  .as-cls label:has(input:checked) { border-color: var(--lc-primary); background: var(--lc-primary-soft); }
+  .as-cls input { accent-color: var(--lc-primary); }
+  .as-cls small { display: block; font-size: 12px; color: var(--lc-text-secondary); }
+  .cfg-table { table-layout: fixed; }
+  .cfg-table td { padding: 8px; }
+  .cfg-table .lc-input, .cfg-table .lc-select { width: 100%; }
+  .lc-header .lc-page-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  @media (max-width: 1100px) { .shared-grid, .review-grid, .label-grid { grid-template-columns: 1fr; } .lc-filter { position: static; } }
+  @media (max-width: 760px) {
+    .lc-role-switch > span, .lc-user > div { display: none; }
+    .lc-header { gap: 8px; }
+    .lc-header .lc-page-title { font-size: 16px; }
+    .lc-header__actions { gap: 8px; }
+    .lc-role-switch { padding: 2px; }
+    .lc-role-switch select { max-width: 120px; }
+  }
+</style>
+</head>
+<body>
+<div class="lc-layout">
+  <aside class="lc-sider">
+    <div class="lc-sider__logo"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></div>
+    <nav class="lc-menu lc-menu--grouped" id="menu"></nav>
+  </aside>
+
+  <div class="lc-main">
+    <header class="lc-header">
+      <button class="lc-burger" data-lc-collapse aria-label="Thu gọn menu"><img src="../assets/icons/menu.svg" alt=""></button>
+      <h1 class="lc-page-title" id="pageTitle"></h1>
+      <div class="lc-header__actions">
+        <label class="lc-role-switch" title="Chỉ có trong bản mẫu: chuyển vai trò thay cho 4 cửa sổ trình duyệt khi demo"><span>Vai trò (bản mẫu)</span><select id="roleSel"></select></label>
+        <div style="position:relative">
+          <button class="lc-bell" data-lc-toggle="notif" aria-label="Thông báo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22Zm7-6V11a7 7 0 0 0-5-6.7V3.5a2 2 0 1 0-4 0v.8A7 7 0 0 0 5 11v5l-2 2v1h18v-1l-2-2Z"/></svg><span class="count" id="bellCount" hidden></span></button>
+          <div class="lc-notif" id="notif" data-lc-pop hidden></div>
+        </div>
+        <div class="lc-user"><img class="lc-avatar" src="../assets/default-avatar.jpg" alt=""><div><b id="userName"></b><span id="userTitle"></span></div></div>
+      </div>
+    </header>
+    <main class="lc-content lc-content--soft" id="main"></main>
+    <footer class="lc-footer" id="foot"></footer>
+  </div>
+</div>
+
+<div id="drawerRoot"></div>
+
+<!-- Modal: tạo mới học liệu & gán nhãn -->
+<div class="lc-overlay" id="mLabel" hidden>
+  <div class="lc-modal lc-modal--lg" role="dialog" aria-labelledby="mLabelTitle" style="max-width:1100px">
+    <div class="lc-modal__head"><h3 id="mLabelTitle">Gán nhãn học liệu</h3><button class="lc-modal__close" data-lc-close aria-label="Đóng">×</button></div>
+    <div class="lc-modal__body" id="mLabelBody"></div>
+    <div class="lc-modal__foot"><button class="lc-btn lc-btn--outline" data-lc-close>Huỷ</button><button class="lc-btn lc-btn--outline" data-action="saveLabel">Lưu nhãn</button><button class="lc-btn lc-btn--primary" data-action="saveLabelSubmit">Lưu &amp; gửi duyệt</button></div>
+  </div>
+</div>
+
+<!-- Modal: gửi duyệt -->
+<div class="lc-overlay" id="mSubmit" hidden>
+  <div class="lc-modal" role="dialog" aria-labelledby="mSubmitTitle" style="max-width:600px">
+    <div class="lc-modal__head"><h3 id="mSubmitTitle">Gửi duyệt lên kho dùng chung</h3><button class="lc-modal__close" data-lc-close aria-label="Đóng">×</button></div>
+    <div class="lc-modal__body" id="mSubmitBody"></div>
+    <div class="lc-modal__foot"><button class="lc-btn lc-btn--outline" data-lc-close>Huỷ</button><button class="lc-btn lc-btn--primary" data-action="doSubmit">Gửi duyệt</button></div>
+  </div>
+</div>
+
+<!-- Modal: từ chối -->
+<div class="lc-overlay" id="mReject" hidden>
+  <div class="lc-modal" role="dialog" aria-labelledby="mRejectTitle" style="max-width:520px">
+    <div class="lc-modal__head"><h3 id="mRejectTitle">Từ chối và gửi lý do cho giáo viên</h3><button class="lc-modal__close" data-lc-close aria-label="Đóng">×</button></div>
+    <div class="lc-modal__body lc-stack" style="gap:14px">
+      <div class="lc-field"><label class="lc-label" for="rejReason">Lý do<span class="req">*</span></label>
+        <select class="lc-select" id="rejReason" style="height:40px"><option>Gán nhãn chưa đúng khung chương trình</option><option>Nội dung chưa chính xác</option><option>Chất lượng hình ảnh, âm thanh chưa đạt</option><option>Trùng với học liệu đã có trong kho</option><option>Có câu hỏi sai đáp án hoặc lỗi đề</option><option>Chưa rõ bản quyền nội dung</option><option>Khác</option></select></div>
+      <div class="lc-field"><label class="lc-label" for="rejDetail">Góp ý chi tiết<span class="req" id="rejReq">*</span></label><textarea class="lc-textarea" id="rejDetail" rows="4" placeholder="Nêu rõ chỗ cần chỉnh để giáo viên sửa và gửi lại"></textarea><span class="lc-err" id="rejErr" hidden>Vui lòng nhập góp ý chi tiết.</span></div>
+    </div>
+    <div class="lc-modal__foot"><button class="lc-btn lc-btn--outline" data-lc-close>Huỷ</button><button class="lc-btn lc-btn--danger" data-action="doReject" style="height:32px">Từ chối</button></div>
+  </div>
+</div>
+
+<div class="lc-overlay" id="mAssign" hidden>
+  <div class="lc-modal" role="dialog" aria-labelledby="mAssignTitle" style="max-width:600px">
+    <div class="lc-modal__head"><h3 id="mAssignTitle">Giao bài</h3><button class="lc-modal__close" data-lc-close aria-label="Đóng">×</button></div>
+    <div class="lc-modal__body lc-stack" style="gap:14px" id="mAssignBody"></div>
+    <div class="lc-modal__foot"><button class="lc-btn lc-btn--outline" data-lc-close>Huỷ</button><button class="lc-btn lc-btn--primary" data-action="doAssign" style="height:32px">Giao bài</button></div>
+  </div>
+</div>
+
+<div class="lc-toast" id="toast" hidden></div>
+
+<script src="../lcms.js"></script>
+<script src="../lcms-demo.js"></script>
+<script>
+(function () {
+  var SCHOOL = 'THPT Demo số 1';
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+  var T = new Date(2026, 10, 1, 8, 30);
+  function fmt(d) { return pad(d.getHours()) + ':' + pad(d.getMinutes()) + ' ' + pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear(); }
+  function stamp() { T = new Date(T.getTime() + 3 * 60000); return fmt(T); }
+
+  // ---------- Vai trò ----------
+  var ROLES = {
+    gv: { name: 'Nguyễn Thị Lan', title: 'Giáo viên Toán · ' + SCHOOL, label: 'Giáo viên', menu: [['mine', 'Học liệu của tôi', 'my-course'], ['shared', 'Kho dùng chung', 'category']] },
+    tt: { name: 'Trần Văn Minh', title: 'Tổ trưởng Tổ Toán · ' + SCHOOL, label: 'Tổ trưởng chuyên môn', menu: [['queue', 'Hàng chờ duyệt', 'icon-skill-setting'], ['shared', 'Kho dùng chung', 'category']] },
+    tdv: { name: 'Lê Thu Hà', title: 'Thẩm định viên · Sở GD&ĐT Bắc Ninh', label: 'Thẩm định viên Sở', menu: [['queue', 'Hàng chờ duyệt', 'icon-skill-setting'], ['shared', 'Kho dùng chung', 'category']] },
+    ht: { name: 'Nguyễn Văn Thành', title: 'Hiệu trưởng · ' + SCHOOL, label: 'Hiệu trưởng', menu: [['queue', 'Hàng chờ phê duyệt', 'icon-skill-setting'], ['shared', 'Kho dùng chung', 'category']] },
+    admin: { name: 'Phạm Quốc Huy', title: 'Quản trị cấp Sở', label: 'Quản trị cấp Sở', menu: [['config', 'Quy trình duyệt', 'icon-roadmap'], ['shared', 'Kho dùng chung', 'category']] }
+  };
+  var TITLES = { mine: 'Học liệu của tôi', queue: 'Hàng chờ duyệt', shared: 'Kho dùng chung', config: 'Cấu hình quy trình duyệt' };
+
+  // ---------- Khung chương trình CTGDPT 2018 (trích mô phỏng Toán 10, đủ 6 cấp: Môn › Lớp › Mạch › Chủ đề › Bài › YCCĐ) ----------
+  var KHUNG = [
+    { subject: 'Toán', grade: '10', mach: 'Đại số và Một số yếu tố Giải tích', chude: 'Mệnh đề toán học. Tập hợp', bai: 'Mệnh đề toán học', yccd: [
+      ['T10.MĐ.1', 'Thiết lập và phát biểu được các mệnh đề toán học: mệnh đề phủ định, mệnh đề đảo, mệnh đề tương đương, mệnh đề chứa kí hiệu ∀, ∃; điều kiện cần, điều kiện đủ, điều kiện cần và đủ.'],
+      ['T10.MĐ.2', 'Xác định được tính đúng/sai của một mệnh đề toán học trong những trường hợp đơn giản.']] },
+    { subject: 'Toán', grade: '10', mach: 'Đại số và Một số yếu tố Giải tích', chude: 'Mệnh đề toán học. Tập hợp', bai: 'Tập hợp. Các phép toán trên tập hợp', yccd: [
+      ['T10.TH.1', 'Nhận biết được các khái niệm cơ bản về tập hợp (tập con, hai tập hợp bằng nhau, tập rỗng) và sử dụng được các kí hiệu ⊂, ⊃, ∅.'],
+      ['T10.TH.2', 'Thực hiện được phép toán trên các tập hợp (hợp, giao, hiệu, phần bù) và dùng biểu đồ Ven để biểu diễn chúng.']] },
+    { subject: 'Toán', grade: '10', mach: 'Đại số và Một số yếu tố Giải tích', chude: 'Hàm số, đồ thị và ứng dụng', bai: 'Hàm số bậc hai, đồ thị và ứng dụng', yccd: [
+      ['T10.HS.1', 'Thiết lập được bảng giá trị của hàm số bậc hai.'],
+      ['T10.HS.2', 'Vẽ được parabol là đồ thị hàm số bậc hai.'],
+      ['T10.HS.3', 'Nhận biết được các tính chất cơ bản của parabol như đỉnh, trục đối xứng.']] },
+    { subject: 'Toán', grade: '10', mach: 'Hình học và Đo lường', chude: 'Hệ thức lượng trong tam giác. Vectơ', bai: 'Hệ thức lượng trong tam giác', yccd: [
+      ['T10.GT.1', 'Giải thích được các hệ thức lượng cơ bản trong tam giác: định lí côsin, định lí sin, công thức tính diện tích tam giác.'],
+      ['T10.GT.2', 'Mô tả được cách giải tam giác và vận dụng vào một số bài toán có nội dung thực tiễn.']] },
+    { subject: 'Toán', grade: '10', mach: 'Hình học và Đo lường', chude: 'Hệ thức lượng trong tam giác. Vectơ', bai: 'Vectơ', yccd: [
+      ['T10.VT.1', 'Nhận biết được khái niệm vectơ, vectơ bằng nhau, vectơ-không.'],
+      ['T10.VT.2', 'Thực hiện được các phép toán trên vectơ (tổng, hiệu, tích với một số, tích vô hướng) và mô tả được tính chất hình học bằng vectơ.']] }
+  ];
+  var SUBJECTS = ['Toán', 'Ngữ văn', 'Tiếng Anh'], GRADES = ['10', '11', '12'];
+  var LEVELS = ['Nhận biết', 'Thông hiểu', 'Vận dụng', 'Vận dụng cao'];
+  var MTYPES = ['Bài giảng', 'Video bài giảng', 'Bài trình chiếu', 'Phiếu bài tập', 'Đề kiểm tra', 'Sơ đồ tư duy'];
+  function uniq(a) { return a.filter(function (x, i) { return a.indexOf(x) === i; }); }
+  function khung(f) { return KHUNG.filter(function (k) { return (!f.subject || k.subject === f.subject) && (!f.grade || k.grade === f.grade) && (!f.mach || k.mach === f.mach) && (!f.chude || k.chude === f.chude) && (!f.bai || k.bai === f.bai); }); }
+  function yccdText(code) {
+    for (var i = 0; i < KHUNG.length; i++) {
+      for (var j = 0; j < KHUNG[i].yccd.length; j++) {
+        if (KHUNG[i].yccd[j][0] === code) return KHUNG[i].yccd[j][1];
+      }
+    }
+    return '';
+  }
+
+  // ---------- Cấu hình quy trình (Quản trị cấp Sở) ----------
+  var WHO = { school: ['Tổ trưởng chuyên môn', 'Phó hiệu trưởng phụ trách chuyên môn', 'Hiệu trưởng'], so: ['Hội đồng thẩm định môn', 'Chuyên viên phòng Giáo dục Trung học', 'Lãnh đạo phòng Giáo dục Trung học', 'Lãnh đạo Sở'] };
+  var CFG = {
+    school: [{ name: 'Tổ trưởng duyệt', who: 'Tổ trưởng chuyên môn', days: 3 }, { name: 'Hiệu trưởng phê duyệt', who: 'Hiệu trưởng', days: 2 }],
+    so: [{ name: 'Thẩm định chuyên môn', who: 'Hội đồng thẩm định môn', days: 5 }, { name: 'Phê duyệt xuất bản', who: 'Lãnh đạo phòng Giáo dục Trung học', days: 2 }],
+    requireSchool: true, reasonRequired: true, notifyApp: true, notifyEmail: false, applyMaterial: true, applyQuestion: true
+  };
+
+  // ---------- Dữ liệu mẫu (mô phỏng) ----------
+  var seq = 0;
+  function mk(o) {
+    var it = { id: o.id || 'n' + (++seq), kind: 'material', title: '', type: 'pdf', mtype: 'Bài giảng', file: '', size: '', meta: '', qs: [],
+      owner: ROLES.gv.name, ownerRole: 'gv', school: SCHOOL, subject: '', grade: '', mach: '', chude: '', bai: '', yccd: [], level: '', keywords: [], desc: '',
+      wf: { stage: 'draft', step: 0 }, schoolOk: false, hist: [], updated: '' };
+    for (var k in o) it[k] = o[k];
+    if (!it.updated && it.hist.length) it.updated = it.hist[it.hist.length - 1].t;
+    return it;
+  }
+  function H(t, who, role, act, cls, note) { return { t: t, who: who, role: role, act: act, cls: cls || '', note: note || '' }; }
+  var GV = ROLES.gv.name, TT = ROLES.tt.name, HT = ROLES.ht.name;
+  var tagMenh = { subject: 'Toán', grade: '10', mach: 'Đại số và Một số yếu tố Giải tích', chude: 'Mệnh đề toán học. Tập hợp' };
+  function lab(base, extra) { var o = {}; for (var k in base) o[k] = base[k]; for (var j in extra) o[j] = extra[j]; return o; }
+
+  // Câu hỏi trong ngân hàng: cùng dạng với 12-question-bank.html
+  var QTYPES = { mcq: 'Trắc nghiệm', tf: 'Đúng/Sai', short: 'Trả lời ngắn', essay: 'Tự luận' };
+  function Qz(type, level, stem, extra) { var o = { type: type, level: level, stem: stem, opts: [], correct: 0, stmts: [], ans: '' }; for (var k in extra) o[k] = extra[k]; return o; }
+  function tf(a) { return a.map(function (s) { return { text: s[0], ok: s[1] }; }); }
+  var POOL = {
+    menh: [
+      Qz('mcq', 'Nhận biết', 'Câu nào sau đây là mệnh đề?', { opts: ['Hà Nội là thủ đô của Việt Nam', 'Bạn có khoẻ không?', 'Hãy đóng cửa lại', 'x + 1 > 3'] }),
+      Qz('mcq', 'Thông hiểu', 'Mệnh đề phủ định của mệnh đề “∀x ∈ ℝ, x² ≥ 0” là', { opts: ['∃x ∈ ℝ, x² < 0', '∀x ∈ ℝ, x² < 0', '∃x ∈ ℝ, x² ≥ 0', '∀x ∈ ℝ, x² ≤ 0'] }),
+      Qz('tf', 'Thông hiểu', 'Xét tính đúng sai của các mệnh đề sau:', { stmts: tf([['“5 là số nguyên tố” là mệnh đề đúng.', true], ['“∃x ∈ ℕ, x² = 2” là mệnh đề đúng.', false], ['Phủ định của “x > 2” là “x < 2”.', false], ['“Nếu a ⋮ 6 thì a ⋮ 3” là mệnh đề đúng.', true]]) }),
+      Qz('short', 'Vận dụng', 'Có bao nhiêu số nguyên x thoả mãn mệnh đề chứa biến “x² < 10” là mệnh đề đúng?', { ans: '7' })
+    ],
+    parabol: [
+      Qz('mcq', 'Nhận biết', 'Đỉnh của parabol y = x² − 4x + 3 là', { opts: ['I(2; −1)', 'I(−2; 15)', 'I(4; 3)', 'I(1; 0)'] }),
+      Qz('tf', 'Vận dụng', 'Cho hàm số y = x² − 4x + 3 có đồ thị là parabol (P). Xét tính đúng sai của các khẳng định sau:', { stmts: tf([['(P) có trục đối xứng là đường thẳng x = 2.', true], ['Đỉnh của (P) là điểm I(2; 1).', false], ['Hàm số đồng biến trên khoảng (2; +∞).', true], ['(P) cắt trục hoành tại hai điểm có hoành độ 1 và 3.', true]]) }),
+      Qz('short', 'Thông hiểu', 'Giá trị lớn nhất của hàm số y = −x² + 4x − 1 là bao nhiêu?', { ans: '3' }),
+      Qz('mcq', 'Thông hiểu', 'Parabol y = −x² + 2x + 3 có bề lõm', { opts: ['quay xuống dưới', 'quay lên trên', 'quay sang phải', 'quay sang trái'] })
+    ],
+    cosin: [
+      Qz('mcq', 'Thông hiểu', 'Cho tam giác ABC có AB = 5, AC = 8 và góc A = 60°. Độ dài cạnh BC bằng', { opts: ['7', '√89', '49', '√129'] }),
+      Qz('short', 'Vận dụng', 'Tam giác có ba cạnh 13, 14, 15. Diện tích tam giác bằng bao nhiêu?', { ans: '84' }),
+      Qz('essay', 'Vận dụng', 'Một người đứng cách chân tháp 50 m, nhìn đỉnh tháp với góc nâng 35°. Tính chiều cao tháp (làm tròn đến hàng phần mười).')
+    ],
+    taphop: [
+      Qz('mcq', 'Nhận biết', 'Cho A = {1; 2; 3; 4} và B = {3; 4; 5}. Tập hợp A ∩ B là', { opts: ['{3; 4}', '{1; 2}', '{1; 2; 3; 4; 5}', '{5}'] }),
+      Qz('mcq', 'Thông hiểu', 'Cho tập A = [−2; 3) và B = (1; 5]. Tập A ∩ B là', { opts: ['(1; 3)', '[−2; 5]', '(1; 3]', '[−2; 1)'] }),
+      Qz('tf', 'Thông hiểu', 'Cho tập hợp A = {1; 2; 3; 4} và B = {2; 4; 6}.', { stmts: tf([['A ∩ B = {2; 4}', true], ['A ∪ B có 6 phần tử', false], ['A \\ B = {1; 3}', true], ['B ⊂ A', false]]) }),
+      Qz('mcq', 'Thông hiểu', 'Cho A = {x ∈ ℝ | x ≥ 2}. Phần bù của A trong ℝ là', { opts: ['(−∞; 2)', '(−∞; 2]', '(2; +∞)', '[2; +∞)'] })
+    ],
+    vecto: [
+      Qz('mcq', 'Nhận biết', 'Cho hình bình hành ABCD. Vectơ AB⃗ + AD⃗ bằng vectơ', { opts: ['AC⃗', 'BD⃗', 'CA⃗', 'DB⃗'] }),
+      Qz('short', 'Nhận biết', 'Cho vectơ a⃗ = (3; −4). Độ dài của vectơ a⃗ bằng bao nhiêu?', { ans: '5' }),
+      Qz('mcq', 'Thông hiểu', 'Cho tam giác đều ABC cạnh 2. Tích vô hướng AB⃗ · AC⃗ bằng', { opts: ['2', '4', '−2', '2√3'] })
+    ],
+    tapcon: [
+      Qz('mcq', 'Nhận biết', 'Số tập con của tập hợp có 3 phần tử là', { opts: ['8', '6', '3', '9'] }),
+      Qz('mcq', 'Nhận biết', 'Kí hiệu nào sau đây chỉ tập rỗng?', { opts: ['∅', '{0}', '{∅}', '0'] }),
+      Qz('short', 'Vận dụng', 'Tập hợp X = {x ∈ ℕ | x < 5} có bao nhiêu tập con?', { ans: '32' })
+    ]
+  };
+  // Ngân hàng của giáo viên trên màn 12 chưa gửi duyệt: chọn khi bấm "+ Gửi ngân hàng câu hỏi"
+  var MY_BANKS = [
+    { id: 'p1', name: 'Toán 10 · Tập hợp – bài tập về nhà', qs: POOL.taphop.slice(0, 3) },
+    { id: 'p2', name: 'Toán 10 · Vectơ – ôn tập chương', qs: POOL.vecto.slice() }
+  ];
+
+  var items = [
+    mk({ id: 'm1', title: 'Bài giảng Mệnh đề và tập hợp', type: 'pdf', mtype: 'Bài giảng', file: 'menh-de-tap-hop.pdf', size: '2,4 MB', meta: '18 trang', hist: [H('08:05 01/11/2026', GV, 'Giáo viên', 'Tạo mới học liệu')] }),
+    mk({ id: 'm2', title: 'Video: Đồ thị hàm số bậc hai', type: 'video', mtype: 'Video bài giảng', file: 'do-thi-ham-so-bac-hai.mp4', size: '86 MB', meta: '06:42', hist: [H('08:12 01/11/2026', GV, 'Giáo viên', 'Tạo mới học liệu')] }),
+    mk(lab({ id: 'm3', title: 'Phiếu bài tập Vectơ (tiết 1)', type: 'doc', mtype: 'Phiếu bài tập', file: 'phieu-bai-tap-vecto.docx', size: '640 KB', meta: '4 trang', mach: 'Hình học và Đo lường', chude: 'Hệ thức lượng trong tam giác. Vectơ', bai: 'Vectơ', yccd: ['T10.VT.1'], level: 'Nhận biết', keywords: ['vectơ', 'bài tập'],
+      wf: { stage: 'school_ok', step: 0 }, schoolOk: true, hist: [H('14:05 28/10/2026', GV, 'Giáo viên', 'Tạo mới và gán nhãn'), H('14:06 28/10/2026', GV, 'Giáo viên', 'Gửi duyệt lên Kho Trường', 'send'), H('09:12 29/10/2026', TT, 'Tổ trưởng chuyên môn', 'Duyệt · Tổ trưởng duyệt (1/2)', 'ok', 'Phiếu rõ ràng, phù hợp tiết 1.'), H('09:12 29/10/2026', HT, 'Hiệu trưởng', 'Duyệt · Hiệu trưởng phê duyệt (2/2)', 'ok')] }, tagMenh)),
+    mk(lab({ id: 'm5', title: 'Sơ đồ tư duy: Các phép toán trên tập hợp', type: 'pdf', mtype: 'Sơ đồ tư duy', file: 'so-do-tap-hop.pdf', size: '1,1 MB', meta: '1 trang', owner: 'Hoàng Văn Nam', ownerRole: null, bai: 'Tập hợp. Các phép toán trên tập hợp', yccd: ['T10.TH.2'], level: 'Thông hiểu', keywords: ['tập hợp', 'biểu đồ Ven'],
+      wf: { stage: 'school', step: 0 }, hist: [H('16:18 31/10/2026', 'Hoàng Văn Nam', 'Giáo viên', 'Tạo mới và gán nhãn'), H('16:20 31/10/2026', 'Hoàng Văn Nam', 'Giáo viên', 'Gửi duyệt lên Kho Trường', 'send')] }, tagMenh)),
+    mk(lab({ id: 'm10', title: 'Phiếu học tập: Mệnh đề phủ định', type: 'doc', mtype: 'Phiếu bài tập', file: 'phieu-menh-de-phu-dinh.docx', size: '320 KB', meta: '2 trang', owner: 'Hoàng Văn Nam', ownerRole: null, bai: 'Mệnh đề toán học', yccd: ['T10.MĐ.1'], level: 'Nhận biết', keywords: ['mệnh đề', 'phủ định'],
+      wf: { stage: 'school', step: 1 }, hist: [H('15:02 30/10/2026', 'Hoàng Văn Nam', 'Giáo viên', 'Gửi duyệt lên Kho Trường', 'send'), H('10:15 31/10/2026', TT, 'Tổ trưởng chuyên môn', 'Duyệt · Tổ trưởng duyệt (1/2)', 'ok')] }, tagMenh)),
+    mk({ id: 'm6', title: 'Bài giảng Giải tam giác và ứng dụng thực tế', type: 'ppt', mtype: 'Bài trình chiếu', file: 'giai-tam-giac.pptx', size: '5,8 MB', meta: '24 slide', owner: 'Vũ Thị Hoa', ownerRole: null, school: 'THPT Demo số 2', subject: 'Toán', grade: '10', mach: 'Hình học và Đo lường', chude: 'Hệ thức lượng trong tam giác. Vectơ', bai: 'Hệ thức lượng trong tam giác', yccd: ['T10.GT.1', 'T10.GT.2'], level: 'Vận dụng', keywords: ['định lí sin', 'định lí côsin'],
+      wf: { stage: 'so_ok', step: 0 }, schoolOk: true, hist: [H('10:00 20/10/2026', 'Vũ Thị Hoa', 'Giáo viên', 'Gửi duyệt lên Kho Sở', 'send'), H('15:30 24/10/2026', 'Lê Thu Hà', 'Thẩm định viên Sở', 'Duyệt · Phê duyệt xuất bản (2/2)', 'ok')] }),
+    mk({ id: 'm7', title: 'Video: Định lí sin trong đo đạc thực tế', type: 'video', mtype: 'Video bài giảng', file: 'dinh-li-sin.mp4', size: '54 MB', meta: '04:15', owner: 'Ngô Đức Anh', ownerRole: null, school: 'THPT Demo số 3', subject: 'Toán', grade: '10', mach: 'Hình học và Đo lường', chude: 'Hệ thức lượng trong tam giác. Vectơ', bai: 'Hệ thức lượng trong tam giác', yccd: ['T10.GT.2'], level: 'Vận dụng', keywords: ['định lí sin', 'thực tế'],
+      wf: { stage: 'so_ok', step: 0 }, schoolOk: true, hist: [H('09:40 27/10/2026', 'Lê Thu Hà', 'Thẩm định viên Sở', 'Duyệt · Phê duyệt xuất bản (2/2)', 'ok')] }),
+    mk(lab({ id: 'm8', title: 'Đề kiểm tra 15 phút: Hàm số bậc hai', type: 'doc', mtype: 'Đề kiểm tra', file: 'kt15-ham-so-bac-hai.docx', size: '210 KB', meta: '2 trang', owner: 'Hoàng Văn Nam', ownerRole: null, chude: 'Hàm số, đồ thị và ứng dụng', bai: 'Hàm số bậc hai, đồ thị và ứng dụng', yccd: ['T10.HS.1', 'T10.HS.3'], level: 'Thông hiểu', keywords: ['parabol', 'kiểm tra'],
+      wf: { stage: 'school_ok', step: 0 }, schoolOk: true, hist: [H('11:02 30/10/2026', TT, 'Tổ trưởng chuyên môn', 'Duyệt · Tổ trưởng duyệt (1/2)', 'ok'), H('11:02 30/10/2026', HT, 'Hiệu trưởng', 'Duyệt · Hiệu trưởng phê duyệt (2/2)', 'ok')] }, tagMenh)),
+    mk({ id: 'm9', title: 'Bài giảng Tích vô hướng của hai vectơ', type: 'ppt', mtype: 'Bài trình chiếu', file: 'tich-vo-huong.pptx', size: '4,2 MB', meta: '20 slide', owner: 'Phan Thị Mai', ownerRole: null, school: 'THPT Demo số 2', subject: 'Toán', grade: '10', mach: 'Hình học và Đo lường', chude: 'Hệ thức lượng trong tam giác. Vectơ', bai: 'Vectơ', yccd: ['T10.VT.2'], level: 'Vận dụng', keywords: ['tích vô hướng'],
+      wf: { stage: 'so', step: 0 }, schoolOk: true, hist: [H('15:10 31/10/2026', 'Phan Thị Mai', 'Giáo viên', 'Gửi duyệt lên Kho Sở', 'send')] }),
+    // Ngân hàng câu hỏi (soạn câu ở màn 12, gửi duyệt cả ngân hàng)
+    mk(lab({ id: 'b1', kind: 'bank', type: 'q', title: 'Toán 10 · Mệnh đề toán học', bai: 'Mệnh đề toán học', yccd: ['T10.MĐ.1', 'T10.MĐ.2'], keywords: ['mệnh đề', 'phủ định'], qs: POOL.menh, hist: [H('07:50 01/11/2026', GV, 'Giáo viên', 'Tạo ngân hàng và gán nhãn')] }, tagMenh)),
+    mk(lab({ id: 'b2', kind: 'bank', type: 'q', title: 'Toán 10 · Hàm số bậc hai và parabol', chude: 'Hàm số, đồ thị và ứng dụng', bai: 'Hàm số bậc hai, đồ thị và ứng dụng', yccd: ['T10.HS.2', 'T10.HS.3'], keywords: ['parabol'], qs: POOL.parabol, hist: [H('07:55 01/11/2026', GV, 'Giáo viên', 'Tạo ngân hàng và gán nhãn')] }, tagMenh)),
+    mk({ id: 'b3', kind: 'bank', type: 'q', title: 'Định lí côsin · luyện tập', qs: POOL.cosin, hist: [H('08:00 01/11/2026', GV, 'Giáo viên', 'Tạo ngân hàng')] }),
+    mk({ id: 'b4', kind: 'bank', type: 'q', title: 'Các phép toán trên tập hợp', qs: POOL.taphop, owner: 'Vũ Thị Hoa', ownerRole: null, school: 'THPT Demo số 2', subject: 'Toán', grade: '10', mach: 'Đại số và Một số yếu tố Giải tích', chude: 'Mệnh đề toán học. Tập hợp', bai: 'Tập hợp. Các phép toán trên tập hợp', yccd: ['T10.TH.2'], keywords: ['tập hợp', 'giao', 'hợp'],
+      wf: { stage: 'so_ok', step: 0 }, schoolOk: true, hist: [H('10:20 25/10/2026', 'Lê Thu Hà', 'Thẩm định viên Sở', 'Duyệt · Phê duyệt xuất bản (2/2)', 'ok')] }),
+    mk(lab({ id: 'b5', kind: 'bank', type: 'q', title: 'Vectơ · kiểm tra 15 phút', qs: POOL.vecto, owner: 'Hoàng Văn Nam', ownerRole: null, mach: 'Hình học và Đo lường', chude: 'Hệ thức lượng trong tam giác. Vectơ', bai: 'Vectơ', yccd: ['T10.VT.2'], keywords: ['vectơ'],
+      wf: { stage: 'school_ok', step: 0 }, schoolOk: true, hist: [H('11:05 30/10/2026', TT, 'Tổ trưởng chuyên môn', 'Duyệt · Tổ trưởng duyệt (1/2)', 'ok'), H('11:05 30/10/2026', HT, 'Hiệu trưởng', 'Duyệt · Hiệu trưởng phê duyệt (2/2)', 'ok')] }, tagMenh)),
+    mk(lab({ id: 'b6', kind: 'bank', type: 'q', title: 'Tập hợp con · nhận biết', qs: POOL.tapcon, owner: 'Hoàng Văn Nam', ownerRole: null, bai: 'Tập hợp. Các phép toán trên tập hợp', yccd: ['T10.TH.1'], keywords: ['tập con'],
+      wf: { stage: 'school', step: 0 }, hist: [H('16:40 31/10/2026', 'Hoàng Văn Nam', 'Giáo viên', 'Tạo ngân hàng và gán nhãn'), H('16:42 31/10/2026', 'Hoàng Văn Nam', 'Giáo viên', 'Gửi duyệt lên Kho Trường', 'send')] }, tagMenh))
+  ];
+  function byId(id) { return items.filter(function (x) { return x.id === id; })[0]; }
+
+  var notifs = [
+    { to: 'tt', ic: 'wait', text: '<b>Hoàng Văn Nam</b> gửi duyệt «Sơ đồ tư duy: Các phép toán trên tập hợp» lên Kho Trường', id: 'm5', t: '16:20 31/10/2026', read: false },
+    { to: 'tt', ic: 'wait', text: '<b>Hoàng Văn Nam</b> gửi duyệt ngân hàng «Tập hợp con · nhận biết» (3 câu) lên Kho Trường', id: 'b6', t: '16:42 31/10/2026', read: false },
+    { to: 'tdv', ic: 'wait', text: '<b>Phan Thị Mai</b> (THPT Demo số 2) gửi «Bài giảng Tích vô hướng của hai vectơ» lên Kho Sở · Bước 1/2', id: 'm9', t: '15:10 31/10/2026', read: false },
+    { to: 'ht', ic: 'wait', text: '«Phiếu học tập: Mệnh đề phủ định» chờ duyệt bước 2/2: Hiệu trưởng phê duyệt', id: 'm10', t: '10:15 31/10/2026', read: false },
+    { to: 'gv', ic: 'ok', text: '«Phiếu bài tập Vectơ (tiết 1)» đã được duyệt vào Kho Trường', id: 'm3', t: '09:12 29/10/2026', read: true }
+  ];
+
+  // Giữ dữ liệu khi tải lại hoặc mở 09 với vai trò khác trong cùng tab (link kịch bản trên cổng). ?reset=1 để về dữ liệu mẫu.
+  var STORE = 'bn-09-state-v2';
+  try {
+    if (/[?&]reset=1/.test(location.search)) sessionStorage.removeItem(STORE);
+    var kept = JSON.parse(sessionStorage.getItem(STORE));
+    if (kept) {
+      items = kept.items; notifs = kept.notifs; CFG = kept.cfg; T = new Date(kept.t);
+      items.forEach(function (it) { var n = /^n(\d+)$/.exec(it.id); if (n) seq = Math.max(seq, +n[1]); });
+    }
+  } catch (e) {}
+  function keepState() { try { sessionStorage.setItem(STORE, JSON.stringify({ items: items, notifs: notifs, cfg: CFG, t: T.getTime() })); } catch (e) {} }
+  function notify(to, ic, text, id) { if (!to || !CFG.notifyApp) return; notifs.unshift({ to: to, ic: ic, text: text, id: id, t: fmt(T), read: false }); }
+
+  // ---------- Trạng thái giao diện ----------
+  var S = { role: 'gv', view: { gv: 'mine', tt: 'queue', ht: 'queue', tdv: 'queue', admin: 'config' }, mineKind: 'material', mineStatus: 'all', mineQ: '',
+    queueTab: 'pending', queueKind: 'all', reviewId: null, sharedKind: 'material', q: '', f: { so: true, school: true, subject: '', grade: '', mach: '', chude: '', bai: '', yccd: '', level: '' },
+    drawerId: null, drawerTab: 'info', edit: null, submitId: null, rejectId: null };
+
+  // ---------- Quy trình ----------
+  function labeled(it) { return !!(it.bai && it.yccd.length); }
+  function steps(lvl) { return CFG[lvl === 'school' ? 'school' : 'so']; }
+  // Vai trò duyệt một bước: Kho Sở → thẩm định viên; Kho Trường → theo người duyệt cấu hình cho bước
+  function approver(lvl, i) { return lvl === 'so' ? 'tdv' : /hiệu trưởng/i.test(CFG.school[i].who) ? 'ht' : 'tt'; }
+  function curStep(it) { var st = steps(it.wf.stage === 'rejected' ? it.wf.at : it.wf.stage); return Math.min(it.wf.step, st.length - 1); }
+  function canSchool(it) { return labeled(it) && !it.schoolOk && (it.wf.stage === 'draft' || it.wf.stage === 'rejected'); }
+  function canSo(it) { return labeled(it) && ['draft', 'school_ok', 'rejected'].indexOf(it.wf.stage) >= 0 && (it.schoolOk || !CFG.requireSchool); }
+  function kho(lvl) { return lvl === 'school' ? 'Kho Trường' : 'Kho Sở'; }
+  function stageInfo(it) {
+    var w = it.wf, st, i;
+    switch (w.stage) {
+      case 'draft': return { label: 'Nháp', cls: 'neutral', sub: labeled(it) ? 'Sẵn sàng gửi duyệt' : 'Cần gán nhãn trước khi gửi' };
+      case 'school': case 'so': st = steps(w.stage); i = curStep(it); return { label: 'Chờ duyệt · ' + kho(w.stage), cls: 'warning', sub: 'Bước ' + (i + 1) + '/' + st.length + ': ' + st[i].name };
+      case 'school_ok': return { label: 'Đã duyệt · Kho Trường', cls: 'info', sub: canSo(it) ? 'Có thể gửi tiếp lên Kho Sở' : '' };
+      case 'so_ok': return { label: 'Đã duyệt · Kho Sở', cls: 'success', sub: 'Đã xuất bản vào kho dùng chung' };
+      case 'rejected': return { label: 'Bị từ chối', cls: 'danger', sub: 'Tại ' + kho(w.at) + ' · ' + w.reason };
+    }
+  }
+  function addHist(it, role, act, note, cls) { var t = stamp(); it.hist.push(H(t, ROLES[role].name, ROLES[role].label, act, cls, note)); it.updated = t; }
+  function ownerNotify(it, ic, text) { if (it.ownerRole) notify(it.ownerRole, ic, text, it.id); }
+  function q(it) { return '«' + esc(it.title) + '»'; }
+
+  function submit(it, target, note) {
+    it.wf = { stage: target, step: 0 };
+    addHist(it, 'gv', 'Gửi duyệt lên ' + kho(target), note, 'send');
+    if (target === 'school') notify(approver('school', 0), 'wait', '<b>' + esc(it.owner) + '</b> gửi duyệt ' + q(it) + ' lên Kho Trường', it.id);
+    else notify('tdv', 'wait', '<b>' + esc(it.owner) + '</b> (' + esc(it.school) + ') gửi ' + q(it) + ' lên Kho Sở · Bước 1/' + CFG.so.length, it.id);
+    toast('Đã gửi ' + q(it) + ' lên ' + kho(target));
+  }
+  function approve(it, note) {
+    var lvl = it.wf.stage, st = steps(lvl), i = curStep(it), role = approver(lvl, i);
+    addHist(it, role, 'Duyệt · ' + st[i].name + ' (' + (i + 1) + '/' + st.length + ')', note, 'ok');
+    if (i < st.length - 1) {
+      it.wf.step = i + 1;
+      ownerNotify(it, 'info', q(it) + ' đã qua bước ' + (i + 1) + '/' + st.length + ' tại ' + kho(lvl));
+      notify(approver(lvl, i + 1), 'wait', q(it) + ' chờ duyệt bước ' + (i + 2) + '/' + st.length + ': ' + st[i + 1].name, it.id);
+      toast('Đã duyệt bước ' + (i + 1) + '/' + st.length + ', chuyển sang bước tiếp theo');
+    } else if (lvl === 'school') {
+      it.wf = { stage: 'school_ok', step: 0 }; it.schoolOk = true;
+      ownerNotify(it, 'ok', q(it) + ' đã được duyệt vào Kho Trường. Bạn có thể gửi tiếp lên Kho Sở.');
+      if (it.school === SCHOOL) notify('hs', 'info', 'Học liệu mới trong kho của trường: ' + q(it), it.id);
+      toast('Đã duyệt ' + q(it) + ' vào Kho Trường');
+    } else {
+      it.wf = { stage: 'so_ok', step: 0 };
+      ownerNotify(it, 'ok', q(it) + ' đã được duyệt và xuất bản lên Kho Sở');
+      notify('hs', 'info', 'Học liệu mới trên Kho Sở: ' + q(it) + ' (' + it.subject + ' ' + it.grade + ')', it.id);
+      toast('Đã xuất bản ' + q(it) + ' lên Kho Sở');
+    }
+  }
+  function reject(it, reason, detail) {
+    var lvl = it.wf.stage, st = steps(lvl), i = curStep(it), role = approver(lvl, i);
+    addHist(it, role, 'Từ chối · ' + st[i].name + ' (' + (i + 1) + '/' + st.length + ')', reason + (detail ? ': ' + detail : ''), 'no');
+    it.wf = { stage: 'rejected', at: lvl, step: i, reason: reason, detail: detail };
+    ownerNotify(it, 'no', q(it) + ' bị từ chối tại ' + kho(lvl) + '. Lý do: ' + esc(reason));
+    toast('Đã từ chối và gửi lý do cho giáo viên');
+  }
+  function pendingFor(role) { return items.filter(function (it) { return role === 'tdv' ? it.wf.stage === 'so' : (role === 'tt' || role === 'ht') && it.wf.stage === 'school' && it.school === SCHOOL && approver('school', curStep(it)) === role; }); }
+  function processedBy(role) { var name = ROLES[role].name, pend = pendingFor(role); return items.filter(function (it) { return pend.indexOf(it) < 0 && it.hist.some(function (h) { return h.who === name && (h.cls === 'ok' || h.cls === 'no'); }); }); }
+  // Lớp giáo viên đang dạy, dùng khi giao bài thẳng từ kho học liệu
+  var MY_CLASSES = { gv: [['10A1', 42], ['10A2', 40], ['11B3', 38]], tt: [['10A3', 41], ['12C1', 39]] };
+  function canAssign(it) { return !!MY_CLASSES[S.role] && (inShared(it) || it.ownerRole === S.role); }
+  function assignBtn(it, cls) { return canAssign(it) ? '<button class="lc-btn ' + (cls || 'lc-btn--primary') + ' lc-btn--sm" data-action="assign" data-id="' + it.id + '">Giao bài</button>' : ''; }
+  function openAssign(id) {
+    var it = byId(id); S.assignId = id;
+    $('mAssignTitle').innerHTML = 'Giao bài · <em>' + esc(it.title) + '</em>';
+    $('mAssignBody').innerHTML = '<div class="lc-field"><span class="lc-label">Giao cho lớp<span class="req">*</span></span><div class="as-cls">' +
+      MY_CLASSES[S.role].map(function (c, i) { return '<label><input type="checkbox" name="asCls" value="' + c[0] + '" data-n="' + c[1] + '"' + (i === 0 ? ' checked' : '') + '><span><b>' + c[0] + '</b><small>' + c[1] + ' học sinh</small></span></label>'; }).join('') +
+      '</div><span class="lc-err" id="asErr" hidden>Chọn ít nhất một lớp.</span></div>' +
+      '<div class="lc-form" style="grid-template-columns:1fr 1fr;gap:12px"><div class="lc-field"><label class="lc-label" for="asOpen">Mở lúc</label><input class="lc-input" type="datetime-local" id="asOpen" value="2026-11-05T07:00"></div>' +
+      '<div class="lc-field"><label class="lc-label" for="asDue">Hạn nộp</label><input class="lc-input" type="datetime-local" id="asDue" value="2026-11-12T22:00"></div>' +
+      '<div class="lc-field"><label class="lc-label" for="asTries">Số lần làm</label><select class="lc-select" id="asTries" style="height:40px"><option>1</option><option>2</option><option selected>3</option><option>Không giới hạn</option></select></div>' +
+      '<div class="lc-field"><label class="lc-label" for="asNote">Lời nhắn cho học sinh</label><input class="lc-input" id="asNote" placeholder="Không bắt buộc"></div></div>' +
+      '<p class="lc-caption">Học sinh các lớp đã chọn nhận thông báo và thấy bài trong mục “Bài tập của tôi”.</p>';
+    $('mAssign').hidden = false;
+  }
+  function doAssign() {
+    var it = byId(S.assignId), boxes = [].slice.call(document.querySelectorAll('#mAssignBody input[name=asCls]:checked'));
+    if (!boxes.length) { $('asErr').hidden = false; return; }
+    var names = boxes.map(function (b) { return b.value; }), n = boxes.reduce(function (a, b) { return a + +b.dataset.n; }, 0);
+    var due = new Date($('asDue').value);
+    addHist(it, S.role, 'Giao bài cho ' + names.join(', '), 'Hạn nộp ' + fmt(due), 'ok');
+    $('mAssign').hidden = true; renderDrawer();
+    toast('Đã giao ' + q(it) + ' cho ' + names.length + ' lớp (' + names.join(', ') + ') · ' + n + ' học sinh');
+  }
+  function inShared(it) { return it.wf.stage === 'so_ok' || (it.schoolOk && it.school === SCHOOL); }
+  function source(it) { return it.wf.stage === 'so_ok' ? 'so' : 'school'; }
+  function lastSent(it) { for (var i = it.hist.length - 1; i >= 0; i--) if (it.hist[i].cls === 'send') return it.hist[i].t; return it.updated; }
+
+  // ---------- Mảnh giao diện dùng chung ----------
+  var THUMB = { pdf: 'PDF', video: 'VIDEO', ppt: 'PPT', doc: 'DOC', q: 'NHCH' };
+  function thumb(it, style) { return '<span class="lc-thumb lc-thumb--' + it.type + '"' + (style ? ' style="' + style + '"' : '') + '>' + (it.kind === 'bank' && style ? '?' : THUMB[it.type]) + '</span>'; }
+  function opt(list, sel, ph) { return (ph != null ? '<option value="">' + ph + '</option>' : '') + list.map(function (v) { return '<option' + (v === sel ? ' selected' : '') + '>' + esc(v) + '</option>'; }).join(''); }
+  function statusHtml(it) { var s = stageInfo(it); return '<span class="lc-tag lc-tag--sm lc-tag--' + s.cls + '">' + s.label + '</span>' + (s.sub ? '<div class="lc-caption" style="margin-top:4px">' + esc(s.sub) + '</div>' : ''); }
+  function sourceBadge(it) { return source(it) === 'so' ? '<span class="lc-source lc-source--so">✓ Kho Sở</span>' : '<span class="lc-source lc-source--school">Kho Trường</span>'; }
+  // Cơ cấu ngân hàng: đếm theo dạng câu hoặc theo mức độ
+  function bankCount(qs, key, names) { return names.map(function (n) { var c = qs.filter(function (x) { return (key === 'type' ? QTYPES[x.type] : x.level) === n; }).length; return c ? n + ' ' + c : ''; }).filter(Boolean).join(' · '); }
+  function bankMix(it) { return bankCount(it.qs, 'type', Object.keys(QTYPES).map(function (k) { return QTYPES[k]; })); }
+  function bankLevels(it) { return bankCount(it.qs, 'level', LEVELS); }
+  function fileHtml(it) {
+    var meta = it.kind === 'bank' ? it.qs.length + ' câu · ' + bankMix(it) : esc(it.file) + ' · ' + esc(it.size);
+    return '<div class="lc-file">' + thumb(it, 'width:44px;height:44px;font-size:' + (it.kind === 'bank' ? '18px' : '11px')) + '<div style="min-width:0"><b data-action="open" data-id="' + it.id + '">' + esc(it.title) + '</b><small>' + meta + '</small></div></div>';
+  }
+  function labelsHtml(it, compact) {
+    if (!labeled(it)) return '<span class="lc-chip-label lc-chip-label--warn">Chưa gán nhãn</span>';
+    var c = ['<span class="lc-chip-label lc-chip-label--primary">' + esc(it.subject + ' ' + it.grade) + '</span>'];
+    if (!compact) c.push('<span class="lc-chip-label" title="' + esc(it.chude) + '">' + esc(it.chude) + '</span>');
+    c.push('<span class="lc-chip-label" title="' + esc(it.bai) + '">' + esc(it.bai) + '</span>');
+    c.push('<span class="lc-chip-label" title="' + esc(it.yccd.map(yccdText).join('\n')) + '">' + it.yccd.length + ' YCCĐ</span>');
+    if (it.kind === 'bank') c.push('<span class="lc-chip-label">' + it.qs.length + ' câu</span>');
+    else if (it.level) c.push('<span class="lc-chip-label">' + esc(it.level) + '</span>');
+    return '<div class="lc-chips">' + c.join('') + '</div>';
+  }
+  function qHtml(x, n, showAnswer) {
+    var head = '<div class="lc-row" style="gap:6px;margin-bottom:6px;flex-wrap:wrap"><b>Câu ' + n + '</b><span class="lc-chip-label">' + QTYPES[x.type] + '</span><span class="lc-chip-label">' + esc(x.level) + '</span></div>', body;
+    if (x.type === 'tf') body = '<table class="lc-tf"><tr><th>Mệnh đề</th><th class="c">Đúng</th><th class="c">Sai</th></tr>' +
+      x.stmts.map(function (s, i) { return '<tr><td><b>' + 'abcd'[i] + ')</b> ' + esc(s.text) + '</td><td class="c">' + (showAnswer && s.ok ? '<span class="yes">✓</span>' : '○') + '</td><td class="c">' + (showAnswer && !s.ok ? '<span class="yes">✓</span>' : '○') + '</td></tr>'; }).join('') + '</table>';
+    else if (x.type === 'mcq') body = x.opts.map(function (o, i) { return '<div class="opt' + (showAnswer && i === x.correct ? ' is-correct' : '') + '"><b>' + 'ABCD'[i] + '.</b>' + esc(o) + '</div>'; }).join('');
+    else if (x.type === 'short') body = showAnswer ? '<div class="opt is-correct"><b>Đ/A</b>' + esc(x.ans) + '</div>' : '';
+    else body = '<p class="lc-caption">Chấm theo hướng dẫn chấm của giáo viên.</p>';
+    return '<div class="lc-qprev">' + head + '<div class="stem">' + esc(x.stem) + '</div>' + body + '</div>';
+  }
+  function previewHtml(it, showAnswer) {
+    if (it.kind === 'bank') {
+      if (!it.qs.length) return '<div class="lc-empty">Ngân hàng chưa có câu hỏi.</div>';
+      return '<div class="lc-stack" style="gap:10px"><div class="lc-caption">' + it.qs.length + ' câu · ' + bankMix(it) + '<br>' + bankLevels(it) + '</div>' +
+        it.qs.map(function (x, i) { return qHtml(x, i + 1, showAnswer); }).join('') + '</div>';
+    }
+    if (it.type === 'video') return '<div class="lc-vid"><span class="play">▶</span><span class="dur">' + esc(it.meta) + '</span></div>';
+    var lines = ''; for (var i = 0; i < 11; i++) lines += '<i style="width:' + (55 + (i * 37) % 45) + '%"></i>';
+    return '<div class="lc-doc"><div class="lc-doc__page"><h4>' + esc(it.title) + '</h4>' + lines + '</div><div class="lc-doc__bar"><span>‹</span><span>Trang 1 / ' + esc(it.meta) + '</span><span>›</span><span>⤢</span></div></div>';
+  }
+  function dlHtml(it) {
+    var rows = [];
+    if (it.kind === 'material') rows.push(['Loại học liệu', esc(it.mtype)]);
+    else rows.push(['Số câu hỏi', it.qs.length + ' câu'], ['Dạng câu', bankMix(it) || '—'], ['Mức độ các câu', bankLevels(it) || '—']);
+    if (labeled(it)) {
+      rows.push(['Môn · Lớp', esc(it.subject + ' · Lớp ' + it.grade)], ['Mạch nội dung', esc(it.mach)], ['Chủ đề', esc(it.chude)], ['Bài', esc(it.bai)],
+        ['Yêu cầu cần đạt', it.yccd.map(function (c) { return '<div style="margin-bottom:6px"><b style="color:var(--lc-primary)">' + c + '</b> ' + esc(yccdText(c)) + '</div>'; }).join('')]);
+      if (it.kind === 'material') rows.push(['Mức độ', esc(it.level || '—')]);
+      if (it.keywords.length) rows.push(['Từ khoá', '<div class="lc-chips">' + it.keywords.map(function (k) { return '<span class="lc-chip-label">' + esc(k) + '</span>'; }).join('') + '</div>']);
+    }
+    rows.push(['Người tạo', esc(it.owner) + ' · ' + esc(it.school)]);
+    return (labeled(it) ? '' : '<div class="lc-callout lc-callout--warn" style="margin-bottom:12px">Chưa gán nhãn theo khung chương trình. Cần gán nhãn trước khi gửi duyệt.</div>') +
+      '<dl class="lc-dl">' + rows.map(function (r) { return '<dt>' + r[0] + '</dt><dd>' + r[1] + '</dd>'; }).join('') + '</dl>';
+  }
+  function flowHtml(it) {
+    function group(lvl) {
+      var st = steps(lvl), w = it.wf, i = curStep(it);
+      var done = lvl === 'school' ? it.schoolOk : w.stage === 'so_ok';
+      var active = w.stage === lvl || (w.stage === 'rejected' && w.at === lvl);
+      return '<div class="lc-flow__group"><b>' + kho(lvl) + '</b><div class="lc-flow__steps">' + st.map(function (s, k) {
+        var cls = done ? 'is-done' : active ? (k < i ? 'is-done' : k === i ? (w.stage === 'rejected' ? 'is-rejected' : 'is-current') : '') : '';
+        var dot = cls === 'is-done' ? '✓' : cls === 'is-rejected' ? '✕' : k + 1;
+        return '<div class="lc-flow__step ' + cls + '"><span class="dot">' + dot + '</span><div><b>' + esc(s.name) + '</b><span>' + esc(s.who) + ' · ' + s.days + ' ngày</span></div></div>';
+      }).join('') + '</div></div>';
+    }
+    return '<div class="lc-flow">' + group('school') + '<span class="lc-flow__arrow">→</span>' + group('so') + '</div>';
+  }
+  function timelineHtml(it) {
+    return '<ul class="lc-tl">' + it.hist.slice().reverse().map(function (h) { return '<li class="' + h.cls + '"><b>' + esc(h.act) + '</b><small>' + esc(h.who) + ' · ' + esc(h.role) + ' · ' + h.t + '</small>' + (h.note ? '<q>' + esc(h.note) + '</q>' : '') + '</li>'; }).join('') + '</ul>';
+  }
+  function rejectCallout(it) { return it.wf.stage === 'rejected' ? '<div class="lc-callout lc-callout--danger" style="margin-bottom:14px"><b>Bị từ chối tại ' + kho(it.wf.at) + ':</b> ' + esc(it.wf.reason) + (it.wf.detail ? '<br>' + esc(it.wf.detail) : '') + '<br><span class="lc-caption">Chỉnh sửa nhãn hoặc nội dung rồi gửi duyệt lại.</span></div>' : ''; }
+
+  // ---------- View: Học liệu của tôi (giáo viên) ----------
+  var MINE_STATUS = [['all', 'Tất cả trạng thái'], ['draft', 'Nháp'], ['pending', 'Đang chờ duyệt'], ['approved', 'Đã duyệt'], ['rejected', 'Bị từ chối']];
+  function mineRows() {
+    return items.filter(function (it) {
+      if (it.ownerRole !== 'gv' || it.kind !== S.mineKind) return false;
+      var st = it.wf.stage, f = S.mineStatus;
+      if (f === 'draft' && st !== 'draft') return false;
+      if (f === 'pending' && st !== 'school' && st !== 'so') return false;
+      if (f === 'approved' && st !== 'school_ok' && st !== 'so_ok') return false;
+      if (f === 'rejected' && st !== 'rejected') return false;
+      return !S.mineQ || it.title.toLowerCase().indexOf(S.mineQ.toLowerCase()) >= 0;
+    });
+  }
+  function mineTable() {
+    var rows = mineRows();
+    if (!rows.length) return '<div class="lc-empty"><img src="../assets/workflow-progress.svg" alt="">Không có ' + (S.mineKind === 'material' ? 'học liệu' : 'ngân hàng câu hỏi') + ' phù hợp.</div>';
+    return '<div class="lc-table-wrap"><table class="lc-table lc-table--plain"><thead><tr><th>' + (S.mineKind === 'material' ? 'Học liệu' : 'Ngân hàng câu hỏi') + '</th><th>Nhãn</th><th>Trạng thái duyệt</th><th>Cập nhật</th><th class="c">Hành động</th></tr></thead><tbody>' +
+      rows.map(function (it) {
+        var a = [], st = it.wf.stage;
+        if (st === 'draft' || st === 'rejected') a.push('<button class="lc-btn lc-btn--outline lc-btn--sm" data-action="label" data-id="' + it.id + '">' + (labeled(it) ? 'Sửa nhãn' : 'Gán nhãn') + '</button>');
+        if (canSchool(it) || canSo(it)) a.push('<button class="lc-btn lc-btn--primary lc-btn--sm" data-action="submit" data-id="' + it.id + '">' + (it.schoolOk ? 'Gửi lên Kho Sở' : 'Gửi duyệt') + '</button>');
+        a.push(assignBtn(it, 'lc-btn--outline'));
+        a.push('<button class="lc-btn lc-btn--text lc-btn--sm" data-action="open" data-id="' + it.id + '">Chi tiết</button>');
+        return '<tr><td style="min-width:260px">' + fileHtml(it) + '</td><td style="max-width:320px">' + labelsHtml(it) + '</td><td style="min-width:210px">' + statusHtml(it) + '</td><td class="lc-secondary" style="white-space:nowrap">' + it.updated + '</td><td class="c"><div class="lc-row" style="justify-content:center;gap:6px;flex-wrap:wrap">' + a.join('') + '</div></td></tr>';
+      }).join('') + '</tbody></table></div>';
+  }
+  function viewMine() {
+    var mine = items.filter(function (it) { return it.ownerRole === 'gv'; });
+    var n = function (k) { return mine.filter(function (it) { return it.kind === k; }).length; };
+    return {
+      html: '<div class="lc-callout" style="margin-bottom:16px">Gán đủ nhãn theo <b>khung chương trình CTGDPT 2018</b> (môn, lớp, bài, ít nhất một yêu cầu cần đạt) rồi gửi duyệt. Câu hỏi được gửi theo cả <b>ngân hàng</b> (soạn ở màn Ngân hàng câu hỏi). Quy trình hiện tại: <b>Kho Trường</b> ' + CFG.school.length + ' bước → <b>Kho Sở</b> ' + CFG.so.length + ' bước.</div>' +
+        '<div class="lc-listbar"><div class="lc-tabs"><a href="#" data-action="mineKind" data-v="material" class="' + (S.mineKind === 'material' ? 'is-active' : '') + '">Học liệu (' + n('material') + ')</a><a href="#" data-action="mineKind" data-v="bank" class="' + (S.mineKind === 'bank' ? 'is-active' : '') + '">Ngân hàng câu hỏi (' + n('bank') + ')</a></div>' +
+        '<select class="lc-select lc-select--flat" style="width:180px" data-change="mineStatus" aria-label="Lọc trạng thái">' + MINE_STATUS.map(function (s) { return '<option value="' + s[0] + '"' + (s[0] === S.mineStatus ? ' selected' : '') + '>' + s[1] + '</option>'; }).join('') + '</select>' +
+        '<div class="lc-search"><input placeholder="Tìm theo tên" data-input="mineQ" value="' + esc(S.mineQ) + '" aria-label="Tìm theo tên"><button aria-label="Tìm">⌕</button></div></div>' +
+        '<div id="mineTable">' + mineTable() + '</div>',
+      foot: (S.mineKind === 'bank' ? '<a class="lc-btn lc-btn--outline" href="12-question-bank.html">Soạn câu trong Ngân hàng câu hỏi</a>' : '') + '<button class="lc-btn lc-btn--primary" data-action="new">+ ' + (S.mineKind === 'material' ? 'Tạo mới học liệu' : 'Gửi ngân hàng câu hỏi') + '</button>'
+    };
+  }
+
+  // ---------- View: Hàng chờ duyệt (tổ trưởng / thẩm định viên) ----------
+  function viewQueue() {
+    if (S.reviewId) { var r = byId(S.reviewId); if (r && pendingFor(S.role).indexOf(r) >= 0) return viewReview(r); S.reviewId = null; }
+    var pend = pendingFor(S.role), done = processedBy(S.role);
+    var list = (S.queueTab === 'pending' ? pend : done).filter(function (it) { return S.queueKind === 'all' || it.kind === S.queueKind; });
+    var intro = S.role !== 'tdv'
+      ? 'Bạn duyệt cho <b>Kho Trường · ' + SCHOOL + '</b>. Quy trình ' + CFG.school.length + ' bước: ' + CFG.school.map(function (s) { return esc(s.name); }).join(' → ') + '.'
+      : 'Bạn thuộc <b>hội đồng thẩm định Sở</b>, duyệt cho <b>Kho Sở</b> dùng chung toàn tỉnh. Quy trình ' + CFG.so.length + ' bước: ' + CFG.so.map(function (s) { return esc(s.name); }).join(' → ') + '.';
+    var rows = list.map(function (it) {
+      return '<tr><td style="min-width:250px">' + fileHtml(it) + '</td><td><b style="font-weight:500">' + esc(it.owner) + '</b><div class="lc-caption">' + esc(it.school) + '</div></td><td style="max-width:280px">' + labelsHtml(it, true) + '</td><td style="min-width:200px">' + statusHtml(it) + '</td><td class="lc-secondary" style="white-space:nowrap">' + lastSent(it) + '</td><td class="c">' +
+        (S.queueTab === 'pending' ? '<button class="lc-btn lc-btn--primary lc-btn--sm" data-action="review" data-id="' + it.id + '">Mở để duyệt</button>' : '<button class="lc-btn lc-btn--text lc-btn--sm" data-action="open" data-id="' + it.id + '">Chi tiết</button>') + '</td></tr>';
+    }).join('');
+    return {
+      html: '<div class="lc-callout" style="margin-bottom:16px">' + intro + '</div>' +
+        '<div class="lc-listbar"><div class="lc-tabs"><a href="#" data-action="queueTab" data-v="pending" class="' + (S.queueTab === 'pending' ? 'is-active' : '') + '">Chờ tôi duyệt (' + pend.length + ')</a><a href="#" data-action="queueTab" data-v="done" class="' + (S.queueTab === 'done' ? 'is-active' : '') + '">Đã xử lý (' + done.length + ')</a></div>' +
+        '<select class="lc-select lc-select--flat" style="width:190px" data-change="queueKind" aria-label="Loại nội dung"><option value="all"' + (S.queueKind === 'all' ? ' selected' : '') + '>Tất cả</option><option value="material"' + (S.queueKind === 'material' ? ' selected' : '') + '>Học liệu</option><option value="bank"' + (S.queueKind === 'bank' ? ' selected' : '') + '>Ngân hàng câu hỏi</option></select></div>' +
+        (list.length ? '<div class="lc-table-wrap"><table class="lc-table lc-table--plain"><thead><tr><th>Nội dung</th><th>Người gửi</th><th>Nhãn</th><th>' + (S.queueTab === 'pending' ? 'Bước hiện tại' : 'Kết quả') + '</th><th>Gửi lúc</th><th class="c">Hành động</th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+          : '<div class="lc-empty"><img src="../assets/workflow-progress.svg" alt="">' + (S.queueTab === 'pending' ? 'Không còn nội dung nào chờ bạn duyệt.' : 'Chưa xử lý nội dung nào.') + '</div>'),
+      foot: ''
+    };
+  }
+  function viewReview(it) {
+    var st = steps(it.wf.stage), i = curStep(it);
+    var checks = it.kind === 'bank'
+      ? ['Nhãn môn, lớp, bài khớp các câu trong ngân hàng', 'Câu hỏi bám yêu cầu cần đạt, mức độ ghi đúng', 'Đáp án từng câu chính xác, không lỗi đề', 'Không trùng câu đã có trong kho']
+      : ['Nhãn môn, lớp, bài khớp nội dung', 'Yêu cầu cần đạt phù hợp', 'Nội dung chính xác, không lỗi kiến thức', 'Không vi phạm bản quyền'];
+    return {
+      html: '<div class="lc-row" style="margin-bottom:14px;flex-wrap:wrap"><button class="lc-btn lc-btn--text lc-btn--sm" data-action="backQueue">← Hàng chờ duyệt</button><span class="lc-spacer"></span>' + statusHtml(it) + '</div>' +
+        '<div class="review-grid"><section class="lc-card lc-card--pad"><div style="margin-bottom:14px">' + fileHtml(it) + '</div>' + previewHtml(it, true) +
+          (it.desc ? '<p style="margin-top:12px">' + esc(it.desc) + '</p>' : '') + '<h4 class="lc-sec-title">Lịch sử</h4>' + timelineHtml(it) + '</section>' +
+        '<aside class="lc-stack"><section class="lc-card lc-card--pad"><h3 class="lc-h3" style="margin-bottom:12px">Nhãn ' + (it.kind === 'material' ? 'học liệu' : 'ngân hàng câu hỏi') + '</h3>' + dlHtml(it) + '</section>' +
+          '<section class="lc-card lc-card--pad"><h3 class="lc-h3" style="margin-bottom:10px">Đối chiếu trước khi duyệt</h3><div class="lc-stack" style="gap:8px">' + checks.map(function (c, k) { return '<label class="lc-check"><input type="checkbox" id="chk' + k + '">' + c + '</label>'; }).join('') + '</div></section>' +
+          '<section class="lc-card lc-card--pad"><h3 class="lc-h3" style="margin-bottom:10px">Quy trình duyệt</h3>' + flowHtml(it) + '</section>' +
+          '<section class="lc-card lc-card--pad"><div class="lc-field"><label class="lc-label" for="reviewNote">Ý kiến gửi giáo viên</label><textarea class="lc-textarea" id="reviewNote" rows="3" placeholder="Không bắt buộc khi duyệt"></textarea></div></section></aside></div>',
+      foot: '<button class="lc-btn lc-btn--outline" data-action="backQueue">Quay lại</button><button class="lc-btn lc-btn--danger" style="height:41px" data-action="rejectOpen" data-id="' + it.id + '">Từ chối</button><button class="lc-btn lc-btn--primary" data-action="approve" data-id="' + it.id + '">Duyệt · bước ' + (i + 1) + '/' + st.length + '</button>'
+    };
+  }
+
+  // ---------- View: Kho dùng chung (tìm kiếm nâng cao) ----------
+  function sharedList(kind) {
+    var f = S.f, qq = S.q.toLowerCase();
+    return items.filter(function (it) {
+      if (!inShared(it) || (kind && it.kind !== kind)) return false;
+      if (source(it) === 'so' ? !f.so : !f.school) return false;
+      if ((f.subject && it.subject !== f.subject) || (f.grade && it.grade !== f.grade) || (f.mach && it.mach !== f.mach) || (f.chude && it.chude !== f.chude) || (f.bai && it.bai !== f.bai)) return false;
+      if (f.level && (it.kind === 'bank' ? !it.qs.some(function (x) { return x.level === f.level; }) : it.level !== f.level)) return false;
+      if (f.yccd && it.yccd.indexOf(f.yccd) < 0) return false;
+      return !qq || (it.title + ' ' + it.keywords.join(' ') + ' ' + it.qs.map(function (x) { return x.stem; }).join(' ') + ' ' + it.desc).toLowerCase().indexOf(qq) >= 0;
+    });
+  }
+  function sharedResults() {
+    var list = sharedList(S.sharedKind), nm = sharedList('material').length, nq = sharedList('bank').length, hs = S.role === 'hs';
+    var cards = list.map(function (it) {
+      if (it.kind === 'material') return '<article class="lc-mcard" data-action="open" data-id="' + it.id + '">' + thumb(it) + '<div class="lc-mcard__body"><div class="lc-row" style="gap:6px;flex-wrap:wrap">' + sourceBadge(it) + '<span class="lc-chip-label">' + esc(it.mtype) + '</span></div><h4>' + esc(it.title) + '</h4>' + labelsHtml(it, true) + '<div class="lc-mcard__meta"><span>' + esc(it.owner) + ' · ' + esc(it.school) + '</span><span>' + esc(it.meta) + '</span></div>' + (canAssign(it) ? '<div class="lc-mcard__foot">' + assignBtn(it) + '</div>' : '') + '</div></article>';
+      return '<article class="lc-mcard" data-action="open" data-id="' + it.id + '"><div class="lc-mcard__body"><div class="lc-row" style="gap:6px;flex-wrap:wrap">' + sourceBadge(it) + '<span class="lc-chip-label">Ngân hàng câu hỏi</span></div><h4>' + esc(it.title) + '</h4><div class="lc-caption">' + bankMix(it) + '</div>' + labelsHtml(it, true) + '<div class="lc-mcard__meta"><span>' + esc(it.owner) + ' · ' + esc(it.school) + '</span><span>' + it.qs.length + ' câu</span></div>' + (canAssign(it) ? '<div class="lc-mcard__foot">' + assignBtn(it) + '</div>' : '') + '</div></article>';
+    }).join('');
+    return '<div class="lc-row" style="justify-content:space-between;margin-bottom:16px;flex-wrap:wrap"><div class="lc-tabs"><a href="#" data-action="sharedKind" data-v="material" class="' + (S.sharedKind === 'material' ? 'is-active' : '') + '">Học liệu (' + nm + ')</a><a href="#" data-action="sharedKind" data-v="bank" class="' + (S.sharedKind === 'bank' ? 'is-active' : '') + '">Ngân hàng câu hỏi (' + nq + ')</a></div><span class="lc-secondary">' + list.length + ' kết quả</span></div>' +
+      (list.length ? '<div class="lc-grid lc-grid-3" style="gap:20px">' + cards + '</div>' : '<div class="lc-empty"><img src="../assets/workflow-progress.svg" alt="">Không tìm thấy nội dung phù hợp bộ lọc.</div>');
+  }
+  function viewShared() {
+    var f = S.f, hasKhung = khung({ subject: f.subject, grade: f.grade }).length > 0;
+    var machs = uniq(khung({ subject: f.subject, grade: f.grade }).map(function (k) { return k.mach; }));
+    var chudes = f.mach ? uniq(khung({ subject: f.subject, grade: f.grade, mach: f.mach }).map(function (k) { return k.chude; })) : [];
+    var bais = f.chude ? khung({ subject: f.subject, grade: f.grade, mach: f.mach, chude: f.chude }).map(function (k) { return k.bai; }) : [];
+    var yccds = f.bai ? khung({ bai: f.bai })[0].yccd : [];
+    var sel = function (key, list, ph, dis) { return '<select class="lc-select" data-change="f.' + key + '"' + (dis ? ' disabled' : '') + ' aria-label="' + ph + '">' + opt(list, f[key], ph) + '</select>'; };
+    return {
+      html: '<div class="lc-callout" style="margin-bottom:16px">Học sinh chỉ xem học liệu đã duyệt (không xem ngân hàng câu hỏi) trong <a href="../../design-system/templates/15-shared-materials.html" target="_blank" rel="noopener"><b>LMS › Học liệu</b></a>.</div>' +
+        '<div class="shared-grid"><aside class="lc-filter"><h4>Bộ lọc <button data-action="clearFilter">Xoá bộ lọc</button></h4>' +
+          '<div class="grp"><span>Nguồn</span><label class="lc-check"><input type="checkbox" data-change="f.so"' + (f.so ? ' checked' : '') + '>Kho Sở (toàn tỉnh)</label><label class="lc-check"><input type="checkbox" data-change="f.school"' + (f.school ? ' checked' : '') + '>Kho Trường (' + SCHOOL + ')</label></div>' +
+          '<div class="grp"><span>Môn · Lớp</span>' + sel('subject', SUBJECTS, 'Tất cả môn') + sel('grade', GRADES, 'Tất cả lớp') + '</div>' +
+          '<div class="grp"><span>Khung chương trình</span>' + (f.subject && f.grade && !hasKhung ? '<p class="lc-caption">Chưa nạp khung cho ' + esc(f.subject + ' ' + f.grade) + '.</p>' : '') +
+            sel('mach', machs, 'Mạch nội dung', !machs.length) + sel('chude', chudes, 'Chủ đề', !f.mach) + sel('bai', bais, 'Bài', !f.chude) +
+            '<select class="lc-select" data-change="f.yccd"' + (f.bai ? '' : ' disabled') + ' aria-label="Yêu cầu cần đạt"><option value="">Yêu cầu cần đạt</option>' + yccds.map(function (y) { return '<option value="' + y[0] + '"' + (f.yccd === y[0] ? ' selected' : '') + ' title="' + esc(y[1]) + '">' + y[0] + ' · ' + esc(y[1].slice(0, 40)) + '…</option>'; }).join('') + '</select></div>' +
+          '<div class="grp"><span>Mức độ</span>' + sel('level', LEVELS, 'Tất cả mức độ') + '</div></aside>' +
+        '<section><div class="lc-search lc-search--round" style="margin-bottom:16px;max-width:560px"><input placeholder="Tìm theo tên, từ khoá, nội dung câu hỏi trong ngân hàng" data-input="q" value="' + esc(S.q) + '" aria-label="Tìm kiếm"><button aria-label="Tìm">⌕</button></div><div id="sharedResults">' + sharedResults() + '</div></section></div>',
+      foot: ''
+    };
+  }
+
+  // ---------- View: Cấu hình quy trình (quản trị cấp Sở) ----------
+  function cfgTable(lvl) {
+    var st = CFG[lvl];
+    return '<div class="lc-table-wrap"><table class="lc-table lc-table--plain cfg-table"><colgroup><col style="width:60px"><col><col style="width:38%"><col style="width:96px"><col style="width:44px"></colgroup><thead><tr><th class="c">Bước</th><th>Tên bước</th><th>Người duyệt</th><th>Thời hạn (ngày)</th><th></th></tr></thead><tbody>' +
+      st.map(function (s, i) {
+        return '<tr><td class="c"><span class="lc-num" style="margin:auto">' + (i + 1) + '</span></td><td><input class="lc-input" style="height:36px;font-size:14px" value="' + esc(s.name) + '" data-cfg="name" data-lvl="' + lvl + '" data-i="' + i + '" aria-label="Tên bước"></td>' +
+          '<td><select class="lc-select" style="height:36px" data-cfg="who" data-lvl="' + lvl + '" data-i="' + i + '" aria-label="Người duyệt">' + opt(WHO[lvl], s.who) + '</select></td>' +
+          '<td><input class="lc-input" type="number" min="1" style="height:36px;width:90px;font-size:14px" value="' + s.days + '" data-cfg="days" data-lvl="' + lvl + '" data-i="' + i + '" aria-label="Thời hạn"></td>' +
+          '<td class="c"><button class="icon-btn-plain" data-action="cfgDel" data-lvl="' + lvl + '" data-i="' + i + '"' + (st.length === 1 ? ' disabled' : '') + ' aria-label="Xoá bước"><img src="../assets/icons/delete-action.svg" alt="" style="width:22px"></button></td></tr>';
+      }).join('') + '</tbody></table></div><button class="lc-dashed-btn" style="margin-top:10px;height:36px" data-action="cfgAdd" data-lvl="' + lvl + '">+ Thêm bước duyệt</button>';
+  }
+  function viewConfig() {
+    var sw = function (k, text) { return '<label class="lc-switch"><input type="checkbox" data-cfgflag="' + k + '"' + (CFG[k] ? ' checked' : '') + '>' + text + '</label>'; };
+    return {
+      html: '<div class="lc-callout" style="margin-bottom:16px">Mỗi cấp kho có quy trình riêng: số bước, người duyệt, thời hạn xử lý. Thay đổi áp dụng cho các lượt gửi duyệt mới; mọi bước đều được lưu vết và gửi thông báo.</div>' +
+        '<div class="lc-grid lc-grid-2"><section class="lc-card lc-card--pad"><h3 class="lc-section-title" style="margin-bottom:14px">Quy trình cấp Trường</h3>' + cfgTable('school') + '</section>' +
+          '<section class="lc-card lc-card--pad"><h3 class="lc-section-title" style="margin-bottom:14px">Quy trình cấp Sở</h3>' + cfgTable('so') + '</section></div>' +
+        '<div class="lc-grid lc-grid-2" style="margin-top:24px"><section class="lc-card lc-card--pad"><h3 class="lc-h3" style="margin-bottom:14px">Quy tắc</h3><div class="lc-stack" style="gap:14px">' +
+          sw('requireSchool', 'Bắt buộc duyệt cấp Trường trước khi gửi lên Kho Sở') + sw('reasonRequired', 'Bắt buộc nhập góp ý chi tiết khi từ chối') +
+          sw('applyMaterial', 'Áp dụng cho học liệu') + sw('applyQuestion', 'Áp dụng cho ngân hàng câu hỏi') + sw('notifyApp', 'Gửi thông báo trong hệ thống') + sw('notifyEmail', 'Gửi kèm email') + '</div></section>' +
+          '<section class="lc-card lc-card--pad"><h3 class="lc-h3" style="margin-bottom:14px">Xem trước luồng duyệt</h3>' + flowHtml(mk({ id: 'preview' })) + '</section></div>',
+      foot: '<button class="lc-btn lc-btn--primary" data-action="cfgSave">Lưu cấu hình</button>'
+    };
+  }
+
+  // ---------- Drawer chi tiết ----------
+  function renderDrawer() {
+    var it = S.drawerId && byId(S.drawerId), root = $('drawerRoot');
+    if (!it) { root.innerHTML = ''; return; }
+    var hs = S.role === 'hs', owner = S.role === 'gv' && it.ownerRole === 'gv';
+    var tabs = hs ? '' : '<div class="lc-tabs" style="margin-bottom:16px"><a href="#" data-action="drawerTab" data-v="info" class="' + (S.drawerTab === 'info' ? 'is-active' : '') + '">Thông tin</a><a href="#" data-action="drawerTab" data-v="hist" class="' + (S.drawerTab === 'hist' ? 'is-active' : '') + '">Lịch sử duyệt (' + it.hist.length + ')</a></div>';
+    var body = S.drawerTab === 'hist' && !hs ? timelineHtml(it)
+      : (hs ? '' : rejectCallout(it)) + previewHtml(it, !hs) + (it.desc ? '<p style="margin-top:12px">' + esc(it.desc) + '</p>' : '') + '<h4 class="lc-sec-title">Nhãn</h4>' + dlHtml(it) + (hs ? '' : '<h4 class="lc-sec-title">Quy trình duyệt</h4>' + flowHtml(it));
+    var foot = [];
+    if (owner && ['draft', 'rejected'].indexOf(it.wf.stage) >= 0) foot.push('<button class="lc-btn lc-btn--outline" data-action="label" data-id="' + it.id + '">' + (labeled(it) ? 'Sửa nhãn' : 'Gán nhãn') + '</button>');
+    if (owner && (canSchool(it) || canSo(it))) foot.push('<button class="lc-btn lc-btn--primary" data-action="submit" data-id="' + it.id + '">' + (it.schoolOk ? 'Gửi lên Kho Sở' : 'Gửi duyệt') + '</button>');
+    if (pendingFor(S.role).indexOf(it) >= 0) foot.push('<button class="lc-btn lc-btn--primary" data-action="review" data-id="' + it.id + '">Mở màn hình duyệt</button>');
+    if (hs && it.kind === 'material') foot.push('<button class="lc-btn lc-btn--primary">Mở học liệu</button>');
+    if (!hs && it.kind === 'bank' && inShared(it) && it.ownerRole !== S.role) foot.push('<button class="lc-btn lc-btn--outline" data-action="copyBank" data-id="' + it.id + '">Sao chép về ngân hàng của tôi</button>');
+    if (canAssign(it)) foot.push('<button class="lc-btn lc-btn--primary" data-action="assign" data-id="' + it.id + '">Giao bài</button>');
+    root.innerHTML = '<div class="lc-drawer-mask" data-action="closeDrawer"></div><aside class="lc-drawer" role="dialog" aria-label="Chi tiết"><div class="lc-drawer__head">' + thumb(it, 'width:48px;height:48px;font-size:' + (it.kind === 'bank' ? '20px' : '11px')) +
+      '<div style="flex:1;min-width:0"><h3>' + esc(it.title) + '</h3><div style="margin-top:6px">' + (hs ? sourceBadge(it) : statusHtml(it)) + '</div></div><button class="lc-modal__close" data-action="closeDrawer" aria-label="Đóng">×</button></div>' +
+      '<div class="lc-drawer__body">' + tabs + body + '</div>' + (foot.length ? '<div class="lc-drawer__foot">' + foot.join('') + '</div>' : '') + '</aside>';
+  }
+
+  // ---------- Modal gán nhãn ----------
+  function openLabel(id, kind) {
+    var it = id ? byId(id) : null, d = {};
+    var src = it || mk({ kind: kind, type: kind === 'bank' ? 'q' : 'pdf' });
+    ['kind', 'title', 'type', 'mtype', 'file', 'size', 'meta', 'subject', 'grade', 'mach', 'chude', 'bai', 'level', 'desc'].forEach(function (k) { d[k] = src[k]; });
+    d.qs = src.qs.slice(); d.src = ''; d.yccd = src.yccd.slice(); d.keywords = src.keywords.join(', ');
+    if (!d.subject) { d.subject = 'Toán'; d.grade = '10'; }
+    S.edit = { id: id, isNew: !it, d: d, err: {} };
+    $('mLabelTitle').textContent = !it ? (kind === 'bank' ? 'Gửi ngân hàng câu hỏi và gán nhãn' : 'Tạo mới học liệu và gán nhãn') : (labeled(it) ? 'Sửa nhãn' : 'Gán nhãn') + (it.kind === 'bank' ? ' ngân hàng câu hỏi' : ' học liệu');
+    renderLabel(); $('mLabel').hidden = false;
+  }
+  function renderLabel() {
+    var e = S.edit, d = e.d, err = e.err, left = '';
+    var mf = function (k) { return err[k] ? '<span class="lc-err">' + err[k] + '</span>' : ''; };
+    if (d.kind === 'material') {
+      left = d.file
+        ? '<div class="lc-file" style="padding:12px;border:1px solid var(--lc-border-input);border-radius:12px;margin-bottom:14px">' + thumb(d, 'width:44px;height:44px;font-size:11px') + '<div style="min-width:0;flex:1"><b>' + esc(d.file) + '</b><small>' + esc(d.size) + ' · ' + esc(d.meta) + '</small></div>' + (e.isNew ? '<label class="lc-btn lc-btn--outline lc-btn--sm">Đổi tệp<input type="file" hidden data-change="file"></label>' : '') + '</div>' + previewHtml(d, true)
+        : '<label class="lc-dropzone"><img src="../assets/upload-img.svg" alt=""><b>Kéo thả hoặc bấm để chọn tệp</b><span>PDF, Word, PowerPoint, MP4 · tối đa 500 MB</span><input type="file" hidden data-change="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.mp4"></label>' +
+          '<p class="lc-caption" style="margin-top:10px;text-align:center">Bản mẫu: <a href="#" data-action="sampleFile" data-v="pdf">dùng tệp PDF mẫu</a> · <a href="#" data-action="sampleFile" data-v="video">dùng video mẫu</a></p>' + mf('file');
+    } else if (e.isNew) {
+      var pool = MY_BANKS.filter(function (b) { return !items.some(function (x) { return x.src === b.id; }); });
+      left = '<div class="lc-field" style="margin-bottom:14px"><label class="lc-label" for="d-src">Chọn ngân hàng của tôi<span class="req">*</span></label><select class="lc-select" id="d-src" style="height:40px" data-change="d.src"><option value="">Chọn ngân hàng</option>' +
+        pool.map(function (b) { return '<option value="' + b.id + '"' + (d.src === b.id ? ' selected' : '') + '>' + esc(b.name) + ' · ' + b.qs.length + ' câu</option>'; }).join('') + '</select>' + mf('src') +
+        '<p class="lc-caption" style="margin-top:6px">Thêm, sửa câu hỏi trong <a href="12-question-bank.html">Ngân hàng câu hỏi</a>; ở đây chỉ gán nhãn và gửi duyệt cả ngân hàng.</p></div>' +
+        (d.src ? previewHtml(d, true) : '');
+    } else left = previewHtml(d, true);
+
+    var machs = uniq(khung({ subject: d.subject, grade: d.grade }).map(function (k) { return k.mach; }));
+    var chudes = d.mach ? uniq(khung({ subject: d.subject, grade: d.grade, mach: d.mach }).map(function (k) { return k.chude; })) : [];
+    var bais = d.chude ? khung({ subject: d.subject, grade: d.grade, mach: d.mach, chude: d.chude }).map(function (k) { return k.bai; }) : [];
+    var yccds = d.bai ? khung({ bai: d.bai })[0].yccd : [];
+    var sel = function (key, list, ph, dis) { return '<select class="lc-select" style="height:40px" data-change="d.' + key + '"' + (dis ? ' disabled' : '') + ' aria-label="' + ph + '">' + opt(list, d[key], ph) + '</select>'; };
+    var right = '<div class="lc-form" style="gap:14px">' +
+      '<div class="lc-field"><label class="lc-label" for="d-title">' + (d.kind === 'bank' ? 'Tên ngân hàng' : 'Tên học liệu') + '<span class="req">*</span></label><input class="lc-input" id="d-title" style="height:40px" value="' + esc(d.title) + '" data-input="d.title" placeholder="' + (d.kind === 'bank' ? 'Ví dụ: Toán 10 · Mệnh đề toán học' : 'Ví dụ: Bài giảng Mệnh đề – Toán 10') + '">' + mf('title') + '</div>' +
+      (d.kind === 'material' ? '<div class="lc-field"><label class="lc-label" for="d-mtype">Loại học liệu</label><select class="lc-select" id="d-mtype" style="height:40px" data-change="d.mtype">' + opt(MTYPES, d.mtype) + '</select></div>' : '') +
+      '<div class="lc-grid lc-grid-2" style="gap:12px"><div class="lc-field"><span class="lc-label">Môn<span class="req">*</span></span>' + sel('subject', SUBJECTS, 'Chọn môn') + '</div><div class="lc-field"><span class="lc-label">Lớp<span class="req">*</span></span>' + sel('grade', GRADES, 'Chọn lớp') + '</div></div>' +
+      '<div class="lc-field"><span class="lc-label">Khung chương trình CTGDPT 2018<span class="req">*</span></span>' +
+        (machs.length ? '' : '<div class="lc-callout lc-callout--warn">Chưa nạp khung chương trình cho ' + esc(d.subject + ' ' + d.grade) + '. Bản mẫu có sẵn khung Toán 10.</div>') +
+        '<div class="lc-stack" style="gap:8px">' + sel('mach', machs, 'Mạch nội dung', !machs.length) + sel('chude', chudes, 'Chủ đề', !d.mach) + sel('bai', bais, 'Bài', !d.chude) + '</div>' + mf('bai') + '</div>' +
+      '<div class="lc-field"><span class="lc-label">Yêu cầu cần đạt<span class="req">*</span></span>' + (d.bai
+        ? '<div class="lc-check-list">' + yccds.map(function (y) { return '<label><input type="checkbox" data-change="d.yccd" value="' + y[0] + '"' + (d.yccd.indexOf(y[0]) >= 0 ? ' checked' : '') + '><code>' + y[0] + '</code><span>' + esc(y[1]) + '</span></label>'; }).join('') + '</div>'
+        : '<p class="lc-caption">Chọn bài để hiện danh sách yêu cầu cần đạt.</p>') + mf('yccd') + '</div>' +
+      '<div class="lc-grid lc-grid-2" style="gap:12px">' + (d.kind === 'material' ? '<div class="lc-field"><span class="lc-label">Mức độ</span>' + sel('level', LEVELS, 'Chọn mức độ') + '</div>' : '') + '<div class="lc-field"><label class="lc-label" for="d-kw">Từ khoá</label><input class="lc-input" id="d-kw" style="height:40px;font-size:14px" placeholder="Cách nhau bởi dấu phẩy" value="' + esc(d.keywords) + '" data-input="d.keywords"></div></div>' +
+      (d.kind === 'material' ? '<div class="lc-field"><label class="lc-label" for="d-desc">Mô tả</label><textarea class="lc-textarea" id="d-desc" rows="2" data-input="d.desc" placeholder="Mục đích sử dụng, gợi ý tiết dạy">' + esc(d.desc) + '</textarea></div>' : '') + '</div>';
+    $('mLabelBody').innerHTML = '<div class="label-grid"><div>' + left + '</div><div>' + right + '</div></div>';
+  }
+  function saveLabel(andSubmit) {
+    var e = S.edit, d = e.d, err = {};
+    if (!d.title.trim()) err.title = 'Nhập tên.';
+    if (d.kind === 'material' && !d.file) err.file = 'Chọn tệp học liệu.';
+    if (d.kind === 'bank' && e.isNew && !d.src) err.src = 'Chọn ngân hàng câu hỏi cần gửi.';
+    if (!d.bai) err.bai = 'Chọn đến cấp Bài trong khung chương trình.';
+    else if (!d.yccd.length) err.yccd = 'Chọn ít nhất một yêu cầu cần đạt.';
+    e.err = err;
+    if (Object.keys(err).length) { renderLabel(); return; }
+    var it = e.id ? byId(e.id) : null, wasLabeled = it && labeled(it);
+    if (!it) {
+      it = mk({ kind: d.kind, type: d.type, src: d.src, hist: [] });
+      items.unshift(it);
+      addHist(it, 'gv', d.kind === 'bank' ? 'Chọn ngân hàng câu hỏi để gửi duyệt' : 'Tạo mới học liệu', '', '');
+    }
+    ['title', 'type', 'mtype', 'file', 'size', 'meta', 'subject', 'grade', 'mach', 'chude', 'bai', 'level', 'desc'].forEach(function (k) { it[k] = d[k]; });
+    it.qs = d.qs.slice(); it.yccd = d.yccd.slice();
+    it.keywords = d.keywords.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+    addHist(it, 'gv', wasLabeled ? 'Cập nhật nhãn' : 'Gán nhãn theo khung chương trình', it.subject + ' ' + it.grade + ' · ' + it.bai + ' · ' + it.yccd.join(', '), '');
+    $('mLabel').hidden = true; S.edit = null;
+    if (S.role === 'gv') { S.mineKind = it.kind; }
+    if (andSubmit) openSubmit(it.id); else toast('Đã lưu nhãn cho ' + q(it));
+    render();
+  }
+
+  // ---------- Modal gửi duyệt ----------
+  function openSubmit(id) {
+    var it = byId(id), cs = canSchool(it), cso = canSo(it);
+    S.submitId = id;
+    var card = function (lvl, ok, extra) {
+      var st = CFG[lvl];
+      return '<label class="lc-radio-card' + (ok ? '' : ' is-disabled') + '"><input type="radio" name="target" value="' + lvl + '"' + (ok ? '' : ' disabled') + (ok && (lvl === 'so' ? !cs : true) ? ' checked' : '') + '><div><b>' + (lvl === 'school' ? 'Kho Trường · ' + SCHOOL : 'Kho Sở · dùng chung toàn tỉnh') + '</b><p>' + st.length + ' bước: ' + st.map(function (s) { return esc(s.name) + ' (' + esc(s.who) + ')'; }).join(' → ') + '</p>' + (extra || '') + '</div></label>';
+    };
+    $('mSubmitBody').innerHTML = '<div style="margin-bottom:14px">' + fileHtml(it) + '</div>' + labelsHtml(it) +
+      '<div class="lc-stack" style="gap:10px;margin-top:16px">' +
+        card('school', cs, it.schoolOk ? '<p><span class="lc-tag lc-tag--sm lc-tag--info">Đã duyệt vào Kho Trường</span></p>' : '') +
+        card('so', cso, !cso && CFG.requireSchool && !it.schoolOk ? '<p class="lc-err">Cần được duyệt vào Kho Trường trước (theo cấu hình của Sở).</p>' : '') + '</div>' +
+      '<div class="lc-field" style="margin-top:16px"><label class="lc-label" for="submitNote">Ghi chú gửi người duyệt</label><textarea class="lc-textarea" id="submitNote" rows="2" placeholder="Ví dụ: dùng cho tiết 2 bài Mệnh đề"></textarea></div>';
+    $('mSubmit').hidden = false;
+  }
+
+  // ---------- Render tổng ----------
+  // Vai trò 09 ứng với vai trò chung của LCMS (Sở không dùng menu trường)
+  var LCMS_ROLE = { gv: 'gv', tt: 'tt', ht: 'ht', tdv: 'so', admin: 'so' };
+  function renderMenu() {
+    var r = ROLES[S.role], v = S.view[S.role];
+    $('menu').innerHTML = (LCMS_ROLE[S.role] && LCMS_ROLE[S.role] !== 'so' ? '<div class="lc-menu__group">Học liệu & duyệt kho</div>' : '') + r.menu.map(function (m) {
+      var badge = m[0] === 'queue' && pendingFor(S.role).length ? '<span class="badge">' + pendingFor(S.role).length + '</span>' : '';
+      return '<a class="lc-menu__item' + (m[0] === v ? ' is-active' : '') + '" href="#" data-action="nav" data-v="' + m[0] + '"><img src="../assets/icons/' + m[2] + '.svg" alt=""><span>' + m[1] + '</span>' + badge + '</a>';
+    }).join('') + (LCMS_ROLE[S.role] ? LcDemo.menuHTML(LCMS_ROLE[S.role], 'hoclieu', true) : '');
+  }
+  function renderHeader() {
+    var r = ROLES[S.role], v = S.view[S.role];
+    $('pageTitle').textContent = S.reviewId ? 'Duyệt ' + (byId(S.reviewId).kind === 'material' ? 'học liệu' : 'ngân hàng câu hỏi') : (S.role === 'hs' && v === 'shared' ? 'Kho học liệu' : TITLES[v]);
+    $('userName').textContent = r.name; $('userTitle').textContent = r.title;
+    $('roleSel').innerHTML = Object.keys(ROLES).map(function (k) { return '<option value="' + k + '"' + (k === S.role ? ' selected' : '') + '>' + ROLES[k].label + '</option>'; }).join('');
+    var mine = notifs.filter(function (n) { return n.to === S.role; }), unread = mine.filter(function (n) { return !n.read; }).length;
+    $('bellCount').hidden = !unread; $('bellCount').textContent = unread;
+    $('notif').innerHTML = '<div class="lc-notif__head">Thông báo<button data-action="readAll">Đánh dấu đã đọc</button></div><div class="lc-notif__list">' +
+      (mine.length ? mine.map(function (n) { return '<div class="lc-notif__item' + (n.read ? '' : ' is-unread') + '" data-action="notif" data-n="' + notifs.indexOf(n) + '"><span class="ic ic--' + n.ic + '">' + { ok: '✓', no: '✕', wait: '⏳', info: 'i' }[n.ic] + '</span><div>' + n.text + '<small>' + n.t + '</small></div></div>'; }).join('') : '<div class="lc-notif__empty">Chưa có thông báo.</div>') + '</div>';
+  }
+  // Chỉ học liệu đã duyệt, không gồm ngân hàng câu hỏi → LMS › Học liệu của học sinh đọc lại (design-system/templates/15-shared-materials.html)
+  function publishToLms() {
+    var out = items.filter(function (it) { return it.kind === 'material' && inShared(it); }).map(function (it) {
+      return { id: it.id, kind: it.kind, title: it.title, type: it.type, mtype: it.mtype, meta: it.meta,
+        subject: it.subject, grade: it.grade, chude: it.chude, bai: it.bai, level: it.level, owner: it.owner, school: it.school, src: source(it), t: it.updated || lastSent(it) };
+    });
+    try { localStorage.setItem('bn-shared-materials', JSON.stringify({ at: fmt(T), items: out })); } catch (e) {}
+  }
+  function render() {
+    keepState(); publishToLms();
+    renderMenu(); renderHeader();
+    var v = S.view[S.role], out = v === 'mine' ? viewMine() : v === 'queue' ? viewQueue() : v === 'config' ? viewConfig() : viewShared();
+    renderHeader();
+    $('main').innerHTML = out.html; $('foot').innerHTML = out.foot; $('foot').hidden = !out.foot;
+    renderDrawer();
+  }
+  function toast(msg) { var t = $('toast'); t.innerHTML = '<span class="ok">✓</span>' + msg; t.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(function () { t.hidden = true; }, 2600); }
+
+  // ---------- Sự kiện ----------
+  document.addEventListener('click', function (ev) {
+    var el = ev.target.closest('[data-action]'); if (!el) return;
+    var a = el.dataset.action, id = el.dataset.id, it = id && byId(id);
+    if (el.tagName === 'A') ev.preventDefault();
+    switch (a) {
+      case 'nav': S.view[S.role] = el.dataset.v; S.reviewId = null; S.drawerId = null; render(); break;
+      case 'mineKind': S.mineKind = el.dataset.v; render(); break;
+      case 'queueTab': S.queueTab = el.dataset.v; render(); break;
+      case 'sharedKind': S.sharedKind = el.dataset.v; $('sharedResults').innerHTML = sharedResults(); break;
+      case 'drawerTab': S.drawerTab = el.dataset.v; renderDrawer(); break;
+      case 'open': S.drawerId = id; S.drawerTab = 'info'; renderDrawer(); break;
+      case 'assign': openAssign(id); break;
+      case 'copyBank': toast('Đã sao chép ' + q(it) + ' (' + it.qs.length + ' câu) về Ngân hàng câu hỏi của tôi'); break;
+      case 'doAssign': doAssign(); break;
+      case 'closeDrawer': S.drawerId = null; renderDrawer(); break;
+      case 'new': openLabel(null, S.mineKind); break;
+      case 'label': S.drawerId = null; renderDrawer(); openLabel(id); break;
+      case 'submit': S.drawerId = null; renderDrawer(); openSubmit(id); break;
+      case 'review': S.view[S.role] = 'queue'; S.reviewId = id; S.drawerId = null; render(); $('main').scrollTop = 0; break;
+      case 'backQueue': S.reviewId = null; render(); break;
+      case 'approve': approve(it, ($('reviewNote') || {}).value || ''); S.reviewId = null; render(); break;
+      case 'rejectOpen': S.rejectId = id; $('rejDetail').value = ''; $('rejErr').hidden = true; $('rejReq').hidden = !CFG.reasonRequired; $('mReject').hidden = false; break;
+      case 'doReject': {
+        var detail = $('rejDetail').value.trim();
+        if (CFG.reasonRequired && !detail) { $('rejErr').hidden = false; return; }
+        reject(byId(S.rejectId), $('rejReason').value, detail); $('mReject').hidden = true; S.reviewId = null; render(); break;
+      }
+      case 'doSubmit': {
+        var r = document.querySelector('#mSubmitBody input[name=target]:checked'); if (!r) return;
+        submit(byId(S.submitId), r.value, $('submitNote').value.trim()); $('mSubmit').hidden = true; render(); break;
+      }
+      case 'saveLabel': saveLabel(false); break;
+      case 'saveLabelSubmit': saveLabel(true); break;
+      case 'sampleFile': {
+        var d = S.edit.d, v = el.dataset.v === 'video';
+        d.file = v ? 'video-bai-giang-menh-de.mp4' : 'phieu-hoc-tap-menh-de.pdf'; d.type = v ? 'video' : 'pdf'; d.size = v ? '42 MB' : '1,6 MB'; d.meta = v ? '03:20' : '6 trang'; d.mtype = v ? 'Video bài giảng' : 'Phiếu bài tập';
+        if (!d.title) d.title = v ? 'Video: Mệnh đề toán học' : 'Phiếu học tập Mệnh đề'; renderLabel(); break;
+      }
+      case 'clearFilter': S.f = { so: true, school: true, subject: '', grade: '', mach: '', chude: '', bai: '', yccd: '', level: '' }; S.q = ''; render(); break;
+      case 'cfgAdd': { var lv = el.dataset.lvl; CFG[lv].push({ name: 'Bước duyệt mới', who: WHO[lv][0], days: 3 }); render(); break; }
+      case 'cfgDel': CFG[el.dataset.lvl].splice(+el.dataset.i, 1); render(); break;
+      case 'cfgSave': toast('Đã lưu cấu hình quy trình duyệt'); break;
+      case 'readAll': notifs.forEach(function (n) { if (n.to === S.role) n.read = true; }); renderHeader(); break;
+      case 'notif': {
+        var n = notifs[+el.dataset.n], t = byId(n.id); n.read = true; $('notif').hidden = true;
+        if (t && pendingFor(S.role).indexOf(t) >= 0) { S.view[S.role] = 'queue'; S.reviewId = t.id; S.drawerId = null; }
+        else { S.drawerId = n.id; S.drawerTab = 'info'; }
+        render(); break;
+      }
+    }
+  });
+  document.addEventListener('change', function (ev) {
+    var t = ev.target, k = t.dataset.change, cf = t.dataset.cfg, flag = t.dataset.cfgflag;
+    if (t.id === 'roleSel') { S.role = t.value; if (LCMS_ROLE[S.role]) LcDemo.setRole(LCMS_ROLE[S.role]); S.reviewId = null; S.drawerId = null; document.querySelectorAll('.lc-overlay').forEach(function (o) { o.hidden = true; }); render(); return; }
+    if (cf) { var s = CFG[t.dataset.lvl][+t.dataset.i]; s[cf] = cf === 'days' ? Math.max(1, +t.value || 1) : t.value; render(); return; }
+    if (flag) { CFG[flag] = t.checked; render(); return; }
+    if (!k) return;
+    if (k === 'mineStatus') { S.mineStatus = t.value; $('mineTable').innerHTML = mineTable(); return; }
+    if (k === 'queueKind') { S.queueKind = t.value; render(); return; }
+    if (k.indexOf('f.') === 0) {
+      var key = k.slice(2), f = S.f;
+      f[key] = t.type === 'checkbox' ? t.checked : t.value;
+      var order = ['subject', 'grade', 'mach', 'chude', 'bai', 'yccd'], at = order.indexOf(key);
+      if (at >= 0) order.slice(at + 1).forEach(function (o) { f[o] = ''; });
+      render(); return;
+    }
+    var d = S.edit && S.edit.d; if (!d) return;
+    if (k === 'file' && t.files.length) {
+      var fl = t.files[0], ext = fl.name.split('.').pop().toLowerCase();
+      d.file = fl.name; d.size = (fl.size / 1048576).toFixed(1).replace('.', ',') + ' MB';
+      d.type = ext === 'mp4' ? 'video' : /pptx?/.test(ext) ? 'ppt' : /docx?/.test(ext) ? 'doc' : 'pdf';
+      d.meta = d.type === 'video' ? '—' : 'Đang đọc số trang'; d.mtype = d.type === 'video' ? 'Video bài giảng' : d.mtype;
+      if (!d.title) d.title = fl.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ');
+    } else if (k === 'd.yccd') {
+      if (t.checked) d.yccd.push(t.value); else d.yccd = d.yccd.filter(function (x) { return x !== t.value; });
+    } else if (k === 'd.src') {
+      var b = MY_BANKS.filter(function (x) { return x.id === t.value; })[0];
+      d.src = t.value; d.qs = b ? b.qs.slice() : [];
+      if (b && (!d.title || MY_BANKS.some(function (x) { return x.name === d.title; }))) d.title = b.name;
+    } else {
+      var fk = k.slice(2); d[fk] = t.value;
+      var ord = ['subject', 'grade', 'mach', 'chude', 'bai'], p = ord.indexOf(fk);
+      if (p >= 0) { ord.slice(p + 1).forEach(function (o) { d[o] = ''; }); d.yccd = []; }
+    }
+    S.edit.err = {}; renderLabel();
+  });
+  document.addEventListener('input', function (ev) {
+    var t = ev.target, k = t.dataset.input; if (!k) return;
+    if (k === 'mineQ') { S.mineQ = t.value; $('mineTable').innerHTML = mineTable(); return; }
+    if (k === 'q') { S.q = t.value; $('sharedResults').innerHTML = sharedResults(); return; }
+    var d = S.edit && S.edit.d; if (!d) return;
+    d[k.slice(2)] = t.value;
+  });
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Escape' && S.drawerId && !document.querySelector('.lc-overlay:not([hidden])')) { S.drawerId = null; renderDrawer(); }
+  }, true); // pha capture: chạy trước lcms.js để không đóng drawer khi Esc đang đóng modal
+
+  var urlRole = new URLSearchParams(location.search).get('role');
+  S.role = ROLES[urlRole] ? urlRole : { gv: 'gv', gvcn: 'gv', ct: 'gv', tt: 'tt', ht: 'ht', so: 'admin' }[LcDemo.role()] || 'gv';
+  render();
+})();
+</script>
+</body>
+</html>

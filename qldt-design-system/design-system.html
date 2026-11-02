@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QLĐT Design System</title>
+<link rel="icon" href="assets/favicon_bn.png">
+<link rel="stylesheet" href="qldt.css">
+<style>
+  /* ---- chỉ dùng cho trang tài liệu ---- */
+  body { background: #f4f4f4; }
+  .ds { display: grid; grid-template-columns: 250px 1fr; min-height: 100vh; }
+  .ds-nav { position: sticky; top: 0; height: 100vh; overflow: auto; background: #fff; border-right: 1px solid var(--qd-divider); padding: 0 0 24px; }
+  .ds-nav__brand { display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: var(--qd-brand); color: #fff; font-weight: 600; font-size: 13px; line-height: 1.3; text-transform: uppercase; }
+  .ds-nav__brand img { width: 40px; background: #fff; padding: 3px; }
+  .ds-nav small { display: block; padding: 18px 16px 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--qd-text-placeholder); font-weight: 600; }
+  .ds-nav a { display: block; padding: 7px 16px; color: var(--qd-text); font-size: 14px; border-left: 3px solid transparent; }
+  .ds-nav a:hover { background: var(--qd-bg-soft); border-left-color: var(--qd-brand); color: var(--qd-text); }
+  .ds-main { padding: 32px 40px 80px; max-width: 1260px; min-width: 0; }
+  .ds-sec { margin-top: 56px; scroll-margin-top: 24px; }
+  .ds-sec > h2 { font-size: 24px; font-weight: 600; color: var(--qd-text-heading); }
+  .ds-sec > p { margin-top: 6px; color: var(--qd-text-muted); max-width: 820px; }
+  .ds-block { margin-top: 20px; background: #fff; border: 1px solid var(--qd-divider); border-radius: 6px; padding: 24px; overflow: hidden; }
+  .ds-block.flush { padding: 0; }
+  .ds-block h3 { font-size: 12px; font-weight: 600; color: var(--qd-text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 16px; }
+  .ds-block.flush h3 { padding: 16px 24px 0; }
+  .ds-sw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+  .ds-sw { border-radius: 6px; overflow: hidden; border: 1px solid var(--qd-divider); background: #fff; }
+  .ds-sw div { height: 58px; }
+  .ds-sw p { padding: 8px 10px; font-size: 12px; line-height: 1.4; color: var(--qd-text-muted); }
+  .ds-sw b { display: block; font-size: 13px; color: var(--qd-text); }
+  .ds-spec { display: grid; grid-template-columns: 230px 1fr; gap: 14px 24px; align-items: center; }
+  .ds-spec code, .ds-mono { font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--qd-text-muted); }
+  .ds-wrap { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+  .ds-box { width: 110px; height: 64px; background: #fff; display: grid; place-items: center; font-size: 12px; color: var(--qd-text-muted); text-align: center; border: 1px solid var(--qd-divider); }
+  .ds-icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+  .ds-icons div { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 6px; border: 1px solid var(--qd-divider); border-radius: 4px; font-size: 11px; color: var(--qd-text-muted); }
+  .ds-icons .qd-i { font-size: 24px; color: var(--qd-text); }
+  .ds-tpl { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 20px; }
+  .ds-tpl a { display: block; background: #fff; border: 1px solid var(--qd-divider); border-radius: 6px; overflow: hidden; color: var(--qd-text); }
+  .ds-tpl a:hover { border-color: var(--qd-brand); }
+  .ds-tpl img { width: 100%; height: 160px; object-fit: cover; object-position: top left; border-bottom: 1px solid var(--qd-divider); }
+  .ds-tpl div { padding: 12px 14px; }
+  .ds-tpl b { display: block; color: var(--qd-brand); }
+  .ds-tpl span { font-size: 13px; color: var(--qd-text-muted); }
+  .ds-shell { display: grid; grid-template-rows: 46px 32px 1fr 40px; height: 240px; border: 1px solid var(--qd-divider); overflow: hidden; font-size: 12px; }
+  .ds-shell > div { display: grid; place-items: center; color: var(--qd-text-muted); }
+  .ds-note { margin-top: 12px; font-size: 13px; color: var(--qd-text-muted); }
+  .ds-demo-pos { position: relative; min-height: 260px; }
+  .ds-demo-pos .qd-menu, .ds-demo-pos .qd-role__menu { display: block; }
+  .ds-cards { display: grid; grid-template-columns: repeat(auto-fill, 246px); gap: 24px; }
+  table.ds-t { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.ds-t th, table.ds-t td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--qd-divider); vertical-align: top; }
+  table.ds-t th { background: var(--qd-bg-th); }
+  @media (max-width: 900px) { .ds { grid-template-columns: 1fr; } .ds-nav { display: none; } .ds-main { padding: 24px 16px 60px; } .ds-spec { grid-template-columns: 1fr; } .ds-cards { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="ds">
+  <nav class="ds-nav">
+    <div class="ds-nav__brand"><img src="assets/logo_bn.png" alt="">QLĐT<br>Design System</div>
+    <small>Nền tảng</small>
+    <a href="#principles">Nguyên tắc</a>
+    <a href="#colors">Màu sắc</a>
+    <a href="#type">Typography</a>
+    <a href="#shape">Radius · Shadow · Layout</a>
+    <a href="#icons">Bộ icon</a>
+    <small>Components</small>
+    <a href="#header">Header · Menu ngang</a>
+    <a href="#cards">Thẻ chức năng</a>
+    <a href="#tabs">Tabs</a>
+    <a href="#buttons">Buttons</a>
+    <a href="#filters">Bộ lọc · Form</a>
+    <a href="#tables">Pager · Bảng</a>
+    <a href="#detail">Khung chi tiết</a>
+    <a href="#dashboard">KPI · Biểu đồ</a>
+    <a href="#mgmt">Dashboard các cấp</a>
+    <a href="#report">Báo cáo điều hành</a>
+    <a href="#overlay">Modal · Toast · Loading</a>
+    <a href="#login">Đăng nhập</a>
+    <small>Pattern</small>
+    <a href="#layouts">Khung trang</a>
+    <a href="#templates">Template mẫu</a>
+  </nav>
+
+  <main class="ds-main">
+    <span class="ds-mono">qldt.bkademy.vn · GWT + Bootstrap 3 · ảnh chụp 09/2026</span>
+    <h1 style="font-size:32px;font-weight:600;margin-top:8px">QLĐT <span style="color:var(--qd-brand)">Design System</span></h1>
+    <p style="color:var(--qd-text-muted);max-width:820px;margin-top:8px">Trang quản trị giáo dục cấp K12 cho Sở GD&amp;ĐT, xã/phường và nhà trường: header đỏ, menu ngang 4 mục có menu con, màn danh sách dày đặc bộ lọc và bảng dữ liệu. Giao diện dựng lại từ 15 ảnh chụp màn hình qldt.bkademy.vn (màu lấy từ pixel), dữ liệu mẫu đã chuyển sang cấp K12. Dùng <code>qldt.css</code> + <code>qldt.js</code>, tiền tố <code>qd-</code>, tách riêng với TVET (<code>tv-</code>) và LCMS (<code>lc-</code>).</p>
+
+    <!-- ============ NGUYÊN TẮC ============ -->
+    <section class="ds-sec" id="principles">
+      <h2>Nguyên tắc</h2>
+      <div class="ds-block"><div class="qd-form" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
+        <div><b>Dữ liệu trước, trang trí sau</b><p class="qd-muted" style="margin-top:4px">Màn danh sách dành gần hết chiều cao cho bảng. Bộ lọc gói thành 1–2 hàng, chữ trong select được cắt bớt thay vì xuống dòng.</p></div>
+        <div><b>Navy chỉ dùng cho khung</b><p class="qd-muted" style="margin-top:4px">Navy <code>#1B3A60</code> và vàng đồng <code>#B08848</code> lấy từ logo Sở, chỉ xuất hiện ở header, mục menu đang chọn và màn đăng nhập (site gốc dùng đỏ <code>#CE1628</code>). Mọi hành động trong trang dùng xanh Bootstrap: <code>#2566BF</code>, <code>#337AB7</code>, <code>#5CB85C</code>.</p></div>
+        <div><b>Link là hành động</b><p class="qd-muted" style="margin-top:4px">Tab, Export, Thêm, Sửa, tên bản ghi đều là chữ xanh. Nút có nền chỉ dùng cho thao tác nặng: Tải dữ liệu, Đồng bộ, Gửi email.</p></div>
+      </div></div>
+    </section>
+
+    <!-- ============ MÀU ============ -->
+    <section class="ds-sec" id="colors">
+      <h2>Màu sắc</h2>
+      <p>Lấy mẫu pixel từ ảnh chụp 1600px. Phần lớn là bảng màu Bootstrap 3 mặc định. Nhóm "Nhấn mạnh dữ liệu" là màu thuần (<code>#FF0000</code>, <code>#0000FF</code>…) mà site gốc dùng để đánh dấu, giữ nguyên để màn mới quen mắt người dùng.</p>
+      <div class="ds-block"><h3>Brand &amp; hành động</h3><div class="ds-sw-grid">
+        <div class="ds-sw"><div style="background:#1b3a60"></div><p><b>Brand</b>--qd-brand · #1B3A60</p></div>
+        <div class="ds-sw"><div style="background:#284888"></div><p><b>Brand hover</b>menu mở · #284888</p></div>
+        <div class="ds-sw"><div style="background:#b08848"></div><p><b>Accent</b>--qd-accent · #B08848</p></div>
+        <div class="ds-sw"><div style="background:#2566bf"></div><p><b>Primary</b>Bộ lọc, ⋮ · #2566BF</p></div>
+        <div class="ds-sw"><div style="background:#337ab7"></div><p><b>Link</b>tab, link bảng · #337AB7</p></div>
+        <div class="ds-sw"><div style="background:#005fcc"></div><p><b>Focus</b>mục đang chọn · #005FCC</p></div>
+        <div class="ds-sw"><div style="background:#5cb85c"></div><p><b>Success</b>làm mới, tải · #5CB85C</p></div>
+        <div class="ds-sw"><div style="background:#5bc0de"></div><p><b>Info</b>Đồng bộ CSDL · #5BC0DE</p></div>
+        <div class="ds-sw"><div style="background:#d9534f"></div><p><b>Danger</b>nút X · #D9534F</p></div>
+        <div class="ds-sw"><div style="background:#00879e"></div><p><b>Teal</b>"Đã duyệt" · #00879E</p></div>
+      </div></div>
+      <div class="ds-block"><h3>Thẻ chức năng · KPI</h3><div class="ds-sw-grid">
+        <div class="ds-sw"><div style="background:#20447d"></div><p><b>Card title</b>#20447D</p></div>
+        <div class="ds-sw"><div style="background:#7990b1"></div><p><b>Card desc</b>#7990B1</p></div>
+        <div class="ds-sw"><div style="background:#efefef"></div><p><b>Card button</b>Chi tiết · #EFEFEF</p></div>
+        <div class="ds-sw"><div style="background:#ff3823"></div><p><b>KPI đỏ</b>chậm tiến độ · #FF3823</p></div>
+        <div class="ds-sw"><div style="background:#428bca"></div><p><b>KPI xanh</b>đang thực hiện · #428BCA</p></div>
+        <div class="ds-sw"><div style="background:#008b10"></div><p><b>KPI lục</b>hoàn thành · #008B10</p></div>
+      </div></div>
+      <div class="ds-block"><h3>Nhấn mạnh dữ liệu</h3><div class="ds-sw-grid">
+        <div class="ds-sw"><div style="background:#f3ff73"></div><p><b>Cột tô</b>sửa trực tiếp · #F3FF73</p></div>
+        <div class="ds-sw"><div style="background:#f0f409"></div><p><b>Ô thiếu dữ liệu</b>#F0F409</p></div>
+        <div class="ds-sw"><div style="background:#ff0000"></div><p><b>Số thiếu</b>22/101 · #FF0000</p></div>
+        <div class="ds-sw"><div style="background:#0000ff"></div><p><b>Section</b>1. 2. 3. · #0000FF</p></div>
+        <div class="ds-sw"><div style="background:#ffdab9"></div><p><b>Dòng nhóm</b>khối kiến thức · #FFDAB9</p></div>
+      </div></div>
+      <div class="ds-block"><h3>Text · nền · viền</h3><div class="ds-sw-grid">
+        <div class="ds-sw"><div style="background:#333"></div><p><b>Text</b>#333333</p></div>
+        <div class="ds-sw"><div style="background:#262626"></div><p><b>Text strong</b>tiêu đề cột · #262626</p></div>
+        <div class="ds-sw"><div style="background:#393636"></div><p><b>Heading</b>GIẢNG DẠY · #393636</p></div>
+        <div class="ds-sw"><div style="background:#555"></div><p><b>Tab active</b>#555555</p></div>
+        <div class="ds-sw"><div style="background:#999"></div><p><b>Placeholder</b>#999999</p></div>
+        <div class="ds-sw"><div style="background:#f0f0f0"></div><p><b>Header bảng</b>#F0F0F0</p></div>
+        <div class="ds-sw"><div style="background:#e6e6e6"></div><p><b>Header panel</b>#E6E6E6</p></div>
+        <div class="ds-sw"><div style="background:#ccc"></div><p><b>Border</b>input, select · #CCCCCC</p></div>
+        <div class="ds-sw"><div style="background:#ddd"></div><p><b>Divider</b>bảng, tab · #DDDDDD</p></div>
+        <div class="ds-sw"><div style="background:#fcf8e3"></div><p><b>Toast</b>#FCF8E3 / chữ #8A6D3B</p></div>
+        <div class="ds-sw"><div style="background:#dedadb"></div><p><b>Footer</b>#DEDADB</p></div>
+      </div></div>
+    </section>
+
+    <!-- ============ TYPE ============ -->
+    <section class="ds-sec" id="type">
+      <h2>Typography</h2>
+      <p>Poppins cho toàn bộ giao diện (Google Fonts, 400/500/600/700). Cỡ cơ sở 14px, line-height 1.43 (Bootstrap).</p>
+      <div class="ds-block ds-spec">
+        <code>32 · 500 · --qd-fs-h1</code><span style="font-size:32px;font-weight:500">Kế hoạch giáo dục: THPT Hàn Thuyên</span>
+        <code>26 · 700 · uppercase</code><span style="font-size:26px;font-weight:700;color:var(--qd-text-heading)">GIẢNG DẠY</span>
+        <code>20 · 500 · --qd-fs-h2</code><span style="font-size:20px;font-weight:500">Danh sách các lớp học</span>
+        <code>18 · 500 · header</code><span style="font-size:18px;font-weight:500;text-transform:uppercase">Sở Giáo dục và Đào tạo Bắc Ninh</span>
+        <code>17 · 700 · section</code><span style="font-size:17px;font-weight:700;color:var(--qd-section)">1. Thông tin chung</span>
+        <code>15 · 600 · card title</code><span style="font-size:15px;font-weight:600;color:var(--qd-card-title)">THI TỐT NGHIỆP THPT</span>
+        <code>14 · 500 · menu ngang</code><span style="font-size:14px;font-weight:500">TỔNG QUAN &nbsp; NGƯỜI DÙNG &nbsp; KỲ THI CHUNG</span>
+        <code>14 · 400 · body</code><span>Trường THPT Hàn Thuyên, phường Kinh Bắc</span>
+        <code>13 · 400 · italic placeholder</code><span style="font-size:13px;font-style:italic;color:#999">Nhập từ tìm kiếm</span>
+      </div>
+    </section>
+
+    <!-- ============ SHAPE ============ -->
+    <section class="ds-sec" id="shape">
+      <h2>Radius · Shadow · Layout</h2>
+      <div class="ds-block"><h3>Radius</h3><div class="ds-wrap">
+        <div class="ds-box" style="border-radius:3px">3 · nút ⋮</div>
+        <div class="ds-box" style="border-radius:4px">4 · input, KPI</div>
+        <div class="ds-box" style="border-radius:8px">8 · input login</div>
+        <div class="ds-box" style="border-radius:10px">10 · thẻ</div>
+        <div class="ds-box" style="border-radius:16px">16 · card login</div>
+        <div class="ds-box" style="border-radius:999px">pill · Bộ lọc</div>
+      </div></div>
+      <div class="ds-block"><h3>Shadow</h3><div class="ds-wrap">
+        <div class="ds-box" style="border:0;box-shadow:var(--qd-sh-nav);width:150px">--qd-sh-nav</div>
+        <div class="ds-box" style="border:0;border-radius:10px;box-shadow:var(--qd-sh-card);width:150px">--qd-sh-card</div>
+        <div class="ds-box" style="border:0;box-shadow:var(--qd-sh-drop);width:150px">--qd-sh-drop</div>
+        <div class="ds-box" style="border:0;box-shadow:var(--qd-sh-modal);width:150px">--qd-sh-modal</div>
+      </div></div>
+      <div class="ds-block"><h3>Kích thước khung</h3>
+        <table class="ds-t"><tr><th>Vùng</th><th>Giá trị</th></tr>
+          <tr><td>Header đỏ</td><td>88px · logo 56×82 nền trắng chạm đáy</td></tr>
+          <tr><td>Menu ngang</td><td>60px · mục tối thiểu 100px, padding 25px · bóng đậm phía dưới</td></tr>
+          <tr><td>Khung menu</td><td>max 1462px · khung bảng max 1427px</td></tr>
+          <tr><td>Thẻ chức năng</td><td>246 × ~296px · ảnh 145px · lưới 4 cột, khe 31px</td></tr>
+          <tr><td>Control</td><td>select/input/nút 34px · Bộ lọc 30px · ⋮ 30×30</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ ICONS ============ -->
+    <section class="ds-sec" id="icons">
+      <h2>Bộ icon</h2>
+      <p>Site gốc dùng Font Awesome 4 và vài icon nét mảnh trên header. Bộ này dùng sprite SVG nét 2px do <code>qldt.js</code> tự chèn: <code>&lt;svg class="qd-i"&gt;&lt;use href="#qd-funnel"/&gt;&lt;/svg&gt;</code>. Icon đổi màu theo <code>color</code>, cỡ theo <code>font-size</code>.</p>
+      <div class="ds-block"><div class="ds-icons" id="icon-list"></div></div>
+    </section>
+
+    <!-- ============ HEADER ============ -->
+    <section class="ds-sec" id="header">
+      <h2>Header · Menu ngang</h2>
+      <p>Header navy (viền dưới vàng đồng) chứa logo, tên đơn vị, công cụ (lịch, cài đặt, VI, việc cần làm, chuông, tài khoản) và dòng năm học, tuần học. Menu ngang có 4 mục viết hoa. Rê chuột vào mục nào thì mục đó đổi nền <code>#284888</code> và mở menu con. Mục của trang hiện tại nền <code>#1B3A60</code>, gạch dưới vàng đồng. Bên phải là ô chuyển vai trò.</p>
+      <div class="ds-block flush">
+        <header class="qd-header"><div class="qd-container qd-header__in">
+          <a class="qd-brand" href="#"><span class="qd-brand__logo"><img src="assets/logo_bn.png" alt=""></span><span><span class="qd-brand__name">Sở Giáo dục và Đào tạo Bắc Ninh</span><br><span class="qd-brand__sub">Hệ thống quản trị đào tạo trực tuyến</span></span></a>
+          <div class="qd-header__right">
+            <div class="qd-header__tools">
+              <button class="qd-hicon" aria-label="Lịch"><svg class="qd-i"><use href="#qd-calendar"/></svg></button>
+              <button class="qd-hicon" aria-label="Cài đặt"><svg class="qd-i"><use href="#qd-settings"/></svg></button>
+              <button class="qd-lang">VI</button><span class="qd-vsep"></span>
+              <button class="qd-hicon" aria-label="Việc cần làm"><svg class="qd-i"><use href="#qd-clipboard"/></svg></button>
+              <button class="qd-hicon qd-hicon--bell" aria-label="Thông báo"><svg class="qd-i"><use href="#qd-bell"/></svg><span class="qd-hicon__badge">6</span></button>
+              <button class="qd-user"><img src="assets/default-avatar.jpg" alt=""><span>Nguyễn Văn Sơn</span><svg class="qd-i"><use href="#qd-chevron-down"/></svg></button>
+            </div>
+            <div class="qd-week">Năm học <b>2026-2027</b> · Tuần <b>9</b> (Học kỳ <b>I</b>): <a href="#">02/11 - 07/11</a></div>
+          </div>
+        </div></header>
+        <nav class="qd-nav"><div class="qd-container qd-nav__in">
+          <div class="qd-nav__item"><a class="qd-nav__link" href="#">Tổng quan</a></div>
+          <div class="qd-nav__item"><button class="qd-nav__link">Người dùng</button><div class="qd-menu"><a href="#">Hoạt động người dùng</a><a href="#">Khảo sát người dùng</a></div></div>
+          <div class="qd-nav__item"><button class="qd-nav__link">Dạy và học</button><div class="qd-menu"><a href="#">Hoạt động dạy và học</a><a href="#">Chất lượng dạy và học</a></div></div>
+          <div class="qd-nav__item is-active"><button class="qd-nav__link">Tần suất</button><div class="qd-menu"><a href="#">Tần suất học tập của học sinh</a><a href="#">Giảng dạy online của giáo viên</a></div></div>
+          <div class="qd-nav__item"><a class="qd-nav__link" href="#">Kỳ thi chung</a></div>
+          <div class="qd-nav__item"><a class="qd-nav__link" href="#">Học liệu</a></div>
+          <div class="qd-nav__item"><a class="qd-nav__link" href="#">Hạ tầng</a></div>
+          <div class="qd-nav__item"><a class="qd-nav__link" href="#">Xếp hạng</a></div>
+          <div class="qd-nav__right"><div class="qd-role"><button class="qd-role__btn"><span>Quản lý Sở</span></button><div class="qd-role__menu"><small>Sở Giáo dục và Đào tạo Bắc Ninh</small><a href="#" data-short="Lãnh đạo Sở">Lãnh đạo Sở</a><a href="#" class="is-selected" data-short="Quản lý Sở">Chuyên viên Phòng GD Trung học</a><small>UBND Phường Kinh Bắc</small><a href="#" data-short="Quản lý phường">Cán bộ phụ trách giáo dục</a><small>Trường THPT Hàn Thuyên</small><a href="#" data-short="Hiệu trưởng">Hiệu trưởng</a></div></div></div>
+        </div></nav>
+        <div style="height:150px"></div>
+      </div>
+      <p class="ds-note">Rê chuột vào các mục menu, bấm "Quản lý Sở" để mở ô chuyển vai trò. Hệ thống <b>chỉ dành cho cán bộ quản lý</b>: Lãnh đạo/chuyên viên Sở, cán bộ phụ trách giáo dục của UBND xã/phường, hiệu trưởng. Vai trò quyết định phạm vi dữ liệu. Menu chỉ gồm các nhóm báo cáo điều hành: Tổng quan · Người dùng · Dạy và học · Tần suất · Kỳ thi chung · Học liệu · Hạ tầng · Xếp hạng. Mục có một trang là link thẳng, mục có từ 2 trang mở menu con. Trên màn cảm ứng, mục menu là <code>&lt;button&gt;</code>, bấm để mở.</p>
+    </section>
+
+    <!-- ============ CARDS ============ -->
+    <section class="ds-sec" id="cards">
+      <h2>Thẻ chức năng</h2>
+      <p>Trang chủ của từng phân hệ: tiêu đề giữa trang có gạch dưới 3px, lưới thẻ 4 cột. Cả thẻ là một link. Mô tả liệt kê các việc chính của phân hệ.</p>
+      <div class="ds-block">
+        <div class="qd-heading" style="padding-top:0"><h2>Báo cáo điều hành</h2></div>
+        <div class="ds-cards">
+          <a class="qd-card" href="#"><img class="qd-card__img" src="assets/cards/mon-hoc.jpg" alt=""><div class="qd-card__body"><h3 class="qd-card__title">Học liệu và thư viện</h3><p class="qd-card__desc">Số lượng, tình trạng, hiệu quả sử dụng kho học liệu</p><span class="qd-card__more">Chi tiết <svg class="qd-i"><use href="#qd-chevron-right"/></svg></span></div></a>
+          <a class="qd-card" href="#"><img class="qd-card__img" src="assets/cards/thi-tot-nghiep.jpg" alt=""><div class="qd-card__body"><h3 class="qd-card__title">Kỳ thi chung</h3><p class="qd-card__desc">Điều hành kỳ thi, kết quả, phổ điểm</p><span class="qd-card__more">Chi tiết <svg class="qd-i"><use href="#qd-chevron-right"/></svg></span></div></a>
+        </div>
+      </div>
+      <pre class="ds-block ds-mono" style="white-space:pre-wrap">&lt;a class="qd-card" href="…"&gt;&lt;img class="qd-card__img" src="…"&gt;&lt;div class="qd-card__body"&gt;
+  &lt;h3 class="qd-card__title"&gt;Môn học&lt;/h3&gt;&lt;p class="qd-card__desc"&gt;…&lt;/p&gt;
+  &lt;span class="qd-card__more"&gt;Chi tiết &lt;svg class="qd-i"&gt;&lt;use href="#qd-chevron-right"/&gt;&lt;/svg&gt;&lt;/span&gt;
+&lt;/div&gt;&lt;/a&gt;</pre>
+    </section>
+
+    <!-- ============ TABS ============ -->
+    <section class="ds-sec" id="tabs">
+      <h2>Tabs</h2>
+      <p>Tab kiểu <code>nav-tabs</code> của Bootstrap nằm ngay dưới menu ngang. Tab đang chọn có khung viền xám, chữ <code>#555</code>. Tab còn lại là link xanh. Hành động cấp trang (Export, Thêm, Xóa, Import) căn phải trên cùng hàng. Tab dài thì tự xuống dòng.</p>
+      <div class="ds-block">
+        <div class="qd-tabs"><button class="is-active">Danh sách KHGD nhà trường</button><button>KHGD tổ chuyên môn</button><button>Tổ hợp môn lựa chọn</button><button>Phê duyệt KHGD</button>
+          <div class="qd-tabs__right"><a href="#">Phê duyệt</a><a href="#">Import</a><a href="#">Export</a><a href="#"><svg class="qd-i"><use href="#qd-plus"/></svg> Thêm mới</a></div></div>
+      </div>
+    </section>
+
+    <!-- ============ BUTTONS ============ -->
+    <section class="ds-sec" id="buttons">
+      <h2>Buttons</h2>
+      <div class="ds-block"><h3>Nhãn hàng lọc · nút icon</h3><div class="ds-wrap">
+        <span class="qd-filter-tag"><svg class="qd-i"><use href="#qd-funnel"/></svg> Bộ lọc</span>
+        <span class="qd-filter-tag"><svg class="qd-i"><use href="#qd-funnel"/></svg> Bộ lọc trực tiếp</span>
+        <span class="qd-filter-tag"><svg class="qd-i"><use href="#qd-funnel"/></svg> Tìm kiếm</span>
+        <button class="qd-btn qd-btn--success qd-btn--icon" aria-label="Làm mới"><svg class="qd-i"><use href="#qd-refresh"/></svg></button>
+        <button class="qd-btn qd-btn--default qd-btn--icon" aria-label="Tìm"><svg class="qd-i"><use href="#qd-search"/></svg></button>
+        <button class="qd-kebab" aria-label="Thêm thao tác">⋮</button>
+        <a class="qd-close-x" href="#" aria-label="Đóng">X</a>
+      </div>
+      <p class="ds-note"><code>.qd-filter-tag</code> chỉ là nhãn mở đầu hàng lọc, không bấm được. <code>.qd-kebab</code> mở các thao tác phụ của bảng.</p></div>
+      <div class="ds-block"><h3>Bootstrap 3</h3><div class="ds-wrap">
+        <button class="qd-btn qd-btn--success"><svg class="qd-i"><use href="#qd-refresh"/></svg> Tải dữ liệu</button>
+        <button class="qd-btn qd-btn--info"><svg class="qd-i"><use href="#qd-refresh"/></svg> Đồng bộ CSDL ngành</button>
+        <button class="qd-btn qd-btn--success"><svg class="qd-i"><use href="#qd-mail"/></svg> Gửi email</button>
+        <button class="qd-btn qd-btn--default">Thêm chuyên đề +</button>
+        <button class="qd-btn qd-btn--primary">Lưu</button>
+        <button class="qd-btn qd-btn--danger">Xoá</button>
+        <button class="qd-btn qd-btn--link">Export</button>
+        <button class="qd-btn qd-btn--default" disabled>Disabled</button>
+        <button class="qd-btn qd-btn--default qd-btn--sm">Nhỏ</button>
+      </div></div>
+    </section>
+
+    <!-- ============ FILTERS ============ -->
+    <section class="ds-sec" id="filters">
+      <h2>Bộ lọc · Form</h2>
+      <p>Mọi màn danh sách mở đầu bằng hàng lọc: nhãn "Bộ lọc", các select chọn nhiều (chữ cắt bớt, <code>[Ngoặc vuông]</code> khi chưa chọn), nút "Hiển thị" nét đứt để chọn cột, ô tìm kiếm, nút làm mới, nút ⋮ ở cuối. Hàng "Bộ lọc trực tiếp" lọc trên dữ liệu đã tải về máy, không gọi lại máy chủ.</p>
+      <div class="ds-block" style="overflow:visible">
+        <div class="qd-filterbar" style="padding:0">
+          <span class="qd-filter-tag"><svg class="qd-i"><use href="#qd-funnel"/></svg> Bộ lọc</span>
+          <span style="position:relative">
+            <button class="qd-select" data-qd-toggle="ds-pop"><span>THPT, THCS, GDTX</span></button>
+            <div class="qd-pop" id="ds-pop" data-qd-pop hidden>
+              <div class="qd-pop__search"><input class="qd-input" placeholder="Tìm"></div>
+              <div class="qd-pop__actions"><button type="button">Chọn tất cả</button><button type="button">Bỏ chọn</button></div>
+              <label><input type="checkbox" checked> THPT</label><label><input type="checkbox" checked> THCS</label><label><input type="checkbox" checked> GDTX</label><label><input type="checkbox"> Tiểu học</label><label><input type="checkbox"> Mầm non</label>
+            </div>
+          </span>
+          <button class="qd-select is-empty"><span>[Chọn trường]</span></button>
+          <span class="qd-addon">Vai trò <button class="qd-select qd-select--sm" style="width:140px"><span>Phòng chủ trì</span></button></span>
+          <button class="qd-dashed">Hiển thị <svg class="qd-i"><use href="#qd-chevron-down"/></svg></button>
+          <span class="qd-search"><svg class="qd-i"><use href="#qd-search"/></svg><input class="qd-input" placeholder="Nhập từ tìm kiếm"></span>
+          <button class="qd-btn qd-btn--success qd-btn--icon" aria-label="Làm mới"><svg class="qd-i"><use href="#qd-refresh"/></svg></button>
+          <span class="qd-spacer"></span><button class="qd-kebab" aria-label="Thêm thao tác">⋮</button>
+        </div>
+      </div>
+      <div class="ds-block"><h3>Form trong modal</h3>
+        <div class="qd-form">
+          <div class="qd-field"><label>Tên lớp <span class="req">*</span></label><input class="qd-input" value="10A1"></div>
+          <div class="qd-field"><label>Khối</label><select class="qd-select-native"><option>10</option><option>11</option><option>12</option></select></div>
+          <div class="qd-field"><label>Sĩ số</label><input class="qd-input" value="45" readonly></div>
+          <div class="qd-field"><label>Ngoại ngữ 1 (sửa trên bảng)</label><div style="background:var(--qd-hl-col);padding:6px"><select class="qd-select-native qd-select-native--sm"><option>Tiếng Anh</option></select></div></div>
+        </div>
+        <p class="ds-note">Form chi tiết chưa được chụp ở site gốc. Phần này dựng theo form Bootstrap 3 (label đậm, input 34px, viền <code>#CCC</code>, focus phát sáng xanh).</p>
+      </div>
+    </section>
+
+    <!-- ============ TABLES ============ -->
+    <section class="ds-sec" id="tables">
+      <h2>Pager · Bảng</h2>
+      <p>Thanh pager (GWT SimplePager) nằm cả trên lẫn dưới bảng: "Select All" bên trái, ⏮ ◀ "1-8 of 8" ▶ ⏭ ở giữa, "Số dòng" bên phải. Bảng có header xám <code>#F0F0F0</code>, kẻ dọc mảnh, chữ được xuống dòng, ô căn trên. Tên bản ghi là link gạch chân. Cột được phép sửa ngay trên bảng thì tô vàng <code>#F3FF73</code>.</p>
+      <div class="ds-block flush">
+        <section id="ds-tbl">
+          <div class="qd-pagerbar"><label class="qd-selectall"><input type="checkbox" data-qd-selectall="ds-tbl"> Select All</label><div class="qd-pager"><button disabled aria-label="Trang đầu"><svg class="qd-i"><use href="#qd-first"/></svg></button><button disabled aria-label="Trang trước"><svg class="qd-i"><use href="#qd-prev"/></svg></button><span>1-200 of 2316</span><button aria-label="Trang sau"><svg class="qd-i"><use href="#qd-next"/></svg></button><button aria-label="Trang cuối"><svg class="qd-i"><use href="#qd-last"/></svg></button></div><label class="qd-rows">Số dòng <select class="qd-select-native"><option>200</option></select></label></div>
+          <div class="qd-table-wrap"><table class="qd-table">
+            <thead><tr><th class="w-check"></th><th>STT</th><th>Trường</th><th>Cấp học</th><th>Ngoại ngữ 1</th><th>Năm học</th><th>Trạng thái</th></tr></thead>
+            <tbody>
+              <tr><td class="w-check"><input type="checkbox"></td><td>1</td><td><a href="#">THPT Hàn Thuyên</a></td><td>THPT</td><td class="hl"><select class="qd-select-native qd-select-native--sm"><option>Tiếng Anh</option></select></td><td>2026-2027</td><td><a class="qd-status" href="#">Đã duyệt</a></td></tr>
+              <tr><td class="w-check"><input type="checkbox"></td><td>2</td><td><a href="#">THCS Từ Sơn</a></td><td>THCS</td><td class="hl"><select class="qd-select-native qd-select-native--sm"><option>Tiếng Nhật</option></select></td><td>2026-2027</td><td><a class="qd-status" href="#">Đã duyệt</a></td></tr>
+            </tbody></table></div>
+        </section>
+      </div>
+      <div class="ds-block"><h3>Bảng kẻ ô đậm · bảng thống kê</h3>
+        <div style="overflow:auto"><table class="qd-stats" style="max-width:640px">
+          <thead><tr><th></th><th>KH tổ CM</th><th>Bài giảng</th><th>YCCĐ</th><th>Ma trận KT</th></tr></thead>
+          <tbody><tr><th>Số kế hoạch thiếu</th><td><a class="r" href="#">5/39</a></td><td><a class="r" href="#">17/39</a></td><td class="y"><a class="r" href="#">39/39</a></td><td class="y"><a class="r" href="#">39/39</a></td></tr>
+          <tr><th>% hoàn thành</th><td><a href="#">87%</a></td><td><a href="#">56%</a></td><td class="y"><a href="#">0%</a></td><td class="y"><a href="#">0%</a></td></tr></tbody></table></div>
+        <div style="overflow:auto;margin-top:16px"><table class="qd-grid-table" style="max-width:640px">
+          <thead><tr><th>TT</th><th>MÃ MÔN</th><th>MÔN HỌC<small>(theo CT GDPT 2018)</small></th><th>SỐ TIẾT<small>/năm</small></th></tr></thead>
+          <tbody><tr class="group"><td>1</td><td colspan="3">Môn học bắt buộc</td></tr><tr><td>1</td><td><a href="#">NV</a></td><td><b>Ngữ văn</b><em>Có chuyên đề học tập 35 tiết</em></td><td>105</td></tr></tbody></table></div>
+      </div>
+    </section>
+
+    <!-- ============ DETAIL ============ -->
+    <section class="ds-sec" id="detail">
+      <h2>Khung chi tiết</h2>
+      <p>Trang chi tiết có tiêu đề lớn ở giữa và dòng đơn vị bên dưới, tab phụ (Chi tiết / Các version), nút đỏ X để quay lại danh sách. Nội dung chia thành các mục đánh số, chữ và gạch dưới màu <code>#0000FF</code>. Bấm vào tiêu đề mục để Hiện/Ẩn.</p>
+      <div class="ds-block">
+        <div class="qd-page-title" style="padding-top:0"><h1 style="font-size:26px">Kế hoạch giáo dục: THPT Hàn Thuyên (2026-2027)</h1><p style="font-size:16px">Đơn vị quản lý: Sở GD&amp;ĐT Bắc Ninh · Phòng Giáo dục Trung học</p></div>
+        <section class="qd-section"><div class="qd-section__head"><h3>1. Thông tin chung</h3><a href="#">Hiện</a></div><div class="qd-section__body"><dl class="qd-dl"><dt>Mã trường</dt><dd>27001</dd><dt>Quy mô</dt><dd>42 lớp · 1.850 học sinh</dd></dl></div></section>
+        <section class="qd-section is-open"><div class="qd-section__head"><h3>2. Mục tiêu năm học</h3><a href="#">Ẩn</a></div><div class="qd-section__body"><p>Thực hiện Chương trình GDPT 2018 ở cả ba khối; tỉ lệ học sinh lên lớp thẳng từ 97%…</p></div></section>
+      </div>
+    </section>
+
+    <!-- ============ DASHBOARD ============ -->
+    <section class="ds-sec" id="dashboard">
+      <h2>KPI · Biểu đồ</h2>
+      <p>Ô KPI nền đặc theo trạng thái công việc. Biểu đồ đặt trong panel có header xám <code>#E6E6E6</code>. Ba màu trạng thái đã qua công cụ kiểm tra bảng màu: phân biệt được với người mù màu (CVD ΔE ≥ 22) và tương phản ≥ 3:1 trên nền trắng. Biểu đồ luôn có chú thích, số tổng ở cuối cột, tooltip khi rê chuột, và nút xem dạng bảng (xem template 06).</p>
+      <div class="ds-block"><div class="qd-kpis" style="padding:0">
+        <div class="qd-kpi qd-kpi--red"><span>Công việc chậm tiến độ</span><b>17</b></div>
+        <div class="qd-kpi qd-kpi--blue"><span>Công việc đang thực hiện</span><b>49</b></div>
+        <div class="qd-kpi qd-kpi--green"><span>Công việc đã hoàn thành</span><b>91</b></div>
+      </div></div>
+    </section>
+
+    <!-- ============ DASHBOARD CÁC CẤP ============ -->
+    <section class="ds-sec" id="mgmt">
+      <h2>Dashboard các cấp quản lý</h2>
+      <p>Màn mới, không có trên site gốc. Cùng một bố cục cho 3 cấp: <b>Sở</b> (toàn tỉnh), <b>xã/phường</b> (UBND cấp xã quản lý MN, TH, THCS theo mô hình chính quyền 2 cấp) và <b>trường</b>. Chọn cấp bằng <code>.qd-seg</code>. Bấm một dòng trong bảng "cần chú ý" để xuống cấp dưới, breadcrumb để quay lên. Ô vượt ngưỡng có icon cảnh báo kèm chữ, không chỉ dựa vào màu. Xem <a href="templates/08-management-dashboard.html">template 08</a>.</p>
+      <div class="ds-block">
+        <div class="qd-row qd-row--wrap"><span class="qd-filter-tag"><svg class="qd-i"><use href="#qd-funnel"/></svg> Phạm vi</span><div class="qd-seg"><button class="is-active">Cấp Sở</button><button>Cấp xã/phường</button><button>Cấp trường</button></div></div>
+        <nav class="qd-crumb"><a href="#">Toàn tỉnh Bắc Ninh</a><svg class="qd-i"><use href="#qd-chevron-right"/></svg><a href="#">Phường Kinh Bắc</a><svg class="qd-i"><use href="#qd-chevron-right"/></svg><b>THCS Nguyễn Đăng Đạo</b></nav>
+        <div class="qd-stats-row">
+          <div class="qd-stat"><span>Học sinh</span><b>1.012.500</b><small class="up">+2,1%</small></div>
+          <div class="qd-stat"><span>Giáo viên</span><b>52.300</b><small class="down">thiếu 1.180 so với định mức</small></div>
+          <div class="qd-stat"><span>HS bình quân/lớp</span><b>30,2</b><small>chuẩn ≤ 35</small></div>
+        </div>
+        <div class="qd-progress"><span>Kế hoạch giáo dục nhà trường</span><div class="qd-progress__bar"><i style="width:88%"></i></div><b>88%</b></div>
+        <div class="qd-progress"><span>Tự đánh giá kiểm định</span><div class="qd-progress__bar"><i class="is-low" style="width:61%"></i></div><b>61%</b></div>
+        <p class="ds-note"><code>.qd-stat</code>: ô số liệu trung tính, viền trên navy brand, dòng phụ <code>.up</code>/<code>.down</code>. Ô KPI nền đặc (<code>.qd-kpi</code>) chỉ dùng cho trạng thái công việc. <code>.qd-progress__bar i.is-low</code> khi dưới 70%. <code>.qd-flag</code> đánh dấu ô vượt ngưỡng trong bảng.</p>
+      </div>
+    </section>
+
+    <!-- ============ BÁO CÁO ĐIỀU HÀNH ============ -->
+    <section class="ds-sec" id="report">
+      <h2>Báo cáo điều hành</h2>
+      <p>Màn mới, gồm đúng các nhóm trong yêu cầu báo cáo điều hành: tổng quan, người dùng, dạy và học, chất lượng, khảo sát, <b>tần suất học tập của HS / giảng dạy online của GV</b>, kỳ thi chung, học liệu và thư viện, hạ tầng triển khai, xếp hạng đơn vị. Menu ngang chuyển nhóm theo hash URL (<code>#ky-thi</code>…). Đây là báo cáo tổng hợp định kỳ, không realtime: thanh lọc có ô <b>Kỳ báo cáo</b> (tháng / học kỳ / năm học), dòng "Số liệu chốt ngày … · so sánh với …", nút Xuất PDF / Excel. Đầu mỗi nhóm có nhãn <code>.qd-basis</code> ghi căn cứ: tiêu chí tương ứng trong <b>QĐ 4725/QĐ-BGDĐT</b> (Bộ chỉ số đánh giá mức độ chuyển đổi số của cơ sở GDPT, GDTX). Ở bảng xếp hạng, điểm chuyển đổi số hiển thị bằng <code>.qd-level</code>: Mức 1 &lt; 50, Mức 2 từ 50 đến 75, Mức 3 &gt; 75 điểm. Màn tần suất dùng <code>.qd-meter</code> (thanh % nhỏ trong ô bảng, đỏ kèm icon khi dưới 70%) và ô số sửa trực tiếp trong bảng thiết lập; % hoàn thành tính lại ngay khi đổi yêu cầu. Xem <a href="templates/09-executive-report.html">template 09</a>.</p>
+      <div class="ds-block">
+        <div class="qd-rhead"><h2>Hoạt động dạy và học</h2><div class="qd-basis">Căn cứ: <span>QĐ 4725/QĐ-BGDĐT · 1.3 (LMS: 4 chức năng)</span><span>QĐ 4725/QĐ-BGDĐT · 1.6</span></div></div>
+        <div class="ds-wrap" style="padding:14px 0"><span class="qd-level qd-level--3">88 · M3</span><span class="qd-level qd-level--2">62 · M2</span><span class="qd-level qd-level--1">46 · M1</span><span class="qd-rank is-top">1</span><span class="qd-rank">4</span><span class="qd-meter"><i><b style="width:87%"></b></i>87%</span><span class="qd-meter is-low"><i><b style="width:62%"></b></i><svg class="qd-i"><use href="#qd-warning"/></svg>62%</span></div>
+        <div class="qd-weights" style="max-width:760px;margin-top:14px"><label>CĐS nhóm 1 "Dạy, học"<output>30</output><input type="range" min="0" max="50" step="5" value="30" oninput="this.previousElementSibling.textContent=this.value"></label><label>Tỉ lệ sử dụng hệ thống<output>20</output><input type="range" min="0" max="50" step="5" value="20" oninput="this.previousElementSibling.textContent=this.value"></label></div>
+        <p class="ds-note">Màu biểu đồ: chuỗi danh mục <code>#2566BF · #C07A2C · #1E8C6E</code> (đã kiểm tra mù màu), thang tuần tự một sắc xanh cho dữ liệu thứ bậc (Mức 3 → 1, Tốt → Chưa đạt), thang phân kỳ cam ↔ xám ↔ xanh cho YCCĐ (Chưa đạt · Đạt · Vượt). Ô vượt ngưỡng trong bảng luôn có icon và chữ đi kèm. Đường năng lực hệ thống là đường tham chiếu cùng đơn vị, không dùng trục thứ hai.</p>
+      </div>
+    </section>
+
+    <!-- ============ OVERLAY ============ -->
+    <section class="ds-sec" id="overlay">
+      <h2>Modal · Toast · Loading</h2>
+      <p>Site gốc báo kết quả mỗi lần tải bằng toast vàng ở giữa đáy màn hình ("Found 321 student classes"; bản K12 dùng câu tiếng Việt như "1.850 học sinh đã được tải!"). Trong lúc chờ, một lớp mờ phủ toàn trang với chữ <b>LOADING</b> lớn. Modal dùng kiểu Bootstrap 3.</p>
+      <div class="ds-block"><div class="ds-wrap">
+        <button class="qd-btn qd-btn--default" onclick="QD.toast('Đã đồng bộ 2.316 lớp học từ CSDL ngành')">Toast cảnh báo (mặc định)</button>
+        <button class="qd-btn qd-btn--default" onclick="QD.toast('Đã lưu thông tin lớp','success')">Toast thành công</button>
+        <button class="qd-btn qd-btn--default" onclick="QD.toast('Không có quyền sửa kế hoạch giáo dục này','danger')">Toast lỗi</button>
+        <button class="qd-btn qd-btn--default" data-qd-loading="1200">Lớp LOADING</button>
+        <button class="qd-btn qd-btn--primary" data-qd-toggle="ds-modal">Mở modal</button>
+      </div>
+      <div class="qd-toast" style="margin-top:16px;max-width:530px;animation:none"><svg class="qd-i"><use href="#qd-warning"/></svg><span>1.850 học sinh đã được tải!</span><button aria-label="Đóng">×</button></div>
+      </div>
+      <div class="qd-overlay" id="ds-modal" hidden><div class="qd-modal" role="dialog" aria-labelledby="dsm-t">
+        <div class="qd-modal__head"><h3 id="dsm-t">Thêm chuyên đề học tập</h3><button data-qd-close aria-label="Đóng">×</button></div>
+        <div class="qd-modal__body"><div class="qd-field"><label>Tên chuyên đề <span class="req">*</span></label><input class="qd-input" placeholder="VD: Chuyên đề Vật lí trong một số ngành nghề"></div></div>
+        <div class="qd-modal__foot"><button class="qd-btn qd-btn--default" data-qd-close>Huỷ</button><button class="qd-btn qd-btn--primary" data-qd-close>Lưu</button></div>
+      </div></div>
+    </section>
+
+    <!-- ============ LOGIN ============ -->
+    <section class="ds-sec" id="login">
+      <h2>Đăng nhập</h2>
+      <p>Màn đăng nhập tách biệt khỏi giao diện quản trị: nền gradient navy, card trắng bo 16px, ưu tiên đăng nhập một lần qua Office 365 / Gmail, sau đó mới đến tài khoản và mật khẩu. Nút dùng navy <code>#1B3A60</code>. Xem <a href="templates/01-login.html">template 01</a>.</p>
+      <div class="ds-block flush"><img src="screenshots/01-login.png" alt="Màn đăng nhập gốc" style="width:100%"></div>
+    </section>
+
+    <!-- ============ LAYOUT ============ -->
+    <section class="ds-sec" id="layouts">
+      <h2>Khung trang</h2>
+      <div class="ds-block">
+        <div class="ds-shell">
+          <div style="background:var(--qd-brand);color:#fff">.qd-header · 88px · logo + tên đơn vị · công cụ · năm học, tuần học</div>
+          <div style="box-shadow:var(--qd-sh-nav);position:relative">.qd-nav · 60px · 4 mục + menu con · ô vai trò</div>
+          <div>.qd-wrap → .qd-tabs → .qd-filterbar → .qd-pagerbar → .qd-table-wrap → .qd-pagerbar</div>
+          <div style="background:var(--qd-footer)">.qd-footer</div>
+        </div>
+        <pre class="ds-mono" style="margin-top:16px;white-space:pre-wrap">&lt;link rel="stylesheet" href="qldt.css"&gt;
+&lt;header class="qd-header"&gt;…&lt;/header&gt;
+&lt;nav class="qd-nav"&gt;…&lt;/nav&gt;
+&lt;main class="qd-wrap"&gt;
+  &lt;div class="qd-tabs"&gt;…&lt;div class="qd-tabs__right"&gt;Export · Thêm&lt;/div&gt;&lt;/div&gt;
+  &lt;div class="qd-filterbar"&gt;…&lt;/div&gt;
+  &lt;section id="tbl"&gt;&lt;div class="qd-pagerbar"&gt;…&lt;/div&gt;&lt;div class="qd-table-wrap"&gt;&lt;table class="qd-table"&gt;…&lt;/table&gt;&lt;/div&gt;&lt;/section&gt;
+&lt;/main&gt;
+&lt;footer class="qd-footer"&gt;…&lt;/footer&gt;
+&lt;script src="qldt.js"&gt;&lt;/script&gt;</pre>
+      </div>
+    </section>
+
+    <!-- ============ TEMPLATES ============ -->
+    <section class="ds-sec" id="templates">
+      <h2>Template mẫu</h2>
+      <p>Ảnh 01–07 là màn hình gốc (dữ liệu đại học) để đối chiếu bố cục; template đã dùng dữ liệu K12. Ảnh 08, 09 là bản dựng mới. Bấm vào để mở template.</p>
+      <div class="ds-block"><div class="ds-tpl">
+        <a href="templates/01-login.html"><img src="screenshots/01-login.png" alt=""><div><b>01 · Đăng nhập</b><span>SSO Office 365 / Gmail + tài khoản hệ thống</span></div></a>
+        <a href="templates/02-home-modules.html"><img src="screenshots/03-menu-giang-day.png" alt=""><div><b>02 · Trang chủ báo cáo điều hành</b><span>Header, menu con, ô vai trò, lưới thẻ chức năng, footer</span></div></a>
+        <a href="templates/03-plan-list.html"><img src="screenshots/07-ctdt-table.png" alt=""><div><b>03 · Danh sách kế hoạch giáo dục</b><span>Chọn nhiều, chọn cột hiển thị, cột Ngoại ngữ 1 sửa trực tiếp, pager</span></div></a>
+        <a href="templates/04-plan-detail.html"><img src="screenshots/08-ctdt-detail.png" alt=""><div><b>04 · Chi tiết kế hoạch giáo dục</b><span>Mục Hiện/Ẩn, thống kê kế hoạch dạy học, khung môn học theo khối, modal</span></div></a>
+        <a href="templates/05-class-list.html"><img src="screenshots/09-class-table.png" alt=""><div><b>05 · Danh sách lớp học + sửa</b><span>Lớp 10A1…, tổ hợp môn, GVCN; cột Sửa mở modal form</span></div></a>
+        <a href="templates/06-task-dashboard.html"><img src="screenshots/10-task-dashboard.png" alt=""><div><b>06 · Dashboard công việc của Sở</b><span>KPI, biểu đồ theo phòng chuyên môn, tooltip, dạng bảng</span></div></a>
+        <a href="templates/07-student-filters.html"><img src="screenshots/12-sinh-vien-filters.png" alt=""><div><b>07 · Hồ sơ học sinh</b><span>Bộ lọc + Bộ lọc trực tiếp, LOADING, toast, thông báo phụ huynh</span></div></a>
+        <a href="templates/08-management-dashboard.html"><img src="assets/previews/08-management-dashboard.png" alt=""><div><b>08 · Dashboard các cấp quản lý</b><span>Sở → xã/phường → trường: số liệu, biểu đồ, đơn vị cần chú ý, tiến độ báo cáo (màn mới)</span></div></a>
+        <a href="templates/09-executive-report.html"><img src="assets/previews/09-executive-report.png" alt=""><div><b>09 · Báo cáo điều hành</b><span>Các nhóm báo cáo điều hành định kỳ gắn căn cứ QĐ 4725, kèm thiết lập và theo dõi tần suất học tập HS / giảng dạy online GV (màn mới)</span></div></a>
+      </div></div>
+    </section>
+  </main>
+</div>
+<script src="qldt.js"></script>
+<script>
+  // Liệt kê icon trong sprite
+  document.addEventListener('DOMContentLoaded', function () {
+    var list = document.getElementById('icon-list');
+    document.querySelectorAll('#qd-sprite symbol').forEach(function (s) {
+      var n = s.id.replace('qd-', '');
+      list.insertAdjacentHTML('beforeend', '<div><svg class="qd-i"><use href="#' + s.id + '"/></svg>' + n + '</div>');
+    });
+  });
+</script>
+</body>
+</html>

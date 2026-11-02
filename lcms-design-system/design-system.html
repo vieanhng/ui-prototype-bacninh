@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LCMS Design System</title>
+<link rel="icon" href="assets/favicon_bn.png">
+<link rel="stylesheet" href="lcms.css">
+<style>
+  /* ---- chỉ dùng cho trang tài liệu ---- */
+  body { background: var(--lc-bg-layout); }
+  .ds { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+  .ds-nav { position: sticky; top: 0; height: 100vh; overflow: auto; background: #fff; box-shadow: var(--lc-sh-sider); padding: 12px 10px 24px; }
+  .ds-nav img { height: 56px; margin: 0 auto 16px; }
+  .ds-nav small { display: block; padding: 16px 16px 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--lc-text-placeholder); font-weight: 600; }
+  .ds-nav a { display: block; padding: 8px 16px; border-radius: 6px; color: var(--lc-text-muted); font-weight: 600; }
+  .ds-nav a:hover { background: var(--lc-primary-soft); color: var(--lc-primary); }
+  .ds-main { padding: 32px 40px 80px; max-width: 1240px; }
+  .ds-sec { margin-top: 56px; scroll-margin-top: 24px; }
+  .ds-sec > h2 { font-size: 24px; font-weight: 600; color: var(--lc-text-strong); }
+  .ds-sec > p { margin-top: 6px; color: var(--lc-text-secondary); max-width: 780px; }
+  .ds-block { margin-top: 20px; background: #fff; border-radius: 12px; padding: 24px; box-shadow: var(--lc-sh-card); }
+  .ds-block.soft { background: var(--lc-bg-soft); box-shadow: none; border: 1px dashed var(--lc-divider); }
+  .ds-block h3 { font-size: 12px; font-weight: 600; color: var(--lc-text-secondary); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 16px; }
+  .ds-sw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+  .ds-sw { border-radius: 10px; overflow: hidden; border: 1px solid var(--lc-divider); background: #fff; }
+  .ds-sw div { height: 60px; }
+  .ds-sw p { padding: 8px 10px; font-size: 12px; line-height: 1.4; color: var(--lc-text-secondary); }
+  .ds-sw b { display: block; font-size: 13px; color: var(--lc-text-strong); }
+  .ds-spec { display: grid; grid-template-columns: 220px 1fr; gap: 14px 24px; align-items: center; }
+  .ds-spec code, .ds-mono { font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--lc-text-secondary); }
+  .ds-wrap { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+  .ds-box { width: 104px; height: 64px; background: #fff; display: grid; place-items: center; font-size: 12px; color: var(--lc-text-secondary); text-align: center; border: 1px solid var(--lc-divider); }
+  .ds-icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; }
+  .ds-icons div { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 6px; border: 1px solid var(--lc-divider); border-radius: 8px; font-size: 11px; color: var(--lc-text-secondary); text-align: center; word-break: break-all; }
+  .ds-icons img { width: 28px; height: 28px; }
+  .ds-tpl { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 20px; }
+  .ds-tpl a { display: block; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: var(--lc-sh-card); color: var(--lc-text); }
+  .ds-tpl img { width: 100%; height: 165px; object-fit: cover; object-position: top left; border-bottom: 1px solid var(--lc-divider); }
+  .ds-tpl div { padding: 12px 14px; }
+  .ds-tpl b { display: block; color: var(--lc-primary); }
+  .ds-tpl span { font-size: 13px; color: var(--lc-text-secondary); }
+  .ds-shell { display: grid; grid-template-columns: 180px 1fr; grid-template-rows: 44px 1fr 44px; height: 240px; border: 1px solid var(--lc-divider); border-radius: 10px; overflow: hidden; font-size: 12px; }
+  .ds-shell > div { display: grid; place-items: center; color: var(--lc-text-secondary); }
+  @media (max-width: 900px) { .ds { grid-template-columns: 1fr; } .ds-nav { display: none; } .ds-main { padding: 24px 16px 60px; } .ds-spec { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="ds">
+  <nav class="ds-nav">
+    <img src="assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh">
+    <small>Nền tảng</small>
+    <a href="#principles">Nguyên tắc</a>
+    <a href="#colors">Màu sắc</a>
+    <a href="#type">Typography</a>
+    <a href="#shape">Radius · Shadow · Layout</a>
+    <a href="#icons">Bộ icon</a>
+    <small>Components</small>
+    <a href="#buttons">Buttons</a>
+    <a href="#forms">Form controls</a>
+    <a href="#tabs">Tabs · Segmented</a>
+    <a href="#tags">Tag · Trạng thái</a>
+    <a href="#cards">Cards</a>
+    <a href="#tables">Table · Pagination</a>
+    <a href="#chapters">Chương trình học</a>
+    <a href="#overlay">Dropdown · Modal</a>
+    <a href="#misc">Steps · Empty · Toolbar</a>
+    <small>Pattern</small>
+    <a href="#layouts">Khung trang</a>
+    <a href="#templates">Template mẫu</a>
+  </nav>
+
+  <main class="ds-main">
+    <span class="lc-tag lc-tag--info lc-tag--sm">cms-staging.hoc102.com · Ant Design v5 · 10/2026</span>
+    <h1 style="font-size:32px;font-weight:600;margin-top:12px">LCMS <span class="lc-primary">Design System</span></h1>
+    <p style="color:var(--lc-text-secondary);max-width:780px;margin-top:8px">Hệ thống quản lý nội dung (giáo viên/quản trị) của Ngoại ngữ 24h. Bộ token và component này đo từ computed style của trang thật, dựng lại bằng HTML/CSS thuần với tiền tố <code>lc-</code>. Dùng <code>lcms.css</code> + <code>lcms.js</code> để thiết kế màn hình quản trị mới.</p>
+
+    <section class="ds-sec" id="principles">
+      <h2>Nguyên tắc</h2>
+      <div class="ds-block lc-grid lc-grid-3">
+        <div><b class="lc-primary">Mật độ cao, hướng tác vụ</b><p class="lc-secondary">Màn hình là công cụ làm việc: bảng dày, form nhiều trường, thao tác đặt ở thanh footer cố định bên phải.</p></div>
+        <div><b class="lc-primary">Một màu chủ đạo</b><p class="lc-secondary">Xanh <code>#1579AD</code> cho nút, tab active, nhãn form và số thứ tự. Xanh Ant <code>#1677FF</code> chỉ dùng cho icon hành động và focus.</p></div>
+        <div><b class="lc-primary">Bo tròn pill + đổ bóng mảnh</b><p class="lc-secondary">Nút, tab bar, tag đều dạng pill. Card bo 16–20px, shadow rất nhẹ. Input form vuông hơn (8px).</p></div>
+      </div>
+    </section>
+
+    <!-- COLORS -->
+    <section class="ds-sec" id="colors">
+      <h2>Màu sắc</h2>
+      <p>LCMS không có dark mode. Các token nằm trong <code>:root</code> của <code>lcms.css</code>.</p>
+      <div class="ds-block"><h3>Brand &amp; hành động</h3><div class="ds-sw-grid">
+        <div class="ds-sw"><div style="background:#1579ad"></div><p><b>Primary</b>--lc-primary · #1579AD</p></div>
+        <div class="ds-sw"><div style="background:#126794"></div><p><b>Primary hover</b>#126794</p></div>
+        <div class="ds-sw"><div style="background:#e6f4ff"></div><p><b>Primary soft</b>--lc-primary-soft · #E6F4FF</p></div>
+        <div class="ds-sw"><div style="background:#f4f7fb"></div><p><b>Primary bg</b>--lc-primary-bg · #F4F7FB</p></div>
+        <div class="ds-sw"><div style="background:#1677ff"></div><p><b>Ant blue</b>icon, focus · #1677FF</p></div>
+        <div class="ds-sw"><div style="background:#0d6efd"></div><p><b>Link</b>--lc-link · #0D6EFD</p></div>
+        <div class="ds-sw"><div style="background:#ff0000"></div><p><b>Red title</b>tên chương · #FF0000</p></div>
+        <div class="ds-sw"><div style="background:#a40980"></div><p><b>Magenta</b>Tính năng · #A40980</p></div>
+        <div class="ds-sw"><div style="background:#ff5c00"></div><p><b>Orange</b>Xem thử · #FF5C00</p></div>
+      </div></div>
+      <div class="ds-block"><h3>Text</h3><div class="ds-sw-grid">
+        <div class="ds-sw"><div style="background:#000"></div><p><b>Strong</b>#000000</p></div>
+        <div class="ds-sw"><div style="background:rgba(0,0,0,.88)"></div><p><b>Text</b>rgba(0,0,0,.88)</p></div>
+        <div class="ds-sw"><div style="background:#747c87"></div><p><b>Muted</b>menu, tab · #747C87</p></div>
+        <div class="ds-sw"><div style="background:#6b7280"></div><p><b>Secondary</b>meta · #6B7280</p></div>
+        <div class="ds-sw"><div style="background:#5c636c"></div><p><b>Tertiary</b>ngày phát hành · #5C636C</p></div>
+        <div class="ds-sw"><div style="background:rgba(0,0,0,.25)"></div><p><b>Placeholder</b>rgba(0,0,0,.25)</p></div>
+      </div></div>
+      <div class="ds-block"><h3>Nền &amp; viền</h3><div class="ds-sw-grid">
+        <div class="ds-sw"><div style="background:#fff"></div><p><b>Surface</b>#FFFFFF</p></div>
+        <div class="ds-sw"><div style="background:#f5f5f5"></div><p><b>Layout</b>#F5F5F5</p></div>
+        <div class="ds-sw"><div style="background:#fafafa"></div><p><b>Subtle / hover</b>#FAFAFA</p></div>
+        <div class="ds-sw"><div style="background:#d9d9d9"></div><p><b>Border</b>select · #D9D9D9</p></div>
+        <div class="ds-sw"><div style="background:#ebebeb"></div><p><b>Border input</b>#EBEBEB</p></div>
+        <div class="ds-sw"><div style="background:#e8edf3"></div><p><b>Divider</b>bảng · #E8EDF3</p></div>
+      </div></div>
+      <div class="ds-block"><h3>Trạng thái</h3><div class="ds-sw-grid">
+        <div class="ds-sw"><div style="background:#0ec122"></div><p><b>Success</b>#0EC122 / bg 8%</p></div>
+        <div class="ds-sw"><div style="background:#2f9e44"></div><p><b>Success 2</b>#2F9E44 / #EBFBEE</p></div>
+        <div class="ds-sw"><div style="background:#ef5350"></div><p><b>Danger</b>#EF5350 / #FFF3F3</p></div>
+        <div class="ds-sw"><div style="background:#fa8c16"></div><p><b>Warning*</b>#FA8C16 / #FFF7E6</p></div>
+        <div class="ds-sw"><div style="background:#747c87"></div><p><b>Neutral*</b>#747C87 / #F0F2F5</p></div>
+      </div><p class="lc-caption" style="margin-top:10px">* Warning/Neutral không thấy trên site, được thêm cho đủ bộ trạng thái (Đang chờ, Riêng tư).</p></div>
+    </section>
+
+    <!-- TYPE -->
+    <section class="ds-sec" id="type">
+      <h2>Typography</h2>
+      <p>Font hệ thống (mặc định của Ant Design): SF Pro trên macOS, Segoe UI trên Windows, Roboto trên Android. Cỡ chữ cơ sở 14px.</p>
+      <div class="ds-block ds-spec">
+        <code>.lc-page-title · 22 / 500</code><div class="lc-page-title">Sửa chương trình học <em>Toán 10 – Lớp 10A1</em></div>
+        <code>.lc-section-title · 20 / 600</code><div class="lc-section-title"><span class="dot">i</span>Thông tin khoá học</div>
+        <code>Tab · 16 / 600</code><div style="font-size:16px;font-weight:600;color:var(--lc-primary)">Khoá đang mở (296)</div>
+        <code>.lc-label · 16 / 500 primary</code><div class="lc-label">Tên khoá học<span class="req">*</span></div>
+        <code>Tên chương · 16 / 600 red</code><div class="lc-chapter__title">PHÒNG THI THPT</div>
+        <code>Body · 14 / 400</code><div>Năm học 2026–2027 · <b>Học kì I</b></div>
+        <code>Meta · 14 / 400 secondary</code><div class="lc-secondary">0 Video - 0 Tài liệu</div>
+        <code>Caption · 12 / 500 tertiary</code><div class="lc-chapter__date">Phát hành: 13:27 07/08/2026</div>
+      </div>
+    </section>
+
+    <!-- SHAPE -->
+    <section class="ds-sec" id="shape">
+      <h2>Radius · Shadow · Layout</h2>
+      <div class="ds-block"><h3>Radius</h3><div class="ds-wrap">
+        <div class="ds-box" style="border-radius:4px">4</div>
+        <div class="ds-box" style="border-radius:6px">6 · select</div>
+        <div class="ds-box" style="border-radius:8px">8 · input, modal</div>
+        <div class="ds-box" style="border-radius:16px">16 · chương</div>
+        <div class="ds-box" style="border-radius:20px">20 · card, tag</div>
+        <div class="ds-box" style="border-radius:50px">50 · button</div>
+      </div></div>
+      <div class="ds-block soft"><h3>Shadow</h3><div class="ds-wrap">
+        <div class="ds-box" style="border:0;border-radius:12px;box-shadow:var(--lc-sh-card);width:150px">--lc-sh-card</div>
+        <div class="ds-box" style="border:0;border-radius:12px;box-shadow:var(--lc-sh-tabs);width:150px">--lc-sh-tabs</div>
+        <div class="ds-box" style="border:0;border-radius:12px;box-shadow:var(--lc-sh-header);width:150px">--lc-sh-header</div>
+        <div class="ds-box" style="border:0;border-radius:12px;box-shadow:var(--lc-sh-footer);width:150px">--lc-sh-footer</div>
+        <div class="ds-box" style="border:0;border-radius:12px;box-shadow:var(--lc-sh-pop);width:150px">--lc-sh-pop</div>
+        <div class="ds-box" style="border:0;border-radius:12px;box-shadow:var(--lc-sh-modal);width:150px">--lc-sh-modal</div>
+      </div></div>
+      <div class="ds-block"><h3>Khung layout (Ant Layout)</h3>
+        <div class="ds-shell">
+          <div style="grid-row:1/4;background:#fff;box-shadow:var(--lc-sh-sider)">Sider 300px<br>(thu gọn 64px)</div>
+          <div style="background:#fff;box-shadow:var(--lc-sh-header)">Header 64px · burger + tiêu đề + avatar</div>
+          <div style="background:var(--lc-bg-soft)">Content · padding 12/24 · cuộn trong</div>
+          <div style="background:#fff;box-shadow:var(--lc-sh-footer);justify-items:end;padding-right:16px">Footer 65px · nút hành động căn phải</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ICONS -->
+    <section class="ds-sec" id="icons">
+      <h2>Bộ icon</h2>
+      <p>Icon SVG gốc tải từ site, nằm trong <code>assets/icons/</code>. Dùng bằng <code>&lt;img src="assets/icons/…svg"&gt;</code>. Khi cần icon không có trong bộ, dùng Lucide nét 1.5–2px, màu primary.</p>
+      <div class="ds-block ds-icons">
+        <div><img src="assets/icons/category.svg" alt="">category</div>
+        <div><img src="assets/icons/my-course.svg" alt="">my-course</div>
+        <div><img src="assets/icons/icon-skill-setting.svg" alt="">icon-skill-setting</div>
+        <div><img src="assets/icons/icon-event.svg" alt="">icon-event</div>
+        <div><img src="assets/icons/icon-pen-tool.svg" alt="">icon-pen-tool</div>
+        <div><img src="assets/icons/timeTable.svg" alt="">timeTable</div>
+        <div><img src="assets/icons/icon-roadmap.svg" alt="">icon-roadmap</div>
+        <div><img src="assets/icons/menu.svg" alt="">menu</div>
+        <div><img src="assets/icons/edit-action.svg" alt="">edit-action</div>
+        <div><img src="assets/icons/delete-action.svg" alt="">delete-action</div>
+        <div><img src="assets/icons/three-dots-vertical.svg" alt="">three-dots-vertical</div>
+        <div><img src="assets/icons/arrow-right.svg" alt="">arrow-right</div>
+        <div><img src="assets/icons/arrow-open-link.svg" alt="">arrow-open-link</div>
+        <div><img src="assets/icons/lecture.svg" alt="">lecture</div>
+        <div><img src="assets/icons/student.svg" alt="">student</div>
+        <div><img src="assets/icons/documentIcon.svg" alt="">documentIcon</div>
+        <div><img src="assets/icons/list-mode.svg" alt="">list-mode</div>
+        <div><img src="assets/icons/grid-mode.svg" alt="">grid-mode</div>
+        <div><img src="assets/icons/icon-day-road-map.svg" alt="">icon-day-road-map</div>
+        <div><img src="assets/icons/icon-time-road-map.svg" alt="">icon-time-road-map</div>
+        <div><img src="assets/icons/check.svg" alt="">check</div>
+        <div><img src="assets/icons/icon-delete.svg" alt="">icon-delete</div>
+      </div>
+    </section>
+
+    <!-- BUTTONS -->
+    <section class="ds-sec" id="buttons">
+      <h2>Buttons</h2>
+      <div class="ds-block">
+        <h3>Biến thể</h3>
+        <div class="ds-wrap">
+          <button class="lc-btn lc-btn--primary">+ Tạo khoá mới</button>
+          <button class="lc-btn lc-btn--primary">Vào ngay <img src="assets/icons/arrow-right.svg" alt="" style="filter:brightness(0) invert(1)"></button>
+          <button class="lc-btn lc-btn--outline">Quay lại danh sách khoá học</button>
+          <button class="lc-btn lc-btn--outline">Huỷ chỉnh sửa</button>
+          <button class="lc-btn lc-btn--dashed">+ Thêm nội dung</button>
+          <button class="lc-btn lc-btn--danger">🗑 Xoá</button>
+          <button class="lc-btn lc-btn--text">Huỷ</button>
+          <button class="lc-btn lc-btn--ant">Đăng nhập</button>
+          <button class="lc-btn lc-btn--primary" disabled>Xác nhận</button>
+        </div>
+        <h3 style="margin-top:24px">Kích thước &amp; icon button</h3>
+        <div class="ds-wrap">
+          <button class="lc-btn lc-btn--primary lc-btn--sm">Small 32</button>
+          <button class="lc-btn lc-btn--primary">Default 41</button>
+          <button class="lc-btn lc-btn--primary lc-btn--lg">Large 44</button>
+          <button class="lc-burger"><img src="assets/icons/menu.svg" alt=""></button>
+          <button class="lc-icon-btn lc-icon-btn--shadow"><img src="assets/icons/three-dots-vertical.svg" alt=""></button>
+          <span class="lc-action"><img src="assets/icons/edit-action.svg" alt="Sửa"><img src="assets/icons/delete-action.svg" alt="Xoá"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORMS -->
+    <section class="ds-sec" id="forms">
+      <h2>Form controls</h2>
+      <div class="ds-block lc-form lc-grid-2">
+        <div class="lc-field" style="grid-column:1/-1"><label class="lc-label">Tên khoá học<span class="req">*</span></label><input class="lc-input" placeholder="Nhập tên khoá"></div>
+        <div class="lc-field"><label class="lc-label">Giá gốc</label><input class="lc-input" value="10000"></div>
+        <div class="lc-field"><label class="lc-label">ID</label><div class="lc-input-affix"><input class="lc-input lc-input--link" value="5402563087171584" readonly><svg class="affix" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1Zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Z"/></svg></div></div>
+        <div class="lc-field"><label class="lc-label">Ngày phát hành<span class="req">*</span></label><div class="lc-input-affix"><input class="lc-input" value="13:27 07/08/2026"><svg class="affix" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7Zm-2 8h14v10H5V10Zm2 2v2h2v-2H7Zm4 0v2h2v-2h-2Zm4 0v2h2v-2h-2Zm-8 4v2h2v-2H7Zm4 0v2h2v-2h-2Z"/></svg></div></div>
+        <div class="lc-field"><label class="lc-label">Loại bài</label><select class="lc-select"><option>Chuyên đề</option><option>Bài thi</option></select></div>
+        <div class="lc-field" style="grid-column:1/-1"><label class="lc-label">Mô tả bài giảng</label><textarea class="lc-textarea" placeholder="Mô tả bài giảng"></textarea></div>
+        <div class="lc-field"><label class="lc-label">Tìm kiếm (header list)</label><div class="lc-search"><input placeholder="Tên khoá học"><button>⌕</button></div></div>
+        <div class="lc-field"><label class="lc-label">Tìm kiếm tròn (modal)</label><div class="lc-search lc-search--round"><input placeholder="Nhập id bài giảng / bài thi / live stream"><button>⌕</button></div></div>
+        <div class="lc-field"><label class="lc-label">Sắp xếp / lọc</label><div class="lc-row"><select class="lc-select lc-select--flat" style="width:120px"><option>Mới nhất</option></select><select class="lc-select lc-select--sm" style="width:110px"><option>Thời gian</option></select></div></div>
+        <div class="lc-field"><label class="lc-label">Checkbox · khoảng ngày</label><div class="lc-row" style="flex-wrap:wrap"><label class="lc-check"><input type="checkbox">Chỉ hiển thị ngày có lịch</label><span class="lc-daterange">26/10/2026 <span class="sep">→</span> 01/11/2026</span></div></div>
+      </div>
+    </section>
+
+    <!-- TABS -->
+    <section class="ds-sec" id="tabs">
+      <h2>Tabs · Segmented · Đổi dạng xem</h2>
+      <div class="ds-block lc-stack" style="gap:20px">
+        <div class="lc-tabs"><a href="#">Tất cả khoá học (424)</a><a href="#" class="is-active">Khoá đang mở (296)</a><a href="#">Khoá đã đóng (128)</a></div>
+        <div class="lc-tabs lc-tabs--full"><a href="#" class="is-active">Chương trình học</a><a href="#">Tài liệu (0)</a><a href="#">Cài đặt khoá học</a></div>
+        <div class="lc-row" style="flex-wrap:wrap"><div class="lc-pills" style="width:380px"><button class="is-active">Mô tả</button><button>Tài liệu</button><button>Bình luận</button></div>
+          <div class="lc-view-toggle"><button data-lc-view="table"><img src="assets/icons/list-mode.svg" alt=""></button><button class="is-active" data-lc-view="grid"><img src="assets/icons/grid-mode.svg" alt=""></button></div></div>
+      </div>
+    </section>
+
+    <!-- TAGS -->
+    <section class="ds-sec" id="tags">
+      <h2>Tag · Trạng thái</h2>
+      <div class="ds-block ds-wrap">
+        <span class="lc-tag lc-tag--success">Public</span>
+        <span class="lc-tag lc-tag--success">Open</span>
+        <span class="lc-tag lc-tag--success">Công khai</span>
+        <span class="lc-tag lc-tag--success lc-tag--sm">Đã hoàn thành</span>
+        <span class="lc-tag lc-tag--danger">Đã kết thúc</span>
+        <span class="lc-tag lc-tag--warning">Đang chờ</span>
+        <span class="lc-tag lc-tag--neutral">Riêng tư</span>
+        <span class="lc-tag lc-tag--info">Testing</span>
+        <span class="lc-chip">Còn 62 ngày</span>
+        <span class="lc-num">01</span><span class="lc-num lc-num--outline">2</span>
+      </div>
+    </section>
+
+    <!-- CARDS -->
+    <section class="ds-sec" id="cards">
+      <h2>Cards</h2>
+      <div class="ds-block soft lc-grid lc-grid-3">
+        <a class="lc-course" href="#">
+          <div class="lc-course__media"><img class="cover" src="assets/background-course.jpg" alt=""><div class="tools"><span class="lc-chip">Còn 62 ngày</span><span class="lc-icon-btn"><img src="assets/icons/three-dots-vertical.svg" alt=""></span></div></div>
+          <div class="lc-course__body">
+            <div class="lc-course__title">Toán 11 – Lớp 11B3</div>
+            <div class="lc-course__price">Năm học 2026–2027 · <b>Học kì I</b></div>
+            <div class="lc-course__meta"><div><img src="assets/icons/lecture.svg" alt="">Khối: <b>11</b> · Lớp: <b>11B3</b></div><div><img src="assets/icons/student.svg" alt="">Học sinh: <b>38</b></div></div>
+            <span class="lc-btn lc-btn--primary lc-btn--block">Vào ngay →</span>
+          </div>
+        </a>
+        <div class="lc-info-card">
+          <span class="lc-tag lc-tag--success lc-tag--sm">Công khai</span>
+          <h3>Cơ bản - Điểm 8+</h3>
+          <div class="meta"><img src="assets/icons/icon-day-road-map.svg" alt="">Áp dụng từ: <b>06/08/2026 - 12/09/2026</b></div>
+          <div class="meta"><img src="assets/icons/icon-time-road-map.svg" alt="">Thời gian tạo: <b>09:28 09/09/2026</b></div>
+          <button class="lc-btn lc-btn--primary">Chi tiết lộ trình</button>
+        </div>
+        <div class="lc-card lc-card--pad">
+          <img src="assets/background-course.jpg" alt="" style="border-radius:12px 12px 0 0;margin:-16px -16px 12px;width:calc(100% + 32px);height:150px;object-fit:cover">
+          <div class="lc-course__title">Toán 10 – Lớp 10A1</div>
+          <div class="lc-course__price" style="margin:16px 0">Năm học 2026–2027 · <b>Học kì I</b></div>
+          <button class="lc-btn lc-btn--primary lc-btn--block">Cập nhật khoá →</button>
+          <p class="lc-caption" style="margin-top:10px">Card preview cạnh form cài đặt</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TABLES -->
+    <section class="ds-sec" id="tables">
+      <h2>Table · Pagination</h2>
+      <div class="ds-block">
+        <div class="lc-table-wrap"><table class="lc-table">
+          <thead><tr><th class="c"><input type="checkbox"></th><th>Mã</th><th>Tên khoá học</th><th class="c">Khối</th><th class="c">Lớp</th><th class="c">Học sinh</th><th class="c">Trạng thái</th><th class="c">Hành động</th></tr></thead>
+          <tbody>
+            <tr><td class="c"><input type="checkbox"></td><td><b>TOAN10-10A1</b></td><td><div class="lc-row" style="justify-content:space-between"><a class="u" href="#">Toán 10 – Lớp 10A1</a><img src="assets/icons/arrow-open-link.svg" alt="" style="width:22px"></div></td><td class="c">10</td><td class="c">10A1</td><td class="c">42</td><td class="c"><span class="lc-tag lc-tag--success">Đang dạy</span></td><td class="c"><span class="lc-action"><img src="assets/icons/edit-action.svg" alt=""><img src="assets/icons/delete-action.svg" alt=""></span></td></tr>
+            <tr><td class="c"><input type="checkbox"></td><td><b>CD-HSBH-T10</b></td><td><div class="lc-row" style="justify-content:space-between"><a class="u" href="#">Chuyên đề: Hàm số bậc hai và đồ thị</a><img src="assets/icons/arrow-open-link.svg" alt="" style="width:22px"></div></td><td class="c">10</td><td class="c">Tổ Toán</td><td class="c">0</td><td class="c"><span class="lc-tag lc-tag--neutral">Bản nháp</span></td><td class="c"><span class="lc-action"><img src="assets/icons/edit-action.svg" alt=""><img src="assets/icons/delete-action.svg" alt=""></span></td></tr>
+          </tbody></table></div>
+        <ul class="lc-pagination"><li class="is-disabled">‹</li><li class="is-active">1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>•••</li><li>25</li><li>›</li></ul>
+      </div>
+    </section>
+
+    <!-- CHAPTERS -->
+    <section class="ds-sec" id="chapters">
+      <h2>Chương trình học (chapter → lesson)</h2>
+      <div class="ds-block soft" style="max-width:720px">
+        <div class="lc-chapter is-open">
+          <div class="lc-chapter__head"><svg class="toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 6 6 6-6 6M12 6l6 6-6 6"/></svg><div><div class="lc-chapter__title">PHÒNG THI THPT</div><div class="lc-chapter__meta">0 Video - 0 Tài liệu</div><div class="lc-chapter__date">Phát hành: 13:27 07/08/2026</div></div><span class="lc-icon-btn lc-icon-btn--ghost"><img src="assets/icons/three-dots-vertical.svg" alt=""></span></div>
+          <ul class="lc-lessons">
+            <li class="lc-lesson"><span class="lc-num">01</span><span class="lc-lesson__type"></span><div class="lc-lesson__body"><b>Đề THPT 1</b><span>0 Tài liệu /40 Câu hỏi</span><small>Phát hành: 13:27 07/08/2026</small></div></li>
+            <li class="lc-lesson is-active"><span class="lc-num">02</span><span class="lc-lesson__type"></span><div class="lc-lesson__body"><b>Đề THPT 2</b><span>0 Tài liệu /40 Câu hỏi</span><small>Phát hành: 13:28 07/08/2026</small></div></li>
+          </ul>
+          <a class="lc-collapse-link" href="#">Rút gọn</a>
+          <div class="lc-lessons" style="padding-bottom:0"><div class="lc-add-row"><span class="lc-num">03</span><button class="lc-add-btn">+ Thêm nội dung</button></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OVERLAY -->
+    <section class="ds-sec" id="overlay">
+      <h2>Dropdown · Modal</h2>
+      <div class="ds-block soft ds-wrap" style="align-items:flex-start;gap:32px">
+        <div class="lc-dropdown"><a href="#">Chỉnh sửa</a><a href="#">Private</a><a href="#" class="danger">Delete</a><a href="#">Open</a><a href="#">Testing</a></div>
+        <div class="lc-menu-pop"><a href="#">Đăng xuất</a></div>
+        <div class="lc-modal" style="box-shadow:var(--lc-sh-modal)">
+          <div class="lc-modal__head"><h3>Thêm lịch <em>(Thứ 2 – 26/10)</em></h3><button class="lc-modal__close">×</button></div>
+          <div class="lc-search lc-search--round"><input placeholder="Nhập id bài giảng / bài thi / live stream"><button>⌕</button></div>
+          <div class="lc-modal__foot"><button class="lc-btn lc-btn--outline">Hủy</button><button class="lc-btn lc-btn--primary" disabled>Xác nhận</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MISC -->
+    <section class="ds-sec" id="misc">
+      <h2>Steps · Empty state · Thanh công cụ soạn bài</h2>
+      <div class="ds-block">
+        <div class="lc-steps"><div class="lc-step"><span class="n">1</span><b>Thông tin bài thi</b><span class="lc-tag lc-tag--success lc-tag--sm">Đã hoàn thành</span></div><div class="lc-step is-wait"><span class="n">2</span><b>Thông tin câu hỏi</b><span class="lc-tag lc-tag--neutral lc-tag--sm">Chưa hoàn thành</span></div></div>
+      </div>
+      <div class="ds-block"><div class="lc-empty" style="padding:24px"><img src="assets/workflow-progress.svg" alt="">Bạn chưa tạo kỹ năng nào!</div></div>
+      <div class="ds-block" style="padding:0;overflow:hidden">
+        <div class="lc-toolbar">
+          <button class="lc-toolbar__item lc-toolbar__item--magenta">☰ Tính năng <span style="margin-left:auto">⌄</span></button>
+          <button class="lc-toolbar__item lc-toolbar__item--blue">✥ Đổi vị trí các khối</button>
+          <button class="lc-toolbar__item lc-toolbar__item--orange">▶ Xem thử bản web</button>
+          <div class="lc-toolbar__end"><button class="lc-btn lc-btn--outline">Huỷ chỉnh sửa</button><button class="lc-btn lc-btn--primary">Lưu</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LAYOUTS -->
+    <section class="ds-sec" id="layouts">
+      <h2>Khung trang</h2>
+      <div class="ds-block ds-spec">
+        <code>A · Đăng nhập</code><div>Thanh top xanh primary 90px chứa logo, card trắng căn giữa, input bóng đổ, nút xanh Ant bo 8px.</div>
+        <code>B · Danh sách</code><div>Sider 300 + header + thanh tab pill (có số lượng) + đổi dạng lưới/bảng + sắp xếp + tìm kiếm. Footer cố định có nút "+ Tạo …". <i>(Khoá học, Lộ trình học)</i></div>
+        <code>C · Chi tiết 2 cột</code><div>Tab ngang toàn chiều rộng, cột trái là danh sách chương, cột phải là panel nền <code>--lc-bg-soft</code> có pills (Mô tả / Tài liệu / Bình luận) và nút thu/mở. Footer: Quay lại + Chỉnh sửa.</div>
+        <code>D · Form cài đặt</code><div>Form 2–4 cột, label màu primary, cột phải là card xem trước kèm nút submit.</div>
+        <code>E · Trình soạn (editor)</code><div>Sider thu gọn 64px, chia đôi màn hình có tay kéo: trái là cây chương/bài, phải là tab + steps + form. Thanh công cụ dưới gồm Tính năng / Đổi vị trí / Xem thử + Huỷ / Lưu.</div>
+        <code>G · Modal soạn kịch bản video</code><div>Modal 1296px chia 2 cột: trái là thông tin video (324px), phải là player 550×310, bên dưới gồm danh sách kịch bản 225px (nền <code>--lc-bg-soft</code>, mục đang chọn nền primary, giờ màu vàng <code>#FEB415</code>) và form chi tiết (nhãn 198px). Modal con xếp chồng: chọn bộ câu hỏi → cách tạo → trình soạn bộ câu hỏi (1368px, bo 20px). Xem template 08.</div>
+        <code>F · Lịch tuần</code><div>Điều hướng tuần + khoảng ngày + bộ lọc, lưới 7 cột, cột hôm nay tô xanh nhạt, mỗi cột có nút "+ Thêm lịch".</div>
+      </div>
+    </section>
+
+    <!-- TEMPLATES -->
+    <section class="ds-sec" id="templates">
+      <h2>Template mẫu</h2>
+      <p>File độc lập trong <code>templates/</code>, dùng chung <code>lcms.css</code> / <code>lcms.js</code>. Ảnh là màn hình gốc để đối chiếu.</p>
+      <div class="ds-tpl" style="margin-top:20px">
+        <a href="templates/01-login.html"><img src="screenshots/01-login.png" alt=""><div><b>01 · Đăng nhập</b><span>Layout A</span></div></a>
+        <a href="templates/02-list-grid-table.html"><img src="screenshots/02-course-grid.png" alt=""><div><b>02 · Danh sách lưới / bảng</b><span>Tab, đổi dạng xem, dropdown card, footer action</span></div></a>
+        <a href="templates/03-data-table.html"><img src="screenshots/11-combo-table.png" alt=""><div><b>03 · Bảng quản trị</b><span>Tag trạng thái, hành động sửa/xoá, phân trang</span></div></a>
+        <a href="templates/04-detail-chapters.html"><img src="screenshots/06-chapter-expanded.png" alt=""><div><b>04 · Chi tiết + chương trình học</b><span>Accordion chương, timeline bài, panel phải</span></div></a>
+        <a href="templates/05-form-settings.html"><img src="screenshots/07-course-settings-form.png" alt=""><div><b>05 · Form cài đặt + modal</b><span>Form nhiều cột, card preview, modal chọn danh mục</span></div></a>
+        <a href="templates/06-editor-split.html"><img src="screenshots/09-exam-editor-steps.png" alt=""><div><b>06 · Trình soạn bài</b><span>Sider thu gọn, chia đôi màn hình, steps, toolbar</span></div></a>
+        <a href="templates/07-cards-calendar.html"><img src="screenshots/14-timetable.png" alt=""><div><b>07 · Card · Lịch tuần · Empty</b><span>Lộ trình học, thời khoá biểu, modal nhỏ</span></div></a>
+        <a href="templates/10-scan-import.html"><img src="screenshots/new-10-scan-review.png" alt=""><div><b>10 · Quét đề từ ảnh/PDF</b><span>Chrome Extension, đối chiếu tệp gốc, sửa nhận dạng, gán nhãn, nhập ngân hàng; so sánh nhập Word/Excel</span></div></a>
+        <a href="templates/09-content-approval.html"><img src="screenshots/new-09-approval-review.png" alt=""><div><b>09 · Gán nhãn &amp; duyệt kho dùng chung</b><span>Gán nhãn theo khung CTGDPT 2018, duyệt Trường → Sở, thông báo, lưu vết, tìm kiếm nâng cao (5 vai trò)</span></div></a>
+        <a href="templates/08-video-script.html"><img src="screenshots/21-video-script-item.png" alt=""><div><b>08 · Video tương tác (kịch bản)</b><span>Mốc thời gian hiện câu hỏi / học liệu, 8 dạng kịch bản, chọn &amp; soạn bộ câu hỏi</span></div></a>
+      </div>
+    </section>
+  </main>
+</div>
+<script src="lcms.js"></script>
+</body>
+</html>

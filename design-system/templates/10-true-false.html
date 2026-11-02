@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kiểm tra Đúng/Sai</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="../tvet.css">
+<style>
+  .tbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 14px 16px; margin-top: 24px; }
+  .tbar h1 { flex: 1; min-width: 220px; font-size: 20px; font-weight: 700; }
+  .clock { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: var(--tv-r-pill); background: var(--tv-primary-soft); color: var(--tv-primary); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .clock svg { width: 17px; height: 17px; }
+  .q { padding: 22px 24px; }
+  .q__head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .q__head b { font-size: 16px; color: var(--tv-heading); }
+  .q__ctx { padding: 14px 16px; border-radius: var(--tv-r-md); background: var(--tv-surface-alt); border: 1px solid var(--tv-divider); line-height: 1.75; font-size: 16px; }
+  .q__stem { font-size: 16px; font-weight: 600; line-height: 1.6; margin-bottom: 12px; }
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .opts .tv-check { border: 1px solid var(--tv-border); padding: 12px 14px; border-radius: var(--tv-r-md); font-size: 15px; }
+  .opts .tv-check.is-selected { border-color: var(--tv-primary); background: var(--tv-primary-soft); }
+  .opts .tv-check.is-selected .dot { border: 6px solid var(--tv-primary); }
+  .opts .k { font-weight: 700; color: var(--tv-heading); }
+  .is-done .opts .tv-check, .is-done .tfrow button { pointer-events: none; }
+  .tf { margin-top: 14px; border: 1px solid var(--tv-border); border-radius: var(--tv-r-md); overflow: hidden; }
+  .tfrow { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 14px; border-top: 1px solid var(--tv-divider); }
+  .tfrow:first-child { border-top: 0; }
+  .tfrow .k { width: 30px; height: 30px; border-radius: 50%; background: var(--tv-primary-soft); color: var(--tv-primary); font-weight: 700; display: grid; place-items: center; }
+  .tfrow .txt { line-height: 1.6; font-size: 15px; }
+  .pick { display: inline-flex; gap: 6px; }
+  .pick button { min-width: 72px; height: 36px; border-radius: var(--tv-r-pill); border: 1px solid var(--tv-border); background: var(--tv-surface); font: 600 14px var(--tv-font); color: var(--tv-text-muted); cursor: pointer; }
+  .pick button.on-d { background: var(--tv-success-solid); border-color: var(--tv-success-solid); color: #fff; }
+  .pick button.on-s { background: var(--tv-danger-solid); border-color: var(--tv-danger-solid); color: #fff; }
+  .tfrow.ok { background: var(--tv-success-bg); }
+  .tfrow.no { background: var(--tv-danger-bg); }
+  .tfrow .res { grid-column: 2 / -1; font-size: 13px; font-weight: 600; }
+  .tfrow.ok .res { color: var(--tv-success); }
+  .tfrow.no .res { color: var(--tv-danger); }
+  .scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 14px; text-align: center; }
+  .scale div { padding: 8px 4px; border-radius: var(--tv-r-md); border: 1px solid var(--tv-divider); font-size: 12px; color: var(--tv-text-muted); }
+  .scale b { display: block; font-size: 16px; color: var(--tv-text); }
+  .scale .is-on { border-color: var(--tv-primary); background: var(--tv-primary-soft); }
+  .scale .is-on b { color: var(--tv-primary); }
+  .scale-list { display: grid; gap: 4px; margin-top: 10px; }
+  .scale-list div { display: flex; justify-content: space-between; padding: 7px 10px; border-radius: var(--tv-r-sm); font-size: 14px; color: var(--tv-text-muted); }
+  .scale-list b { color: var(--tv-text); }
+  .scale-list .is-on { background: var(--tv-primary-soft); color: var(--tv-primary); }
+  .scale-list .is-on b { color: var(--tv-primary); }
+  .explain { margin-top: 16px; padding: 12px 14px; border-radius: var(--tv-r-md); background: var(--tv-surface-alt); border: 1px solid var(--tv-divider); font-size: 14px; line-height: 1.7; }
+  .result { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; padding: 20px 24px; }
+  .result .big { font-size: 40px; font-weight: 700; color: var(--tv-primary); line-height: 1; }
+  .result .big small { font-size: 18px; color: var(--tv-text-muted); font-weight: 600; }
+  .result .rows { flex: 1; min-width: 240px; display: grid; gap: 6px; font-size: 14px; }
+  .result .rows div { display: flex; justify-content: space-between; gap: 12px; padding-bottom: 6px; border-bottom: 1px dashed var(--tv-divider); }
+  .palette { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .palette a { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; border: 1px solid var(--tv-border); color: var(--tv-text-muted); }
+  .palette a.is-answered { background: var(--tv-primary-soft); border-color: var(--tv-primary-tint); color: var(--tv-primary); }
+  .palette a.is-partial { background: var(--tv-warning-bg); border-color: var(--tv-warning); color: var(--tv-warning); }
+  .palette a.is-correct { background: var(--tv-success); border-color: var(--tv-success); color: #fff; }
+  .palette a.is-wrong { background: var(--tv-danger); border-color: var(--tv-danger); color: #fff; }
+  @media (max-width: 600px) { .opts { grid-template-columns: 1fr; } .tfrow { grid-template-columns: 30px minmax(0, 1fr); } .tfrow .pick { grid-column: 2; } .q { padding: 18px 16px; } }
+</style>
+</head>
+<body>
+<header class="tv-header">
+  <div class="tv-container tv-header__inner">
+    <a class="tv-logo" href="01-landing.html"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></a>
+    <nav class="tv-nav"><a class="is-active" href="02-app-sidebar-list.html">Học tập</a><a href="12-my-tasks.html">Bài tập</a><a href="15-shared-materials.html">Học liệu</a><a href="14-elibrary.html?from=lms">Thư viện</a></nav>
+    <div class="tv-header__actions"><button class="tv-icon-btn" data-tv-theme-toggle></button><span class="tv-icon-btn tv-icon-btn--warn"><i data-lucide="bell"></i></span><img class="tv-avatar" src="../assets/default-avatar.jpg" alt=""></div>
+  </div>
+</header>
+
+<div class="tv-container">
+  <nav class="tv-breadcrumb"><a href="01-landing.html">Trang chủ</a><i data-lucide="chevron-right"></i><a href="#">Toán 10</a><i data-lucide="chevron-right"></i><a href="#">Hàm số bậc hai, đồ thị và ứng dụng</a><i data-lucide="chevron-right"></i><span class="is-current">Kiểm tra 15 phút</span></nav>
+  <div class="tv-panel tbar">
+    <a class="tv-icon-btn" href="03-detail-two-column.html" title="Quay lại"><i data-lucide="arrow-left"></i></a>
+    <h1 class="tv-h1">Kiểm tra 15 phút: Hàm số bậc hai</h1>
+    <span class="clock"><i data-lucide="timer"></i><span id="clock">15:00</span></span>
+    <button class="tv-btn tv-btn--primary" data-act="submit" id="submitTop">Nộp bài</button>
+  </div>
+
+  <div class="tv-split tv-split--wide tv-page">
+    <div class="tv-stack" style="gap:16px" id="main"></div>
+    <aside class="tv-stack" style="gap:16px">
+      <div class="tv-panel tv-panel--widget">
+        <div class="tv-widget-title">Câu hỏi</div>
+        <div class="palette" id="palette"></div>
+        <p class="tv-caption" style="margin-top:12px">Câu Đúng/Sai có 4 ý; điểm tính theo số ý trả lời đúng.</p>
+      </div>
+      <div class="tv-panel tv-panel--widget">
+        <div class="tv-widget-title">Cách tính điểm Đúng/Sai</div>
+        <div class="scale-list" id="scaleSide"></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../tvet.js"></script>
+<script>
+(function () {
+  var SCALE = [0, 0.1, 0.25, 0.5, 1];   // số ý đúng → điểm (đề minh hoạ 2025, cấu hình bởi Sở)
+  var Q = [
+    { kind: 'mcq', pts: 0.25, stem: 'Đỉnh của parabol $y = -x^2 + 2x + 3$ là điểm nào?', opts: ['$I(1; 4)$', '$I(-1; 0)$', '$I(1; 3)$', '$I(2; 3)$'], ans: 0, explain: 'Hoành độ đỉnh $x = -\\frac{b}{2a} = 1$, thay vào được $y = 4$.' },
+    { kind: 'tf', pts: 1, ctx: 'Cho hàm số bậc hai $y = x^2 - 4x + 3$ có đồ thị là parabol $(P)$.', stmts: [
+      ['Đồ thị $(P)$ có đỉnh là $I(2; -1)$.', 'D'],
+      ['Trục đối xứng của $(P)$ là đường thẳng $x = -2$.', 'S'],
+      ['Hàm số đồng biến trên khoảng $(2; +\\infty)$.', 'D'],
+      ['$(P)$ cắt trục hoành tại hai điểm có hoành độ $x_1, x_2$ thoả mãn $x_1^2 + x_2^2 = 8$.', 'S']],
+      explain: 'Đỉnh $I(2; -1)$, trục đối xứng $x = 2$, $a = 1 > 0$ nên hàm đồng biến trên $(2; +\\infty)$. Phương trình $x^2 - 4x + 3 = 0$ có nghiệm $1$ và $3$, nên $x_1^2 + x_2^2 = 10$.' }
+  ];
+  var ans = [null, [null, null, null, null]], done = false, left = 15 * 60;
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function tex(s) { return esc(s).replace(/\$([^$]+)\$/g, function (m, x) { return window.katex ? window.katex.renderToString(x.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>'), { throwOnError: false }) : '<code>' + x + '</code>'; }); }
+  function fmt(n) { return String(+n.toFixed(2)).replace('.', ','); }
+  function tfRight() { return Q[1].stmts.filter(function (s, i) { return ans[1][i] === s[1]; }).length; }
+  function score() { return (ans[0] === Q[0].ans ? Q[0].pts : 0) + SCALE[tfRight()]; }
+
+  function scaleHtml(on) { return SCALE.map(function (p, n) { return '<div class="' + (n === on ? 'is-on' : '') + '"><b>' + fmt(p) + '</b>' + n + ' ý đúng</div>'; }).join(''); }
+
+  function render() {
+    var out = '';
+    if (done) {
+      var r = tfRight();
+      out += '<div class="tv-panel result" id="res"><div><div class="tv-caption">Điểm bài kiểm tra</div><div class="big">' + fmt(score()) + '<small> / ' + fmt(Q[0].pts + Q[1].pts) + '</small></div></div>' +
+        '<div class="rows"><div><span>Câu 1 · Trắc nghiệm</span><b style="color:' + (ans[0] === Q[0].ans ? 'var(--tv-success)' : 'var(--tv-danger)') + '">' + fmt(ans[0] === Q[0].ans ? Q[0].pts : 0) + ' điểm</b></div>' +
+        '<div><span>Câu 2 · Đúng/Sai: <b>' + r + '/4 ý đúng</b></span><b style="color:var(--tv-primary)">' + fmt(SCALE[r]) + ' điểm</b></div></div>' +
+        '<a class="tv-btn tv-btn--outline tv-btn--sm" href="12-my-tasks.html"><i data-lucide="list-checks"></i>Bài tập của tôi</a><a class="tv-btn tv-btn--outline tv-btn--sm" href="#" data-act="retry"><i data-lucide="rotate-ccw"></i>Làm lại</a></div>';
+    }
+    // Câu 1
+    var q1 = Q[0];
+    out += '<section class="tv-panel q" id="q1"><div class="q__head"><span class="tv-num">1</span><b>Trắc nghiệm</b><span class="tv-chip tv-chip--info">' + fmt(q1.pts) + ' điểm</span></div>' +
+      '<p class="q__stem">' + tex(q1.stem) + '</p><div class="opts">' + q1.opts.map(function (o, i) {
+        var cls = 'tv-check', dot = '';
+        if (done && i === q1.ans) { cls += ' is-correct'; dot = '<i data-lucide="check"></i>'; }
+        else if (done && i === ans[0]) { cls += ' is-wrong'; dot = '<i data-lucide="x"></i>'; }
+        else if (!done && i === ans[0]) cls += ' is-selected';
+        return '<label class="' + cls + '" data-mcq="' + i + '"><span class="dot">' + dot + '</span><span class="k">' + 'ABCD'[i] + '.</span>' + tex(o) + '</label>';
+      }).join('') + '</div>' + (done ? '<div class="explain"><b>Lời giải:</b> ' + tex(q1.explain) + '</div>' : '') + '</section>';
+    // Câu 2 — Đúng/Sai
+    var q2 = Q[1], r2 = tfRight();
+    out += '<section class="tv-panel q" id="q2"><div class="q__head"><span class="tv-num">2</span><b>Đúng/Sai</b><span class="tv-chip tv-chip--info">1 điểm · 4 ý</span><span class="tv-caption">Chọn Đúng hoặc Sai cho từng ý a), b), c), d)</span></div>' +
+      '<div class="q__ctx">' + tex(q2.ctx) + '</div><div class="tf">' + q2.stmts.map(function (s, i) {
+        var a = ans[1][i], cls = done ? (a === s[1] ? 'ok' : 'no') : '';
+        var res = done ? '<div class="res">' + (a === s[1] ? '✓ Đúng' : (a ? '✗ Sai' : '✗ Chưa chọn')) + ' · Đáp án: ' + (s[1] === 'D' ? 'Đúng' : 'Sai') + '</div>' : '';
+        return '<div class="tfrow ' + cls + '"><span class="k">' + 'abcd'[i] + '</span><div class="txt">' + tex(s[0]) + '</div>' +
+          '<div class="pick" role="group" aria-label="Ý ' + 'abcd'[i] + '"><button data-tf="' + i + ':D" class="' + (a === 'D' ? 'on-d' : '') + '" aria-pressed="' + (a === 'D') + '">Đúng</button><button data-tf="' + i + ':S" class="' + (a === 'S' ? 'on-s' : '') + '" aria-pressed="' + (a === 'S') + '">Sai</button></div>' + res + '</div>';
+      }).join('') + '</div>' +
+      (done ? '<div class="scale">' + scaleHtml(r2) + '</div><p class="tv-caption" style="margin-top:8px">Bạn trả lời đúng ' + r2 + '/4 ý nên được ' + fmt(SCALE[r2]) + ' điểm cho câu này.</p><div class="explain"><b>Lời giải:</b> ' + tex(q2.explain) + '</div>' : '') + '</section>';
+    if (!done) out += '<button class="tv-btn tv-btn--primary tv-btn--lg" data-act="submit" style="align-self:center;min-width:240px">Nộp bài</button>';
+    $('main').className = 'tv-stack' + (done ? ' is-done' : '');
+    $('main').innerHTML = out;
+
+    var n2 = ans[1].filter(Boolean).length;
+    $('palette').innerHTML = '<a href="#q1" class="' + (done ? (ans[0] === q1.ans ? 'is-correct' : 'is-wrong') : (ans[0] !== null ? 'is-answered' : '')) + '">1</a>' +
+      '<a href="#q2" class="' + (done ? (r2 === 4 ? 'is-correct' : r2 ? 'is-partial' : 'is-wrong') : (n2 === 4 ? 'is-answered' : n2 ? 'is-partial' : '')) + '" title="' + n2 + '/4 ý đã chọn">2</a>';
+    $('scaleSide').innerHTML = SCALE.map(function (p, n) { return '<div class="' + (done && n === r2 ? 'is-on' : '') + '"><span>' + n + ' ý đúng</span><b>' + fmt(p) + ' điểm</b></div>'; }).slice().reverse().join('');
+    $('submitTop').hidden = done;
+    if (window.lucide) lucide.createIcons();
+  }
+
+  document.addEventListener('click', function (e) {
+    var el;
+    if ((el = e.target.closest('[data-mcq]')) && !done) { ans[0] = +el.dataset.mcq; return render(); }
+    if ((el = e.target.closest('[data-tf]')) && !done) { var p = el.dataset.tf.split(':'); ans[1][+p[0]] = ans[1][+p[0]] === p[1] ? null : p[1]; return render(); }
+    if ((el = e.target.closest('[data-act]'))) {
+      e.preventDefault();
+      if (el.dataset.act === 'submit') {
+        var miss = ans[1].filter(function (a) { return !a; }).length + (ans[0] === null ? 1 : 0);
+        if (miss && !confirm('Còn ' + miss + ' ý/câu chưa chọn. Vẫn nộp bài?')) return;
+        done = true; render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      if (el.dataset.act === 'retry') { done = false; ans = [null, [null, null, null, null]]; left = 15 * 60; render(); }
+    }
+  });
+  setInterval(function () { if (done || left <= 0) return; left--; $('clock').textContent = String(Math.floor(left / 60)).padStart(2, '0') + ':' + String(left % 60).padStart(2, '0'); if (!left) { done = true; render(); } }, 1000);
+  render();
+})();
+</script>
+</body>
+</html>

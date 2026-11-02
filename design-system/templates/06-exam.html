@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bài thi</title>
+<link rel="stylesheet" href="../tvet.css">
+<style>
+  .gauge { position: relative; width: 200px; height: 200px; margin: 0 auto; }
+  .gauge svg { width: 100%; height: 100%; transform: rotate(135deg); }
+  .gauge__txt { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+  .gauge__txt b { font-size: 34px; color: var(--tv-success); font-weight: 700; }
+  .review-bar { position: sticky; top: var(--tv-header-h); z-index: 20; background: var(--tv-surface-alt); }
+  .review-bar > div { display: flex; align-items: center; gap: 16px; padding: 8px 24px; border-bottom: 1px solid var(--tv-divider); }
+  .qnav-fixed { position: sticky; bottom: 0; }
+  .tabbar { display: inline-flex; gap: 8px; margin: 32px 0 12px; }
+</style>
+</head>
+<body>
+
+<header class="tv-header">
+  <div class="tv-container tv-header__inner">
+    <a class="tv-logo" href="01-landing.html"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></a>
+    <div class="tv-input tv-input--search" style="width:190px"><i data-lucide="search"></i><input placeholder="Tìm kiếm..."></div>
+    <nav class="tv-nav"><a class="is-active" href="02-app-sidebar-list.html">Học tập</a><a href="12-my-tasks.html">Bài tập</a><a href="15-shared-materials.html">Học liệu</a><a href="14-elibrary.html?from=lms">Thư viện</a></nav>
+    <div class="tv-header__actions"><button class="tv-icon-btn" data-tv-theme-toggle></button><span class="tv-icon-btn tv-icon-btn--warn"><i data-lucide="bell"></i></span><img class="tv-avatar" src="../assets/default-avatar.jpg" alt=""></div>
+  </div>
+</header>
+
+<!-- ===== Phần 1: Màn hình kết quả (layout C – cột phải hẹp 262px) ===== -->
+<div class="tv-container">
+  <nav class="tv-breadcrumb"><a href="#">Trang chủ</a><i data-lucide="chevron-right"></i><a href="02-app-sidebar-list.html">Học tập</a><i data-lucide="chevron-right"></i><a href="#">Khoá test LBN</a><i data-lucide="chevron-right"></i><a href="#">Lesson 6</a><i data-lucide="chevron-right"></i><span class="is-current">BÀI THI 1</span></nav>
+  <div class="tv-split tv-split--wide" style="padding-top:36px">
+    <div>
+      <h1 style="font-size:20px;font-weight:700">BÀI THI 1</h1>
+      <p class="tv-small" style="margin-bottom:16px">(Ghi nhận lần cuối lúc: 10:27 - 30/10/2026)</p>
+      <div class="tv-grid" style="grid-template-columns:1fr 1fr;gap:10px">
+        <div class="tv-panel" style="border-radius:8px;display:grid;place-items:center">
+          <div class="gauge">
+            <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="var(--tv-track)" stroke-width="8" stroke-dasharray="198 264" stroke-linecap="round"/><circle cx="50" cy="50" r="42" fill="none" stroke="var(--tv-success-solid)" stroke-width="8" stroke-dasharray="10 264" stroke-linecap="round"/></svg>
+            <div class="gauge__txt"><span class="tv-small">Điểm bài thi</span><b>0.48</b></div>
+          </div>
+          <p style="color:var(--tv-success)">Chúc mừng bạn đã vượt qua bài thi!</p>
+        </div>
+        <div class="tv-grid" style="grid-template-columns:1fr 1fr;gap:10px;align-content:start">
+          <div class="tv-stat-tile"><div class="tv-stat-tile__label">Số câu đúng</div><div class="tv-stat-tile__value"><i style="background:var(--tv-success-solid)"><i data-lucide="help-circle"></i></i>2/42</div></div>
+          <div class="tv-stat-tile"><div class="tv-stat-tile__label">Thời gian làm bài</div><div class="tv-stat-tile__value"><i style="background:#f5a524"><i data-lucide="clock"></i></i>0:30:0</div></div>
+          <div class="tv-stat-tile"><div class="tv-stat-tile__label">Số lần tạm dừng</div><div class="tv-stat-tile__value"><i style="background:var(--tv-primary)"><i data-lucide="pause"></i></i>0/Không</div></div>
+          <div class="tv-stat-tile"><div class="tv-stat-tile__label">Số lần làm bài</div><div class="tv-stat-tile__value"><i style="background:var(--tv-c3)"><i data-lucide="play"></i></i>2/Không giới hạn</div></div>
+          <div class="tv-stat-tile" style="grid-column:span 2">
+            <div class="tv-stat-tile__label">Độ khó các câu hỏi trong bài thi</div>
+            <div style="display:flex;gap:3px;margin-top:10px;text-align:center;font-weight:600;color:var(--tv-success);font-size:14px"><div style="flex:29">29%<div class="tv-bar"><span style="width:100%"></span></div></div><div style="flex:40">40%<div class="tv-bar"><span style="width:100%"></span></div></div><div style="flex:31">31%<div class="tv-bar"><span style="width:100%"></span></div></div></div>
+            <div class="tv-caption tv-row" style="gap:16px;margin-top:10px;color:var(--tv-text)"><span>▬ Nhận biết</span><span>▬ Thông hiểu</span><span>▬ Vận dụng</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tv-row" style="justify-content:center;margin-top:20px;gap:10px">
+        <a class="tv-btn tv-btn--outline" style="width:200px;font-size:16px" href="#review">Xem lại bài vừa làm</a>
+        <button class="tv-btn tv-btn--primary" style="width:200px;font-size:16px">Bắt đầu bài mới</button>
+      </div>
+    </div>
+    <aside class="tv-stack" style="gap:10px">
+      <div class="tv-panel" style="border-radius:8px;padding:12px"><div class="tv-widget-title">Danh sách bài học</div><a href="#" class="tv-row" style="margin-top:20px;gap:6px"><i data-lucide="clock" style="width:18px"></i>BÀI THI 1</a></div>
+      <div class="tv-panel tv-panel--widget" style="border-radius:8px">
+        <div class="tv-widget-title">Tiện ích</div>
+        <a class="tv-util-row" href="#"><i data-lucide="file-search"></i>Tài liệu môn học: <b>0</b><i class="chev" data-lucide="chevron-right"></i></a>
+        <a class="tv-util-row" href="#"><i data-lucide="file-pen-line"></i>Ghi chú: <b>0</b><i class="chev" data-lucide="chevron-right"></i></a>
+        <div class="tv-util-row"><i data-lucide="alarm-clock"></i>Thời lượng học: <b>0 ngày</b></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ===== Phần 2: Màn hình xem lại / làm bài (layout E – full-screen tool) ===== -->
+<section id="review" style="margin-top:56px;border-top:4px solid var(--tv-primary)">
+  <div class="review-bar">
+    <div><span class="tv-small"><span style="color:var(--tv-success)">●</span> Đúng: 2/42</span><span class="tv-small"><span style="color:var(--tv-danger)">●</span> Sai: 40/42</span><span style="margin-left:auto"></span><button class="tv-btn tv-btn--outline tv-btn--sm">Thoát</button><span class="tv-icon-btn"><i data-lucide="minimize"></i></span></div>
+    <div style="justify-content:center;position:relative"><button class="tv-btn tv-btn--outline tv-btn--sm is-disabled">Quay lại</button><button class="tv-btn tv-btn--primary tv-btn--sm">Tiếp theo</button><span class="tv-small tv-muted" style="position:absolute;right:120px">Số câu đã trả lời: <b style="color:var(--tv-heading)">3/42</b></span><span style="position:absolute;right:24px;display:flex;gap:8px"><span class="tv-icon-btn"><i data-lucide="minus"></i></span><span class="tv-icon-btn"><i data-lucide="plus"></i></span></span></div>
+  </div>
+  <div style="background:var(--tv-bg);padding:24px 16px 32px">
+    <div class="tv-stack" style="max-width:1072px;margin:0 auto;gap:20px">
+      <div class="tv-panel">
+        <div class="tv-panel__head"><div class="tv-row"><i data-lucide="circle-help" style="color:var(--tv-heading)"></i><b>Question 1-2</b></div><select class="tv-select" style="width:176px;height:42px;border-color:var(--tv-border)"><option>Hiển thị dọc</option><option>Hiển thị ngang</option></select></div>
+        <p style="line-height:2">Sau một giờ tắt đèn hưởng ứng Chiến dịch Giờ Trái Đất 2025, cả nước đã tiết kiệm được lượng điện năng khoảng 450 nghìn kWh, tương đương khoảng 945 triệu đồng.<br><i>Xét tính đúng sai của các khẳng định sau:</i></p>
+        <p style="margin-top:20px"><b>Giải thích</b>:</p>
+        <p style="margin-top:10px">Áp dụng cách viết số tự nhiên dưới dạng tích của một số với lũy thừa của 10 để biểu diễn các số liệu đã cho.</p>
+      </div>
+      <div class="tv-panel">
+        <p style="font-weight:600;margin-bottom:14px">1. Sau một giờ tắt đèn, nước ta tiết kiệm được lượng điện năng khoảng 45·10⁴ kWh.</p>
+        <label class="tv-check"><span class="dot"></span>Sai</label>
+        <label class="tv-check is-correct"><span class="dot"><i data-lucide="check"></i></span>Đúng</label>
+        <hr style="border:0;border-top:1px solid var(--tv-divider);margin:20px 0">
+        <p style="font-weight:600;margin-bottom:14px">2. Giá điện bình quân của nước ta khoảng 2100 đồng cho một kWh.</p>
+        <label class="tv-check is-wrong"><span class="dot"><i data-lucide="x"></i></span>Sai</label>
+        <label class="tv-check"><span class="dot"></span>Đúng</label>
+      </div>
+    </div>
+  </div>
+  <div class="tv-qnav qnav-fixed" id="qnav"></div>
+</section>
+
+<script>
+  var nav = document.getElementById('qnav');
+  for (var i = 1; i <= 42; i++) {
+    var b = document.createElement('button'); b.textContent = i;
+    if (i === 1) b.className = 'is-correct is-current'; else if (i === 9) b.className = 'is-correct'; else if (i === 2) b.className = 'is-wrong';
+    nav.appendChild(b);
+  }
+</script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../tvet.js"></script>
+</body>
+</html>

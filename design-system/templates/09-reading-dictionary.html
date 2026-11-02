@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bài đọc & tra từ</title>
+<link rel="stylesheet" href="../tvet.css">
+<style>
+  /* ---- Thanh tiêu đề ---- */
+  .rd-bar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 14px 16px; margin-top: 24px; }
+  .rd-bar h1 { flex: 1; min-width: 220px; font-size: 20px; font-weight: 700; }
+  .seg { display: inline-flex; align-items: center; gap: 2px; padding: 3px; border-radius: var(--tv-r-pill); background: var(--tv-muted-bg); }
+  .seg button { width: 34px; height: 30px; border: 0; border-radius: var(--tv-r-pill); background: transparent; color: var(--tv-text-muted); display: grid; place-items: center; cursor: pointer; }
+  .seg button svg { width: 17px; height: 17px; }
+  .seg button.is-active { background: var(--tv-surface); color: var(--tv-primary); box-shadow: var(--tv-sh-sm); }
+  .clock { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: var(--tv-r-pill); background: var(--tv-primary-soft); color: var(--tv-primary); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .clock svg { width: 17px; height: 17px; }
+
+  /* ---- Khung 2 cột: bài đọc | câu hỏi ---- */
+  .rd { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: var(--tv-gap); align-items: start; margin-top: 16px; }
+  .rd > * { min-width: 0; }
+  .rd[data-mode="article"] { grid-template-columns: minmax(0, 1fr); }
+  .rd[data-mode="article"] #side, .rd[data-mode="questions"] #article { display: none; }
+  .rd[data-mode="questions"] { grid-template-columns: minmax(0, 1fr); }
+  .rd[data-mode="questions"] .rd-panel__body, .rd[data-mode="article"] .rd-panel__body { max-width: 860px; width: 100%; margin: 0 auto; }
+  .rd-panel { position: sticky; top: calc(var(--tv-header-h) + 16px); display: flex; flex-direction: column; height: calc(100vh - var(--tv-header-h) - 32px); min-height: 520px; background: var(--tv-surface); border-radius: var(--tv-r-xl); box-shadow: var(--tv-sh-xs); overflow: hidden; }
+  .rd-panel__head { padding: 18px 24px 0; }
+  .rd-panel__body { flex: 1; overflow: auto; padding: 16px 24px 24px; }
+
+  /* Bài đọc */
+  .art-meta { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 6px; padding-bottom: 14px; border-bottom: 1px solid var(--tv-divider); font-size: 13px; color: var(--tv-text-muted); }
+  .art-meta span { display: inline-flex; align-items: center; gap: 4px; }
+  .art-meta svg { width: 15px; height: 15px; }
+  .art-meta .fs { margin-left: auto; display: inline-flex; gap: 6px; }
+  .art-meta .fs button { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--tv-border); background: var(--tv-surface); color: var(--tv-heading); font: 600 13px var(--tv-font); cursor: pointer; }
+  .para { border-bottom: 1px solid var(--tv-divider); scroll-margin-top: 12px; }
+  .para__head { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 0; border: 0; background: none; text-align: left; font: inherit; color: var(--tv-text); cursor: pointer; }
+  .para__head .tv-num { background: var(--tv-pink); }
+  .para__head b { flex: 1; min-width: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .para__head .chev { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: var(--tv-primary); box-shadow: var(--tv-sh-card); flex: none; transition: transform .2s; }
+  .para__head .chev svg { width: 16px; height: 16px; }
+  .para.is-closed .chev { transform: rotate(180deg); }
+  .para.is-closed .para__body { display: none; }
+  .para__body { padding: 0 0 18px; font-size: var(--rd-fs, 17px); line-height: 1.75; color: var(--tv-text-87); }
+  .para.is-flash .para__body { animation: flash 1.6s ease; border-radius: 8px; }
+  @keyframes flash { 0%, 40% { background: var(--tv-primary-soft); box-shadow: 0 0 0 8px var(--tv-primary-soft); } }
+
+  /* Tabs cột phải */
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--tv-divider); overflow-x: auto; }
+  .tabs button { display: inline-flex; align-items: center; gap: 6px; padding: 12px 12px; border: 0; border-bottom: 2px solid transparent; background: none; font: 600 14px var(--tv-font); color: var(--tv-text-muted); cursor: pointer; white-space: nowrap; }
+  .tabs button svg { width: 16px; height: 16px; }
+  .tabs button.is-active { color: var(--tv-primary); border-color: var(--tv-primary); }
+  .tabs .n { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 99px; background: var(--tv-muted-bg); font-size: 12px; display: inline-grid; place-items: center; }
+  .tabs .is-active .n { background: var(--tv-primary-soft); }
+
+  /* Câu hỏi */
+  .qhead { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .qhead .tv-bar { flex: 1; }
+  .qhead .tv-bar > span { background: var(--tv-primary); }
+  .qdots { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  .qdots button { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--tv-border); background: var(--tv-surface); color: var(--tv-text-muted); font: 600 13px var(--tv-font); cursor: pointer; }
+  .qdots .is-done { background: var(--tv-primary-soft); border-color: var(--tv-primary-tint); color: var(--tv-primary); }
+  .qdots .is-correct { background: var(--tv-success); border-color: var(--tv-success); color: #fff; }
+  .qdots .is-wrong { background: var(--tv-danger); border-color: var(--tv-danger); color: #fff; }
+  .q { padding: 16px; border: 1px solid var(--tv-border); border-radius: var(--tv-r-lg); scroll-margin-top: 12px; }
+  .q + .q { margin-top: 14px; }
+  .q__top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; color: var(--tv-text-muted); }
+  .q__top b { color: var(--tv-heading); font-size: 14px; }
+  .q__ref { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: var(--tv-r-pill); border: 0; background: var(--tv-primary-soft); color: var(--tv-primary); font: 600 12px var(--tv-font); cursor: pointer; }
+  .q__ref svg { width: 13px; height: 13px; }
+  .q__text { font-weight: 600; line-height: 1.55; margin-bottom: 10px; }
+  .q__opts { display: grid; gap: 8px; }
+  .q__opts--row { grid-template-columns: 1fr 1fr; }
+  .q .tv-check { border-color: var(--tv-border); font-size: 15px; }
+  .q .tv-check:hover { border-color: var(--tv-primary-tint); }
+  .q .tv-check .k { font-weight: 700; color: var(--tv-heading); width: 16px; }
+  .q .tv-check.is-selected { border-color: var(--tv-primary); background: var(--tv-primary-soft); }
+  .q .tv-check.is-selected .dot { border: 6px solid var(--tv-primary); }
+  .is-submitted .q .tv-check { pointer-events: none; }
+  .q__explain { margin-top: 12px; padding: 10px 12px; border-radius: var(--tv-r-md); background: var(--tv-surface-alt); border: 1px solid var(--tv-divider); font-size: 14px; line-height: 1.6; }
+  .result { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; padding: 14px 16px; border-radius: var(--tv-r-lg); background: var(--tv-success-bg); }
+  .result b { font-size: 28px; color: var(--tv-success); line-height: 1; }
+  .result .t { flex: 1; font-size: 14px; color: var(--tv-text-87); }
+
+  /* Từ đã tra */
+  .lookup-card { margin-top: 14px; padding: 16px 18px; border: 1px solid var(--tv-primary-tint); border-radius: var(--tv-r-lg); background: var(--tv-surface); }
+  .filter { display: flex; gap: 8px; margin: 22px 0 6px; align-items: center; }
+  .filter h3 { margin-right: auto; font-size: 15px; color: var(--tv-heading); }
+  .filter button { height: 28px; padding: 0 12px; border-radius: var(--tv-r-pill); border: 1px solid var(--tv-border); background: var(--tv-surface); font: 600 12px var(--tv-font); color: var(--tv-text-muted); cursor: pointer; }
+  .filter button.is-active { background: var(--tv-primary); border-color: var(--tv-primary); color: #fff; }
+  .wrow { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--tv-divider); cursor: pointer; }
+  .wrow .t { flex: 1; min-width: 0; }
+  .wrow b { color: var(--tv-link-deep); font-weight: 600; }
+  .wrow .ipa { margin-left: 6px; font-size: 13px; color: var(--tv-danger); }
+  .wrow p { font-size: 13px; color: var(--tv-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .wrow .star { width: 32px; height: 32px; border: 0; border-radius: 50%; background: none; color: var(--tv-text-muted); display: grid; place-items: center; cursor: pointer; }
+  .wrow .star.is-on { color: var(--tv-warning); }
+  .wrow .star.is-on svg { fill: currentColor; }
+
+  /* Bình luận */
+  .cmt-new { display: flex; align-items: center; gap: 10px; }
+  .cmt-new .tv-input { flex: 1; }
+  .cmt { display: flex; gap: 10px; margin-top: 18px; }
+  .cmt .tv-avatar { width: 34px; height: 34px; }
+  .cmt__bubble { display: inline-block; padding: 8px 12px; border-radius: 12px; background: var(--tv-muted-bg); font-size: 14px; line-height: 1.5; }
+  .cmt__bubble b { display: block; font-size: 13px; color: var(--tv-heading); }
+  .cmt__meta { display: flex; align-items: center; gap: 14px; margin-top: 4px; font-size: 12px; color: var(--tv-text-muted); }
+  .cmt__meta button { display: inline-flex; align-items: center; gap: 4px; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; padding: 0; }
+  .cmt__meta svg { width: 15px; height: 15px; }
+
+  @media (max-width: 1100px) {
+    .rd, .rd[data-mode] { grid-template-columns: minmax(0, 1fr); }
+    .rd[data-mode] #side, .rd[data-mode] #article { display: flex; }
+    .rd-panel { position: static; height: auto; min-height: 0; }
+    .rd-panel__body { overflow: visible; }
+    .seg-wrap { display: none; }
+  }
+  @media (max-width: 600px) {
+    .rd-panel__head, .rd-panel__body { padding-left: 16px; padding-right: 16px; }
+    .q__opts--row { grid-template-columns: 1fr; }
+    .art-meta .fs { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="tv-header">
+  <div class="tv-container tv-header__inner">
+    <a class="tv-logo" href="01-landing.html"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></a>
+    <div class="tv-input tv-input--search" style="width:190px"><i data-lucide="search"></i><input placeholder="Tìm kiếm..." aria-label="Tìm kiếm"></div>
+    <nav class="tv-nav"><a class="is-active" href="02-app-sidebar-list.html">Học tập</a><a href="12-my-tasks.html">Bài tập</a><a href="15-shared-materials.html">Học liệu</a><a href="14-elibrary.html?from=lms">Thư viện</a></nav>
+    <div class="tv-header__actions">
+      <button class="tv-icon-btn" data-tv-theme-toggle></button>
+      <span class="tv-icon-btn tv-icon-btn--warn"><i data-lucide="bell"></i></span>
+      <img class="tv-avatar" src="../assets/default-avatar.jpg" alt="">
+    </div>
+  </div>
+</header>
+
+<div class="tv-container">
+  <nav class="tv-breadcrumb"><a href="01-landing.html">Trang chủ</a><i data-lucide="chevron-right"></i><a href="02-app-sidebar-list.html">Học tập</a><i data-lucide="chevron-right"></i><a href="03-detail-two-column.html">Tiếng Anh 10</a><i data-lucide="chevron-right"></i><a href="#">Unit 3: Environment</a><i data-lucide="chevron-right"></i><span class="is-current">Bài đọc báo</span></nav>
+
+  <div class="tv-panel rd-bar">
+    <a class="tv-icon-btn" href="03-detail-two-column.html" title="Quay lại"><i data-lucide="arrow-left"></i></a>
+    <h1 class="tv-h1">Bài đọc báo: Hanoi bans petrol motorbikes</h1>
+    <span class="tv-row seg-wrap" style="gap:8px"><span class="tv-small tv-muted">Chế độ xem:</span>
+      <span class="seg" id="modes">
+        <button class="is-active" data-mode="split" title="Bài đọc và câu hỏi song song"><i data-lucide="columns-2"></i></button>
+        <button data-mode="article" title="Chỉ bài đọc"><i data-lucide="book-open-text"></i></button>
+        <button data-mode="questions" title="Chỉ câu hỏi"><i data-lucide="list-checks"></i></button>
+      </span>
+    </span>
+    <span class="clock" title="Thời gian làm bài"><i data-lucide="timer"></i><span id="clock">00:00</span></span>
+    <button class="tv-btn tv-btn--primary" data-act="submit">Nộp bài</button>
+  </div>
+
+  <div class="rd" id="rd" data-mode="split">
+    <!-- ===== Bài đọc ===== -->
+    <section class="rd-panel" id="article">
+      <div class="rd-panel__head">
+        <h2 class="tv-h2" style="font-size:22px">Bài đọc báo</h2>
+        <div class="art-meta">
+          <span><i data-lucide="clock-3"></i>5 phút đọc</span>
+          <span><i data-lucide="text"></i><b id="wc"></b>&nbsp;từ</span>
+          <span><i data-lucide="languages"></i>Nhấp đúp vào từ để tra nghĩa</span>
+          <span class="fs"><button data-fs="-1" title="Giảm cỡ chữ">A−</button><button data-fs="1" title="Tăng cỡ chữ">A+</button></span>
+        </div>
+      </div>
+      <div class="rd-panel__body" id="paras"></div>
+    </section>
+
+    <!-- ===== Câu hỏi / Từ đã tra / Bình luận ===== -->
+    <section class="rd-panel" id="side">
+      <div class="rd-panel__head" style="padding-top:6px">
+        <div class="tabs" id="tabs">
+          <button class="is-active" data-tab="qs"><i data-lucide="circle-help"></i>Câu hỏi <span class="n" id="nQs"></span></button>
+          <button data-tab="words"><i data-lucide="book-a"></i>Từ đã tra <span class="n" id="nWords">0</span></button>
+          <button data-tab="cmts"><i data-lucide="message-circle"></i>Bình luận <span class="n" id="nCmts"></span></button>
+        </div>
+      </div>
+      <div class="rd-panel__body">
+        <div id="pane-qs" data-dict></div>
+        <div id="pane-words" hidden>
+          <form class="tv-input tv-input--lg" id="searchForm" style="border:1px solid var(--tv-border)"><i data-lucide="search"></i><input id="searchInput" placeholder="Nhập từ tiếng Anh cần tra..." aria-label="Tra từ" autocomplete="off"><button class="tv-btn tv-btn--primary tv-btn--sm" style="margin-right:-10px">Tra</button></form>
+          <div id="lookup"></div>
+          <div class="filter"><h3>Lịch sử tra từ</h3><button class="is-active" data-filter="all">Tất cả</button><button data-filter="saved">Đã lưu <span id="nSaved">0</span></button></div>
+          <div id="history"></div>
+        </div>
+        <div id="pane-cmts" hidden>
+          <div class="cmt-new"><img class="tv-avatar" src="../assets/default-avatar.jpg" alt=""><form class="tv-input" id="cmtForm"><input id="cmtInput" placeholder="Viết bình luận..." aria-label="Viết bình luận"><button class="tv-icon-btn" style="box-shadow:none;margin-right:-8px" title="Gửi"><i data-lucide="send-horizontal"></i></button></form></div>
+          <div id="cmts"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../tvet.js"></script>
+<script src="../tvet-dict.js"></script>
+<script>
+(function () {
+  var PARAS = [
+    'Vietnam has announced a sweeping prohibition on fossil-fuel-powered motorcycles and mopeds in central Hanoi, effective July 2026, marking a bold step in addressing the capital’s chronic air pollution. The directive, issued by Prime Minister Pham Minh Chinh, will initially cover the area within and around Ring Road 1, with authorities planning a gradual phase-out across the rest of the city.',
+    'As the dominant mode of transport in Hanoi, motorcycles account for nearly 7 million of the city’s 8.5 million registered vehicles. However, worsening traffic emissions have exacerbated the metropolis’s hazardous smog, frequently ranking it among the world’s most polluted urban centres. The ban aligns with Vietnam’s broader transition toward electric vehicles (EVs) to mitigate environmental degradation and climate change impacts. While domestic EV manufacturer VinFast has gained traction — commanding nearly 20% of the automotive market — electric two-wheelers remain a niche segment, raising concerns over feasibility.',
+    'Critics argue the policy disproportionately burdens low-income earners. Nguyen Van Hung, a 62-year-old motorbike taxi driver, warns that the measure will devastate gig workers, delivery riders, and commuters reliant on affordable transport. “Forcing people to abandon their primary livelihood tools without viable alternatives is impractical,” he asserts. Scepticism also surrounds the aggressive timeline, with office worker Hoang Duy Dung cautioning that inadequate public transit infrastructure could render compliance unrealistic. “Environmental progress is necessary, but execution must be equitable,” he contends.',
+    'City officials say they will add new bus routes before the deadline and offer subsidies of up to 5 million dong to residents who switch to electric motorbikes. Analysts suggest the success of the ban will depend on whether these support measures arrive in time.'
+  ];
+  var QS = [
+    { ref: 1, kind: 'single', text: 'What is the main purpose of the ban?', opts: ['To reduce traffic accidents', 'To tackle air pollution in the capital', 'To promote tourism in Hanoi', 'To increase tax revenue'], ans: 1, explain: 'Đoạn 1: lệnh cấm là “a bold step in addressing the capital’s chronic air pollution”.' },
+    { ref: 2, kind: 'single', text: 'Approximately how many of Hanoi’s registered vehicles are motorcycles?', opts: ['2 million', '5 million', 'Nearly 7 million', '8.5 million'], ans: 2, explain: '“motorcycles account for nearly 7 million of the city’s 8.5 million registered vehicles”.' },
+    { ref: 2, kind: 'tf', text: 'Electric two-wheelers are already the most popular segment of the market.', opts: ['Đúng', 'Sai'], ans: 1, explain: 'Bài viết nói xe điện hai bánh “remain a niche segment” — vẫn là phân khúc ngách.' },
+    { ref: 2, kind: 'single', text: 'The word “mitigate” in paragraph 2 is closest in meaning to ___.', opts: ['worsen', 'reduce', 'measure', 'ignore'], ans: 1, explain: '“mitigate” = giảm nhẹ, làm dịu bớt → gần nghĩa nhất với “reduce”. Mẹo: nhấp đúp vào từ trong bài để tra.' },
+    { ref: 3, kind: 'single', text: 'Why does Nguyen Van Hung oppose the policy?', opts: ['He thinks pollution is not serious', 'It hurts people who earn a living with motorbikes', 'Electric motorbikes are too fast', 'He works in an office'], ans: 1, explain: 'Ông cho rằng biện pháp “will devastate gig workers, delivery riders, and commuters” — những người kiếm sống bằng xe máy.' },
+    { ref: 4, kind: 'tf', text: 'The city plans to offer subsidies to residents who switch to electric motorbikes.', opts: ['Đúng', 'Sai'], ans: 0, explain: 'Đoạn 4: “offer subsidies of up to 5 million dong to residents who switch to electric motorbikes”.' }
+  ];
+  var CMTS = [
+    { name: 'Lê Trọng Kha', text: 'Câu 4 tra từ “mitigate” là ra ngay, tiện thật.', at: '12:44 · 29/08/2026', likes: 3 },
+    { name: 'Cô Nguyễn Lan (Giáo viên)', text: 'Các em chú ý cụm “account for” ở đoạn 2 nghĩa là “chiếm (bao nhiêu phần)”, không phải “tài khoản” nhé.', at: '09:45 · 28/08/2026', likes: 12 },
+    { name: 'Trần Minh Anh', text: 'Đoạn 3 nhiều từ mới quá: disproportionately, livelihood, scepticism…', at: '11:12 · 10/08/2026', likes: 1 }
+  ];
+
+  var picks = QS.map(function () { return -1; }), submitted = false, fs = 17, seconds = 0, closed = {}, filter = 'all', lookupWord = '';
+  var $ = function (id) { return document.getElementById(id); };
+  function icons() { if (window.lucide) window.lucide.createIcons(); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function mmss(s) { return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
+
+  /* ---------- Bài đọc ---------- */
+  // Từ đã lưu được gạch chân chấm trong bài để nhận ra khi đọc lại
+  function marked(text) {
+    return esc(text).replace(/[A-Za-z][A-Za-z’'-]*/g, function (w) { var k = TvDict.lemma(w); return k && TvDict.saved[k] ? '<mark class="tv-dict-mark">' + w + '</mark>' : w; });
+  }
+  function renderArticle() {
+    $('paras').innerHTML = PARAS.map(function (p, i) {
+      var first = p.split(/(?<=[.!?])\s/)[0];
+      return '<section class="para' + (closed[i] ? ' is-closed' : '') + '" id="p' + (i + 1) + '"><button class="para__head" data-para="' + i + '"><span class="tv-num">' + (i + 1) + '</span><b>' + esc(first) + '</b><span class="chev"><i data-lucide="chevron-up"></i></span></button>' +
+        '<div class="para__body" data-dict>' + marked(p) + '</div></section>';
+    }).join('');
+    $('paras').style.setProperty('--rd-fs', fs + 'px');
+    icons();
+  }
+  function showPara(n) {
+    if ($('rd').dataset.mode === 'questions') setMode('split');
+    closed[n - 1] = false;
+    var el = $('p' + n);
+    el.classList.remove('is-closed');
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    el.classList.remove('is-flash'); void el.offsetWidth; el.classList.add('is-flash');
+  }
+  function setMode(m) {
+    $('rd').dataset.mode = m;
+    document.querySelectorAll('#modes button').forEach(function (b) { b.classList.toggle('is-active', b.dataset.mode === m); });
+  }
+
+  /* ---------- Câu hỏi ---------- */
+  function renderQs() {
+    var done = picks.filter(function (p) { return p >= 0; }).length;
+    var right = QS.filter(function (q, i) { return picks[i] === q.ans; }).length;
+    var head = submitted
+      ? '<div class="result"><b>' + right + '/' + QS.length + '</b><div class="t"><b style="font-size:15px;color:var(--tv-heading);display:block">Đã nộp bài · ' + (right / QS.length * 10).toFixed(1) + ' điểm</b>Thời gian làm bài ' + mmss(seconds) + '. Xem giải thích dưới từng câu.</div><button class="tv-btn tv-btn--outline tv-btn--sm" data-act="retry"><i data-lucide="rotate-ccw"></i>Làm lại</button></div>'
+      : '<div class="qhead"><span class="tv-small"><b>' + done + '/' + QS.length + '</b> câu đã làm</span><div class="tv-bar"><span style="width:' + (done / QS.length * 100) + '%"></span></div></div>';
+    var dots = '<div class="qdots">' + QS.map(function (q, i) {
+      var c = submitted ? (picks[i] === q.ans ? 'is-correct' : 'is-wrong') : (picks[i] >= 0 ? 'is-done' : '');
+      return '<button class="' + c + '" data-jump="' + i + '">' + (i + 1) + '</button>';
+    }).join('') + '</div>';
+    var list = QS.map(function (q, qi) {
+      var opts = q.opts.map(function (o, oi) {
+        var cls = 'tv-check', dot = '';
+        if (submitted && oi === q.ans) { cls += ' is-correct'; dot = '<i data-lucide="check"></i>'; }
+        else if (submitted && oi === picks[qi]) { cls += ' is-wrong'; dot = '<i data-lucide="x"></i>'; }
+        else if (!submitted && oi === picks[qi]) cls += ' is-selected';
+        return '<label class="' + cls + '" data-q="' + qi + '" data-o="' + oi + '"><span class="dot">' + dot + '</span>' + (q.kind === 'tf' ? '' : '<span class="k">' + 'ABCD'[oi] + '</span>') + esc(o) + '</label>';
+      }).join('');
+      var res = submitted ? (picks[qi] === q.ans ? '<span class="tv-chip tv-chip--success">Đúng</span>' : '<span class="tv-chip tv-chip--danger">' + (picks[qi] < 0 ? 'Chưa làm' : 'Sai') + '</span>') : '';
+      return '<div class="q" id="q' + qi + '"><div class="q__top"><b>Câu ' + (qi + 1) + '</b>' + (q.kind === 'tf' ? 'Đúng / Sai' : 'Chọn đáp án') + ' ' + res + '<button class="q__ref" data-ref="' + q.ref + '"><i data-lucide="text-search"></i>Đoạn ' + q.ref + '</button></div>' +
+        '<p class="q__text">' + esc(q.text) + '</p><div class="q__opts' + (q.kind === 'tf' ? ' q__opts--row' : '') + '">' + opts + '</div>' +
+        (submitted ? '<div class="q__explain"><b>Giải thích:</b> ' + esc(q.explain) + '</div>' : '') + '</div>';
+    }).join('');
+    var foot = submitted ? '' : '<button class="tv-btn tv-btn--primary tv-btn--block tv-btn--lg" style="margin-top:18px" data-act="submit">Nộp bài</button>';
+    $('pane-qs').className = submitted ? 'is-submitted' : '';
+    $('pane-qs').innerHTML = head + dots + list + foot;
+    $('nQs').textContent = done + '/' + QS.length;
+    icons();
+  }
+
+  /* ---------- Từ đã tra ---------- */
+  function renderWords() {
+    var hist = TvDict.history.filter(function (w) { return filter === 'all' || TvDict.saved[w]; });
+    $('history').innerHTML = hist.length ? hist.map(function (w) {
+      var d = TvDict.data[w], on = TvDict.saved[w];
+      return '<div class="wrow" data-word="' + esc(w) + '"><div class="t"><b>' + esc(w) + '</b><span class="ipa">[' + d[0] + ']</span><p>' + esc(d[1][0][0]) + ' · ' + esc(d[1][0][1][0][0]) + '</p></div>' +
+        '<button class="star' + (on ? ' is-on' : '') + '" data-tvdict-save="' + esc(w) + '" title="' + (on ? 'Bỏ lưu' : 'Lưu từ') + '"><i data-lucide="star"></i></button></div>';
+    }).join('') : '<div class="tv-empty tv-small">' + (filter === 'saved' ? 'Chưa lưu từ nào. Bấm ☆ hoặc “Thêm vào từ vựng” khi tra từ.' : 'Chưa tra từ nào. Nhấp đúp vào một từ trong bài đọc hoặc nhập vào ô trên.') + '</div>';
+    $('lookup').innerHTML = lookupWord ? '<div class="lookup-card">' + TvDict.card(lookupWord) + '</div>' : '';
+    $('nWords').textContent = TvDict.history.length;
+    $('nSaved').textContent = Object.keys(TvDict.saved).length;
+    document.querySelectorAll('.filter button').forEach(function (b) { b.classList.toggle('is-active', b.dataset.filter === filter); });
+    icons();
+  }
+
+  /* ---------- Bình luận ---------- */
+  function renderCmts() {
+    $('cmts').innerHTML = CMTS.map(function (c) {
+      return '<div class="cmt"><img class="tv-avatar" src="../assets/default-avatar.jpg" alt=""><div><div class="cmt__bubble"><b>' + esc(c.name) + '</b>' + esc(c.text) + '</div>' +
+        '<div class="cmt__meta"><button><i data-lucide="thumbs-up"></i>' + (c.likes || '') + '</button><button><i data-lucide="reply"></i>Trả lời</button><span>' + c.at + '</span></div></div></div>';
+    }).join('');
+    $('nCmts').textContent = CMTS.length;
+    icons();
+  }
+
+  function showTab(name) {
+    document.querySelectorAll('#tabs button').forEach(function (b) { b.classList.toggle('is-active', b.dataset.tab === name); });
+    ['qs', 'words', 'cmts'].forEach(function (n) { $('pane-' + n).hidden = n !== name; });
+  }
+
+  /* ---------- Sự kiện ---------- */
+  document.addEventListener('click', function (e) {
+    var el;
+    // Lần nhấp thứ hai của nhấp đúp (đã có vùng chọn) là để tra từ, không đổi đáp án
+    if ((el = e.target.closest('.q .tv-check')) && !submitted && window.getSelection().isCollapsed) { picks[+el.dataset.q] = +el.dataset.o; return renderQs(); }
+    if ((el = e.target.closest('[data-act]'))) {
+      if (el.dataset.act === 'submit' && !submitted) {
+        var left = picks.filter(function (p) { return p < 0; }).length;
+        if (left && !confirm('Còn ' + left + ' câu chưa làm. Bạn vẫn muốn nộp bài?')) return;
+        submitted = true; setMode($('rd').dataset.mode === 'article' ? 'split' : $('rd').dataset.mode); showTab('qs'); renderQs();
+        $('pane-qs').parentElement.scrollTop = 0;
+      }
+      if (el.dataset.act === 'retry') { submitted = false; picks = QS.map(function () { return -1; }); seconds = 0; renderQs(); }
+      return;
+    }
+    if ((el = e.target.closest('[data-ref]'))) return showPara(+el.dataset.ref);
+    if ((el = e.target.closest('[data-jump]'))) return $('q' + el.dataset.jump).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if ((el = e.target.closest('[data-para]'))) { var i = +el.dataset.para; closed[i] = !closed[i]; el.parentElement.classList.toggle('is-closed', closed[i]); return; }
+    if ((el = e.target.closest('[data-mode]')) && el.closest('#modes')) return setMode(el.dataset.mode);
+    if ((el = e.target.closest('[data-tab]'))) return showTab(el.dataset.tab);
+    if ((el = e.target.closest('[data-filter]'))) { filter = el.dataset.filter; return renderWords(); }
+    if ((el = e.target.closest('[data-fs]'))) { fs = Math.min(22, Math.max(14, fs + +el.dataset.fs)); $('paras').style.setProperty('--rd-fs', fs + 'px'); return; }
+    if ((el = e.target.closest('.wrow')) && !e.target.closest('.star')) { lookupWord = el.dataset.word; renderWords(); $('lookup').scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+  });
+  $('searchForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var w = $('searchInput').value.trim();
+    if (!w) return;
+    lookupWord = w;
+    TvDict.remember(w);
+    renderWords();
+  });
+  $('cmtForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var v = $('cmtInput').value.trim();
+    if (!v) return;
+    CMTS.unshift({ name: 'Bạn', text: v, at: 'Vừa xong', likes: 0 });
+    $('cmtInput').value = '';
+    renderCmts();
+  });
+  document.addEventListener('tvdict:change', function (e) { renderWords(); if (e.detail.type === 'saved') renderArticle(); });
+  setInterval(function () { if (!submitted) { seconds++; $('clock').textContent = mmss(seconds); } }, 1000);
+
+  $('wc').textContent = PARAS.join(' ').split(/\s+/).length;
+  renderArticle(); renderQs(); renderWords(); renderCmts();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QLĐT · Chi tiết kế hoạch giáo dục</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../qldt.css">
+<style>
+.detail-bar { display: flex; align-items: flex-end; }
+.detail-bar .qd-tabs { flex: 1; }
+.frame-scroll { overflow: auto; margin-top: 20px; }
+</style>
+</head>
+<body>
+<header class="qd-header">
+  <div class="qd-container qd-header__in">
+    <a class="qd-brand" href="02-home-modules.html">
+      <span class="qd-brand__logo"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></span>
+      <span><span class="qd-brand__name">Sở Giáo dục và Đào tạo Bắc Ninh</span><br><span class="qd-brand__sub">Hệ thống quản trị đào tạo trực tuyến</span></span>
+    </a>
+    <div class="qd-header__right">
+      <div class="qd-header__tools">
+        <button class="qd-hicon" aria-label="Lịch"><svg class="qd-i "><use href="#qd-calendar"/></svg></button>
+        <button class="qd-hicon" aria-label="Cài đặt"><svg class="qd-i "><use href="#qd-settings"/></svg></button>
+        <button class="qd-lang">VI</button>
+        <span class="qd-vsep"></span>
+        <button class="qd-hicon" aria-label="Việc cần làm"><svg class="qd-i "><use href="#qd-clipboard"/></svg></button>
+        <button class="qd-hicon qd-hicon--bell" aria-label="Thông báo"><svg class="qd-i "><use href="#qd-bell"/></svg><span class="qd-hicon__badge">6</span></button>
+        <button class="qd-user"><img src="../assets/default-avatar.jpg" alt=""><span>Nguyễn Văn Sơn</span><svg class="qd-i "><use href="#qd-chevron-down"/></svg></button>
+      </div>
+      <div class="qd-week">Năm học <b>2026-2027</b> · Tuần <b>9</b> (Học kỳ <b>I</b>): <a href="#">02/11 - 07/11</a></div>
+    </div>
+  </div>
+</header>
+<nav class="qd-nav">
+  <div class="qd-container qd-nav__in">
+      <div class="qd-nav__item" data-nav="dashboard"><a class="qd-nav__link" href="08-management-dashboard.html">Dashboard</a></div>
+      <div class="qd-nav__item" data-nav="tong-quan"><a class="qd-nav__link" href="09-executive-report.html#tong-quan">Tổng quan</a></div>
+      <div class="qd-nav__item" data-nav="nguoi-dung"><button class="qd-nav__link">Người dùng</button><div class="qd-menu"><a href="09-executive-report.html#nguoi-dung">Hoạt động người dùng</a><a href="09-executive-report.html#khao-sat">Khảo sát người dùng</a></div></div>
+      <div class="qd-nav__item" data-nav="day-hoc"><button class="qd-nav__link">Dạy và học</button><div class="qd-menu"><a href="09-executive-report.html#day-hoc">Hoạt động dạy và học</a><a href="09-executive-report.html#chat-luong">Chất lượng dạy và học</a></div></div>
+      <div class="qd-nav__item" data-nav="tan-suat"><button class="qd-nav__link">Tần suất</button><div class="qd-menu"><a href="09-executive-report.html#tan-suat-hs">Tần suất học tập của học sinh</a><a href="09-executive-report.html#tan-suat-gv">Giảng dạy online của giáo viên</a></div></div>
+      <div class="qd-nav__item" data-nav="ky-thi"><a class="qd-nav__link" href="09-executive-report.html#ky-thi">Kỳ thi chung</a></div>
+      <div class="qd-nav__item" data-nav="hoc-lieu"><a class="qd-nav__link" href="09-executive-report.html#hoc-lieu">Học liệu</a></div>
+      <div class="qd-nav__item" data-nav="ha-tang"><a class="qd-nav__link" href="09-executive-report.html#ha-tang">Hạ tầng</a></div>
+      <div class="qd-nav__item" data-nav="xep-hang"><a class="qd-nav__link" href="09-executive-report.html#xep-hang">Xếp hạng</a></div>
+    <div class="qd-nav__right">
+      <div class="qd-role">
+        <button class="qd-role__btn"><span>Quản lý Sở</span></button>
+        <div class="qd-role__menu">
+          <small>Sở Giáo dục và Đào tạo Bắc Ninh</small>
+          <a href="#" data-short="Lãnh đạo Sở">Lãnh đạo Sở</a>
+          <a href="#" class="is-selected" data-short="Quản lý Sở">Chuyên viên Phòng GD Trung học</a>
+          <small>UBND Phường Kinh Bắc</small>
+          <a href="#" data-short="Quản lý phường">Cán bộ phụ trách giáo dục</a>
+          <small>Trường THPT Hàn Thuyên</small>
+          <a href="#" data-short="Hiệu trưởng">Hiệu trưởng</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<main class="qd-wrap">
+  <div class="qd-tabs">
+    <a href="03-plan-list.html" class="is-active">Danh sách KHGD nhà trường</a><a href="#">KHGD tổ chuyên môn</a><a href="#">Tổ hợp môn lựa chọn</a><a href="#">So sánh KHGD</a>
+    <div class="qd-tabs__right"><a href="#">Export</a></div>
+  </div>
+  <div class="qd-page-title"><h1>Kế hoạch giáo dục: THPT Hàn Thuyên (2026-2027)</h1><p>Đơn vị quản lý: Sở Giáo dục và Đào tạo Bắc Ninh · Phòng Giáo dục Trung học</p></div>
+  <div class="detail-bar">
+    <div class="qd-tabs"><button class="is-active" data-qd-panel="p-detail">Chi tiết</button><button data-qd-panel="p-versions">Các năm học</button></div>
+    <a class="qd-close-x" href="03-plan-list.html" aria-label="Đóng">X</a>
+  </div>
+  <div>
+    <div id="p-detail" data-qd-tabpanel>
+      <section class="qd-section">
+        <div class="qd-section__head"><h3>1. Thông tin chung</h3><a href="#">Hiện</a></div>
+        <div class="qd-section__body"><dl class="qd-dl">
+          <dt>Trường</dt><dd>THPT Hàn Thuyên · Mã trường 27001</dd>
+          <dt>Cấp học</dt><dd>Trung học phổ thông</dd>
+          <dt>Quy mô</dt><dd>42 lớp (14 lớp/khối) · 1.850 học sinh</dd>
+          <dt>Tổ hợp môn lựa chọn</dt><dd>KHTN1, KHTN2, KHXH1, KHXH2, KHXH-CN, Tin học-Công nghệ</dd>
+          <dt>Ngoại ngữ 1</dt><dd>Tiếng Anh</dd>
+          <dt>Hiệu trưởng</dt><dd>Nguyễn Văn Sơn</dd>
+        </dl></div>
+      </section>
+      <section class="qd-section">
+        <div class="qd-section__head"><h3>2. Mục tiêu năm học</h3><a href="#">Hiện</a></div>
+        <div class="qd-section__body"><p>Thực hiện Chương trình GDPT 2018 ở cả ba khối; tỉ lệ học sinh lên lớp thẳng từ 97%; duy trì trường chuẩn quốc gia mức độ 2…</p></div>
+      </section>
+      <section class="qd-section is-open">
+        <div class="qd-section__head"><h3>3. Khung kế hoạch dạy học</h3><a href="#">Ẩn</a></div>
+        <div class="qd-section__body">
+          <h2 class="qd-h2" style="margin-top:20px">Thống kê kế hoạch dạy học các môn (Trừ HĐTN-HN và nội dung GD địa phương)</h2>
+          <div style="overflow:auto"><table class="qd-stats">
+        <thead><tr><th></th><th>Tổ trưởng CM</th><th>KH tổ CM</th><th>KH giáo viên</th><th>Phân phối CT</th><th>Bài giảng</th><th>Thí nghiệm/TH</th><th>YCCĐ</th><th>Học liệu số</th><th>Ma trận KT</th><th>Bản đặc tả</th><th>Ngân hàng câu hỏi</th><th>Đề KT giữa kỳ</th><th>Tổng số KH</th></tr></thead>
+        <tbody>
+          <tr><th>Số kế hoạch thiếu</th><td><a class="r" href="#">3/39</a></td><td><a class="r" href="#">5/39</a></td><td><a class="r" href="#">9/39</a></td><td><a class="r" href="#">4/39</a></td><td><a class="r" href="#">17/39</a></td><td><a class="r" href="#">4/12</a></td><td class="y"><a class="r" href="#">39/39</a></td><td class="y"><a class="r" href="#">39/39</a></td><td class="y"><a class="r" href="#">39/39</a></td><td class="y"><a class="r" href="#">39/39</a></td><td class="y"><a class="r" href="#">39/39</a></td><td class="y"><a class="r" href="#">39/39</a></td><td><a href="#"><b>39</b></a></td></tr>
+          <tr><th>Số kế hoạch có</th><td><a href="#">36/39</a></td><td><a href="#">34/39</a></td><td><a href="#">30/39</a></td><td><a href="#">35/39</a></td><td><a href="#">22/39</a></td><td><a href="#">8/12</a></td><td class="y"><a href="#">0/39</a></td><td class="y"><a href="#">0/39</a></td><td class="y"><a href="#">0/39</a></td><td class="y"><a href="#">0/39</a></td><td class="y"><a href="#">0/39</a></td><td class="y"><a href="#">0/39</a></td><td><a href="#"><b>39</b></a></td></tr>
+          <tr><th>% hoàn thành</th><td><a href="#">92%</a></td><td><a href="#">87%</a></td><td><a href="#">77%</a></td><td><a href="#">90%</a></td><td><a href="#">56%</a></td><td><a href="#">67%</a></td><td class="y"><a href="#">0%</a></td><td class="y"><a href="#">0%</a></td><td class="y"><a href="#">0%</a></td><td class="y"><a href="#">0%</a></td><td class="y"><a href="#">0%</a></td><td class="y"><a href="#">0%</a></td><td></td></tr>
+        </tbody>
+      </table></div>
+          <div class="qd-row" style="margin-top:2px"><button class="qd-btn qd-btn--info" data-qd-loading="900"><svg class="qd-i "><use href="#qd-refresh"/></svg> Đồng bộ CSDL ngành</button><span class="qd-spacer"></span><button class="qd-btn qd-btn--default" data-qd-toggle="m-module">Thêm chuyên đề +</button></div>
+          <div class="frame-scroll"><table class="qd-grid-table">
+        <thead>
+          <tr><th rowspan="2">TT</th><th rowspan="2">MÃ MÔN</th><th rowspan="2">MÔN HỌC / HOẠT ĐỘNG<small>(theo CT GDPT 2018)</small></th><th rowspan="2">SỐ TIẾT<small>/năm</small></th><th rowspan="2">TIẾT<small>/tuần</small></th><th rowspan="2">Bắt buộc</th><th rowspan="2">Đánh giá</th><th colspan="3">KHỐI LỚP</th><th rowspan="2">Ghi chú</th></tr>
+          <tr><th style="width:34px;font-weight:400;text-align:center">10</th><th style="width:34px;font-weight:400;text-align:center">11</th><th style="width:34px;font-weight:400;text-align:center">12</th></tr>
+        </thead>
+        <tbody>
+          <tr class="group"><td>1</td><td colspan="10">Môn học bắt buộc</td></tr>
+          <tr><td>1</td><td><a href="#">NV</a></td><td><b>Ngữ văn</b><em>Có chuyên đề học tập 35 tiết</em></td><td>105</td><td>3</td><td>x</td><td><input class="qd-input" value="Điểm số" readonly></td><td class="c">x</td><td class="c">x</td><td class="c">x</td><td><a href="#">-</a></td></tr>
+          <tr><td>2</td><td><a href="#">TO</a></td><td><b>Toán</b><em>Có chuyên đề học tập 35 tiết</em></td><td>105</td><td>3</td><td>x</td><td><input class="qd-input" value="Điểm số" readonly></td><td class="c">x</td><td class="c">x</td><td class="c">x</td><td><a href="#">-</a></td></tr>
+          <tr><td>3</td><td><a href="#">NN1</a></td><td><b>Ngoại ngữ 1</b><em>Tiếng Anh</em></td><td>105</td><td>3</td><td>x</td><td><input class="qd-input" value="Điểm số" readonly></td><td class="c">x</td><td class="c">x</td><td class="c">x</td><td><a href="#">-</a></td></tr>
+          <tr><td>4</td><td><a href="#">LS</a></td><td><b>Lịch sử</b><em></em></td><td>52</td><td>1.5</td><td>x</td><td><input class="qd-input" value="Điểm số" readonly></td><td class="c">x</td><td class="c">x</td><td class="c">x</td><td><a href="#">-</a></td></tr>
+          <tr><td>5</td><td><a href="#">GDTC</a></td><td><b>Giáo dục thể chất</b><em></em></td><td>70</td><td>2</td><td>x</td><td><input class="qd-input" value="Nhận xét" readonly></td><td class="c">x</td><td class="c">x</td><td class="c">x</td><td><a href="#">-</a></td></tr>
+          <tr><td>6</td><td><a href="#">QPAN</a></td><td><b>Giáo dục quốc phòng và an ninh</b><em></em></td><td>35</td><td>1</td><td>x</td><td><input class="qd-input" value="Điểm số" readonly></td><td class="c">x</td><td class="c">x</td><td class="c">x</td><td><a href="#">-</a></td></tr>
+          <tr class="group"><td>2</td><td colspan="10">Môn học lựa chọn (tổ hợp KHTN1: Vật lí – Hoá học – Sinh học – Tin học)</td></tr>
+          <tr><td>7</td><td><a href="#">VL</a></td><td><b>Vật lí</b><em>Nhóm Khoa học tự nhiên</em></td><td>70</td><td>2</td><td></td><td><input class="qd-input" value="Điểm số" readonly></td><td class="c">x</td><td class="c">x</td><td class="c">x</td><td><a href="#">-</a></td></tr>
+          <tr><td>8</td><td><a href="#">HH</a></td><td><b>Hoá học</b><em>Nhóm Khoa học tự nhiên</em></td><td>70</td><td>2</td><td></td><td><input class="qd-input" value="Điểm số" readonly></td><td class="c">x</td><td class="c">x</td><td class="c">x</td><td><a href="#">-</a></td></tr>
+          <tr><td>9</td><td><a href="#">TH</a></td><td><b>Tin học</b><em>Nhóm Công nghệ và Nghệ thuật</em></td><td>70</td><td>2</td><td></td><td><input class="qd-input" value="Điểm số" readonly></td><td class="c">x</td><td class="c">x</td><td class="c">x</td><td><a href="#">-</a></td></tr>
+          <tr class="group"><td>3</td><td colspan="10">Hoạt động giáo dục bắt buộc · Nội dung giáo dục của địa phương</td></tr>
+          <tr><td>10</td><td><a href="#">HĐTN</a></td><td><b>Hoạt động trải nghiệm, hướng nghiệp</b><em></em></td><td>105</td><td>3</td><td>x</td><td><input class="qd-input" value="Nhận xét" readonly></td><td class="c">x</td><td class="c">x</td><td class="c">x</td><td><a href="#">-</a></td></tr>
+          <tr><td>11</td><td><a href="#">GDĐP</a></td><td><b>Giáo dục địa phương Bắc Ninh</b><em>Dân ca Quan họ, di sản Kinh Bắc</em></td><td>35</td><td>1</td><td>x</td><td><input class="qd-input" value="Nhận xét" readonly></td><td class="c">x</td><td class="c">x</td><td class="c">x</td><td><a href="#">-</a></td></tr>
+        </tbody>
+      </table></div>
+        </div>
+      </section>
+    </div>
+    <div id="p-versions" data-qd-tabpanel hidden>
+      <div class="qd-table-wrap" style="margin-top:16px"><table class="qd-table">
+        <thead><tr><th>Năm học</th><th>Ngày nộp</th><th>Người nộp</th><th>Ghi chú</th><th>Trạng thái</th></tr></thead>
+        <tbody>
+          <tr><td>2026-2027</td><td>15/09/2026</td><td>Nguyễn Văn Sơn</td><td>Bổ sung tổ hợp Tin học-Công nghệ</td><td><a class="qd-status" href="#">Đã duyệt</a></td></tr>
+          <tr><td>2025-2026</td><td>12/09/2025</td><td>Nguyễn Văn Sơn</td><td></td><td><a class="qd-status" href="#">Đã duyệt</a></td></tr>
+        </tbody></table></div>
+    </div>
+  </div>
+</main>
+<div class="qd-overlay" id="m-module" hidden>
+  <div class="qd-modal" role="dialog" aria-labelledby="mm-t">
+    <div class="qd-modal__head"><h3 id="mm-t">Thêm chuyên đề học tập</h3><button data-qd-close aria-label="Đóng">×</button></div>
+    <div class="qd-modal__body"><div class="qd-form">
+      <div class="qd-field qd-form__full"><label>Tên chuyên đề <span class="req">*</span></label><input class="qd-input" placeholder="VD: Chuyên đề Vật lí trong một số ngành nghề"></div>
+      <div class="qd-field"><label>Môn học</label><select class="qd-select-native"><option>Vật lí</option><option>Hoá học</option><option>Ngữ văn</option><option>Toán</option></select></div>
+      <div class="qd-field"><label>Khối lớp</label><select class="qd-select-native"><option>10</option><option>11</option><option>12</option></select></div>
+      <div class="qd-field"><label>Số tiết</label><input class="qd-input" type="number" value="35"></div>
+    </div></div>
+    <div class="qd-modal__foot"><button class="qd-btn qd-btn--default" data-qd-close>Huỷ</button><button class="qd-btn qd-btn--primary" data-qd-close onclick="QD.toast('Đã thêm chuyên đề học tập','success')">Lưu</button></div>
+  </div>
+</div>
+<footer class="qd-footer">
+  <h4>Hệ thống do Sở Giáo dục và Đào tạo Bắc Ninh vận hành</h4>
+</footer>
+<script src="../qldt.js"></script>
+</body>
+</html>

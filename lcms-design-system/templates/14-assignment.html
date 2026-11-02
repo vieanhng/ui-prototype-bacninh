@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LCMS · Giao bài tập</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../lcms.css">
+<style>
+  .wiz { max-width: 1180px; margin: 0 auto; }
+  .lc-steps { margin: 6px 0 20px; }
+  .lc-step { cursor: pointer; }
+  .lc-step b { font-size: 15px; }
+  .lc-step span.sub { font-size: 12px; color: var(--lc-text-secondary); margin-left: 20px; }
+  .lc-step.is-cur .n { box-shadow: 0 0 0 4px var(--lc-primary-soft); }
+  .pick-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .pick { display: flex; gap: 12px; padding: 14px; border: 1px solid var(--lc-divider); border-radius: 14px; background: #fff; cursor: pointer; }
+  .pick:has(input:checked) { border-color: var(--lc-primary); background: var(--lc-primary-soft); }
+  .pick input { margin-top: 3px; width: 16px; height: 16px; accent-color: var(--lc-primary); }
+  .pick .lc-thumb { width: 48px; height: 48px; font-size: 11px; }
+  .pick b { display: block; color: var(--lc-text-strong); font-size: 15px; }
+  .pick .meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .grps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .grp { border-radius: 14px; background: #fff; box-shadow: var(--lc-sh-card); overflow: hidden; }
+  .grp__head { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--lc-divider); }
+  .grp__head .lc-thumb { width: 36px; height: 36px; font-size: 10px; flex: none; }
+  .grp__head b { font-size: 15px; }
+  .task { padding: 16px; display: grid; gap: 12px; }
+  .task .lc-form { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .task .lc-input, .task .lc-select { height: 38px; font-size: 14px; }
+  .task .lc-label { font-size: 14px; }
+  .dictbox { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-radius: 10px; border: 1px dashed var(--lc-border); }
+  .dictbox.is-on { border-color: var(--lc-primary); background: var(--lc-primary-soft); }
+  .dictbox p { font-size: 12px; color: var(--lc-text-secondary); margin-top: 2px; }
+  .done { max-width: 720px; margin: 24px auto 0; padding: 32px; border-radius: 16px; background: #fff; box-shadow: var(--lc-sh-card); text-align: center; }
+  .done__ic { width: 56px; height: 56px; margin: 0 auto 12px; border-radius: 50%; display: grid; place-items: center; background: var(--lc-success-2-bg); color: var(--lc-success-2); font-size: 28px; }
+  .done ul { list-style: none; margin: 20px 0 0; padding: 0; text-align: left; display: grid; gap: 8px; }
+  .done li { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border: 1px solid var(--lc-divider); border-radius: 10px; }
+  .done li .lc-thumb { width: 36px; height: 36px; font-size: 10px; flex: none; }
+  @media (max-width: 1000px) { .pick-grid, .grps { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .pick-grid, .grps { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="lc-layout">
+  <aside class="lc-sider">
+    <div class="lc-sider__logo"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></div>
+    <nav class="lc-menu" data-demo-menu="khoahoc"></nav>
+  </aside>
+  <div class="lc-main">
+    <header class="lc-header">
+      <button class="lc-burger" data-lc-collapse aria-label="Thu gọn menu"><img src="../assets/icons/menu.svg" alt=""></button>
+      <a class="lc-btn lc-btn--text lc-btn--sm" href="04-detail-chapters.html" title="Về chi tiết khoá học">←</a>
+      <h1 class="lc-page-title" id="pageTitle">Giao bài tập</h1>
+      <div class="lc-header__actions" style="margin-left:auto">
+        <div class="lc-user"><img class="lc-avatar" src="../assets/default-avatar.jpg" alt=""><div><b>Nguyễn Thị Lan</b><span>Giáo viên Toán · THPT Demo số 1</span></div></div>
+      </div>
+    </header>
+    <main class="lc-content lc-content--soft"><div class="wiz">
+      <div class="lc-steps" id="steps"></div>
+      <div id="body"></div>
+    </div></main>
+    <footer class="lc-footer" id="foot"></footer>
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../lcms.js"></script>
+<script src="../lcms-demo.js"></script>
+<script>
+(function () {
+  var D = LcDemo, esc = D.esc, $ = function (id) { return document.getElementById(id); };
+  var ITEMS = [
+    // Cùng dữ liệu với kho dùng chung (09): học liệu và ngân hàng câu hỏi Toán 10 đã duyệt
+    { id: 'm3', type: 'doc', t: 'DOC', title: 'Phiếu bài tập Vectơ (tiết 1)', meta: ['Phiếu bài tập', 'Vectơ', '4 trang'], src: 'school' },
+    { id: 'b4', type: 'q', t: 'NHCH', title: 'Các phép toán trên tập hợp', meta: ['Ngân hàng câu hỏi', '4 câu'], src: 'so' },
+    { id: 'b1', type: 'q', t: 'NHCH', title: 'Toán 10 · Mệnh đề toán học', meta: ['Ngân hàng câu hỏi', '4 câu'], src: 'me' },
+    { id: 'm8', type: 'q', t: 'KT', title: 'Đề kiểm tra 15 phút: Hàm số bậc hai', meta: ['Bài kiểm tra', '10 câu'], src: 'school', test: true }
+  ];
+  var SRC = { so: ['lc-source--so', 'Kho Sở'], school: ['lc-source--school', 'Kho Trường'], me: ['lc-source--me', 'Của tôi'] };
+  // Các lớp giáo viên đang dạy (bản mẫu: mỗi lớp 12 học sinh)
+  var CLASSES = [
+    ['10A1', 'Toán 10', ['Nguyễn Minh Anh', 'Trần Đức Bình', 'Lê Thu Châu', 'Phạm Gia Huy', 'Hoàng Khánh Linh', 'Vũ Quốc Nam', 'Đỗ Bảo Ngọc', 'Bùi Tuấn Phong', 'Ngô Thanh Quý', 'Đinh Hà Trang', 'Lý Minh Tuấn', 'Mai Phương Uyên']],
+    ['10A2', 'Toán 10', ['Đặng Hải An', 'Nguyễn Bảo Châu', 'Trịnh Văn Dũng', 'Phan Thu Hà', 'Lưu Đức Hiếu', 'Cao Minh Khang', 'Tạ Ngọc Lan', 'Hồ Gia Long', 'Kiều Thảo My', 'Dương Quang Phúc', 'Võ Thanh Tâm', 'Lâm Hải Yến']],
+    ['10A3', 'Toán 10', ['Trần Quỳnh Anh', 'Lê Hoàng Bách', 'Nguyễn Thùy Dương', 'Phạm Đức Duy', 'Vũ Thu Giang', 'Hà Minh Hoàng', 'Đỗ Khánh Huyền', 'Bùi Văn Kiên', 'Mạc Thanh Mai', 'Ngô Đức Minh', 'Chu Bảo Ngân', 'Đoàn Thế Vinh']],
+    ['11B3', 'Toán 11', ['Nguyễn Hải Đăng', 'Trần Mỹ Duyên', 'Lê Quốc Hưng', 'Phạm Thanh Hương', 'Hoàng Gia Khánh', 'Vũ Ngọc Linh', 'Đinh Tuấn Minh', 'Bùi Thu Nga', 'Ngô Hoàng Phát', 'Lý Thảo Quyên', 'Mai Đức Thắng', 'Tô Khánh Vy']]
+  ].map(function (c) { return { id: c[0], subj: c[1], stu: c[2].map(function (n, i) { return { i: i, name: n, score: 5 + ((i * 37 + c[0].charCodeAt(3)) % 9) / 2 }; }) }; });
+  // Giao trong khoá học: chỉ cho lớp của khoá (04 mở với ?lop=…); giao nhiều lớp thì làm từ kho học liệu (09)
+  var lop = new URLSearchParams(location.search).get('lop');
+  var CLASS = CLASSES.find(function (c) { return c.id === lop; }) || CLASSES[0];
+  function selClasses() { return [CLASS]; }
+  function stuCount() { return selClasses().reduce(function (a, c) { return a + c.stu.length; }, 0); }
+  function clsNames() { return selClasses().map(function (c) { return c.id; }).join(', '); }
+  var step = 0, picked = { m3: true, b4: true }, assigned = false, TASK = {};
+  function taskOf(id) {
+    if (!TASK[id]) TASK[id] = { open: '2026-11-03T07:00', due: '2026-11-08T22:00', close: '2026-11-10T22:00', tries: item(id).test ? 1 : 3, dict: !!item(id).lang && !item(id).test };
+    return TASK[id];
+  }
+  function pickedItems() { return ITEMS.filter(function (it) { return picked[it.id]; }); }
+  var STEPS = [['Chọn bài', 'Từ kho học liệu'], ['Thiết lập', 'Thời gian, số lần làm']];
+  $('pageTitle').innerHTML = 'Giao bài tập · <em>' + esc(CLASS.subj) + ' – Lớp ' + CLASS.id + '</em>';
+
+  function item(id) { return ITEMS.find(function (x) { return x.id === id; }); }
+  function fmtDate(v) { var d = new Date(v); return D.pad(d.getHours()) + ':' + D.pad(d.getMinutes()) + ' ' + D.pad(d.getDate()) + '/' + D.pad(d.getMonth() + 1); }
+
+  function renderSteps() {
+    $('steps').innerHTML = STEPS.map(function (s, i) { return '<div class="lc-step' + (i > step ? ' is-wait' : '') + (i === step ? ' is-cur' : '') + '" data-step="' + i + '"><span class="n">' + (i < step ? '✓' : i + 1) + '</span><b style="margin-left:20px">' + s[0] + '</b><span class="sub">' + s[1] + '</span></div>'; }).join('');
+  }
+
+  function body0() {
+    return '<div class="lc-row" style="margin-bottom:12px"><b class="lc-h3">Chọn bài từ kho học liệu</b><span class="lc-caption">Chọn một hoặc nhiều bài. Bài được giao cho lớp ' + CLASS.id + ' của khoá học.</span><span class="lc-spacer"></span><div class="lc-search--round" style="width:280px"><input placeholder="Tìm trong kho dùng chung…" aria-label="Tìm học liệu"><button aria-label="Tìm"><i data-lucide="search" style="width:16px"></i></button></div></div>' +
+      '<div class="pick-grid">' + ITEMS.map(function (it) {
+        return '<label class="pick"><input type="checkbox" data-pick="' + it.id + '"' + (picked[it.id] ? ' checked' : '') + '><span class="lc-thumb lc-thumb--' + (it.type === 'doc' ? 'doc' : 'q') + '">' + it.t + '</span><div><b>' + esc(it.title) + '</b><div class="meta"><span class="lc-source ' + SRC[it.src][0] + '">' + SRC[it.src][1] + '</span>' + it.meta.map(function (m) { return '<span class="lc-chip-label">' + m + '</span>'; }).join('') + '</div></div></label>';
+      }).join('') + '</div>';
+  }
+
+  function thumb(it) { return '<span class="lc-thumb lc-thumb--' + (it.type === 'doc' ? 'doc' : 'q') + '">' + it.t + '</span>'; }
+
+  function body2() {
+    var card = function (it) {
+      var T = taskOf(it.id), forced = it.test, f = function (k) { return 'data-task="' + it.id + ':' + k + '"'; };
+      return '<div class="grp"><div class="grp__head">' + thumb(it) + '<b>' + esc(it.title) + '</b></div><div class="task">' +
+        '<div class="lc-form"><div class="lc-field"><label class="lc-label">Mở lúc</label><input class="lc-input" type="datetime-local" ' + f('open') + ' value="' + T.open + '"></div><div class="lc-field"><label class="lc-label">Hạn nộp</label><input class="lc-input" type="datetime-local" ' + f('due') + ' value="' + T.due + '"></div>' +
+        '<div class="lc-field"><label class="lc-label">Đóng lúc</label><input class="lc-input" type="datetime-local" ' + f('close') + ' value="' + T.close + '"></div><div class="lc-field"><label class="lc-label">Số lần làm lại</label><select class="lc-select" ' + f('tries') + '>' + [1, 2, 3, 5].map(function (n) { return '<option' + (n === T.tries ? ' selected' : '') + '>' + n + '</option>'; }).join('') + '<option value="99"' + (T.tries === 99 ? ' selected' : '') + '>Không giới hạn</option></select></div></div>' +
+        (it.lang ? '<label class="dictbox' + (T.dict && !forced ? ' is-on' : '') + '"><span class="lc-switch"><input type="checkbox" ' + f('dict') + (T.dict && !forced ? ' checked' : '') + (forced ? ' disabled' : '') + '></span><div><b>Cho phép tra từ điển</b><p>' + (forced ? 'Bài kiểm tra: tra từ điển luôn tắt để chống gian lận.' : 'Học sinh nhấp đúp hoặc bôi đen từ trong bài để tra nghĩa Anh – Việt.') + '</p></div></label>' : '') +
+        '</div></div>';
+    };
+    return '<div class="grps">' + pickedItems().map(card).join('') + '</div>' +
+      '<div class="lc-callout" style="margin-top:14px">Giao cho lớp <b>' + CLASS.id + '</b> · ' + stuCount() + ' học sinh. Mỗi bài có thời gian và thiết lập riêng.</div>';
+  }
+
+  // Giao xong: chỉ báo thành công, theo dõi nộp bài xem ở Tiến độ khoá học (18)
+  function bodyDone() {
+    return '<div class="done"><div class="done__ic">✓</div><h3 class="lc-h3">Đã giao ' + pickedItems().length + ' bài cho lớp ' + clsNames() + '</h3>' +
+      '<p class="lc-secondary" style="margin-top:6px">' + stuCount() + ' học sinh nhận thông báo và thấy bài trong mục “Bài tập của tôi”. <a href="../../design-system/templates/12-my-tasks.html" target="_blank">Xem như học sinh ↗</a></p>' +
+      '<ul>' + pickedItems().map(function (it) { var T = taskOf(it.id); return '<li>' + thumb(it) + '<div><b>' + esc(it.title) + '</b><div class="lc-caption">Hạn ' + fmtDate(T.due) + ' · ' + (T.tries === 99 ? 'không giới hạn' : T.tries + ' lần làm') + (T.dict && !it.test ? ' · có tra từ điển' : '') + '</div></div></li>'; }).join('') + '</ul></div>';
+  }
+
+  function render() {
+    renderSteps();
+    $('body').innerHTML = [body0, body2, bodyDone][step]();
+    var n = Object.keys(picked).filter(function (k) { return picked[k]; }).length;
+    var blocked = step === 0 && !n;
+    $('foot').innerHTML = step === 2 ? '<button class="lc-btn lc-btn--outline lc-btn--sm" data-act="new">Giao bài khác</button><a class="lc-btn lc-btn--primary lc-btn--sm" href="04-detail-chapters.html">Về khoá học</a>'
+      : '<span class="lc-caption" style="margin-right:auto">' + (step === 0 ? 'Đã chọn ' + n + ' bài · lớp ' + clsNames() : 'Giao ' + n + ' bài cho lớp ' + clsNames() + ' · ' + stuCount() + ' học sinh') + '</span>' +
+        (step ? '<button class="lc-btn lc-btn--outline lc-btn--sm" data-act="back">Quay lại</button>' : '') +
+        '<button class="lc-btn lc-btn--primary lc-btn--sm' + (blocked ? ' is-disabled' : '') + '" data-act="next">' + (step === 1 ? 'Giao bài' : 'Tiếp tục') + '</button>';
+    D.icons();
+  }
+
+  document.addEventListener('click', function (e) {
+    var el;
+    if ((el = e.target.closest('[data-step]'))) { var k = +el.dataset.step; if (!assigned && k <= step) { step = k; render(); } return; }
+    if ((el = e.target.closest('[data-act]'))) {
+      var a = el.dataset.act;
+      if (a === 'next') {
+        if (step === 0 && !pickedItems().length) return;
+        if (step === 1) { assigned = true; D.toast('Đã giao bài cho lớp ' + clsNames() + ' · ' + stuCount() + ' học sinh nhận thông báo'); }
+        step = Math.min(2, step + 1); render();
+      }
+      if (a === 'back') { step = Math.max(0, step - 1); render(); }
+      if (a === 'new') { step = 0; assigned = false; render(); }
+    }
+  });
+  document.addEventListener('change', function (e) {
+    var t = e.target;
+    if (t.dataset.pick) { picked[t.dataset.pick] = t.checked; render(); }
+    if (t.dataset.task) {
+      var p = t.dataset.task.split(':'), T = taskOf(p[0]);
+      T[p[1]] = t.type === 'checkbox' ? t.checked : (p[1] === 'tries' ? +t.value : t.value);
+      render();
+    }
+  });
+  render();
+})();
+</script>
+</body>
+</html>

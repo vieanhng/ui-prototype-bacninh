@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Máy thi</title>
+<link rel="stylesheet" href="../tvet.css">
+<style>
+  body { min-height: 100vh; }
+  /* Quy chế */
+  .gate { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; }
+  .gate .tv-panel { width: 100%; max-width: 760px; padding: 28px 32px; }
+  .gate h1 { font-family: var(--tv-font-display); font-size: 24px; color: var(--tv-heading); text-align: center; margin-top: 10px; }
+  .who { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 18px 0; }
+  .who div { padding: 10px 12px; border-radius: var(--tv-r-md); background: var(--tv-surface-alt); border: 1px solid var(--tv-divider); }
+  .who span { display: block; font-size: 12px; color: var(--tv-text-muted); }
+  .who b { color: var(--tv-heading); }
+  .rules { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .rules li { display: flex; gap: 12px; padding: 12px 14px; border-radius: var(--tv-r-md); border: 1px solid var(--tv-divider); font-size: 14px; line-height: 1.55; }
+  .rules li svg { width: 22px; height: 22px; flex: none; color: var(--tv-primary); }
+  .rules li.hl { background: var(--tv-warning-bg); border-color: var(--tv-warning); }
+  .rules li.hl svg { color: var(--tv-warning); }
+  .agree { display: flex; gap: 10px; align-items: center; margin: 18px 0; font-size: 15px; cursor: pointer; }
+  .agree input { width: 18px; height: 18px; accent-color: var(--tv-primary); }
+  /* Thi */
+  .xbar { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 14px; height: 64px; padding: 0 20px; background: var(--tv-surface); box-shadow: var(--tv-sh-card); }
+  .xbar img { height: 40px; }
+  .xbar .t { flex: 1; min-width: 0; }
+  .xbar .t b { display: block; color: var(--tv-heading); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .xbar .t span { font-size: 13px; color: var(--tv-text-muted); }
+  .pill { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: var(--tv-r-pill); font-size: 13px; font-weight: 600; white-space: nowrap; }
+  .pill svg { width: 15px; height: 15px; }
+  .pill--net { background: var(--tv-success-bg); color: var(--tv-success); }
+  .pill--off { background: var(--tv-warning-bg); color: var(--tv-warning); }
+  .pill--time { background: var(--tv-primary-soft); color: var(--tv-primary); font-size: 16px; font-variant-numeric: tabular-nums; }
+  .xwrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; max-width: 1280px; margin: 20px auto; padding: 0 20px 110px; align-items: start; }
+  .passage { position: sticky; top: 84px; padding: 22px 24px; line-height: 1.8; font-size: 16px; max-height: calc(100vh - 210px); overflow: auto; }
+  .passage h2 { font-size: 18px; color: var(--tv-heading); margin-bottom: 8px; }
+  .qcard { padding: 22px 24px; }
+  .qcard .stem { font-size: 17px; font-weight: 600; line-height: 1.6; margin: 10px 0 14px; }
+  .qcard .tv-check { border: 1px solid var(--tv-border); padding: 13px 14px; border-radius: var(--tv-r-md); font-size: 15px; margin-top: 8px; }
+  .qcard .tv-check.is-selected { border-color: var(--tv-primary); background: var(--tv-primary-soft); }
+  .qcard .tv-check.is-selected .dot { border: 6px solid var(--tv-primary); }
+  .qcard .k { font-weight: 700; color: var(--tv-heading); }
+  .xfoot { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: flex; align-items: center; gap: 12px; padding: 12px 20px; background: var(--tv-surface); box-shadow: 0 -2px 10px rgba(0,0,0,.08); }
+  .nums { flex: 1; display: flex; gap: 6px; overflow-x: auto; justify-content: center; }
+  .nums button { width: 36px; height: 36px; flex: none; border-radius: 50%; border: 1px solid var(--tv-border); background: var(--tv-surface); font: 600 14px var(--tv-font); color: var(--tv-text-muted); cursor: pointer; }
+  .nums button.is-ans { background: var(--tv-primary-soft); border-color: var(--tv-primary-tint); color: var(--tv-primary); }
+  .nums button.is-cur { box-shadow: 0 0 0 2px var(--tv-surface), 0 0 0 4px var(--tv-primary); }
+  .nums button.is-flag { border-color: var(--tv-warning); color: var(--tv-warning); }
+  .warnbox { max-width: 460px; text-align: center; }
+  .warnbox .ic { width: 64px; height: 64px; margin: 0 auto 10px; border-radius: 50%; display: grid; place-items: center; background: var(--tv-danger-bg); color: var(--tv-danger); }
+  .warnbox .ic svg { width: 32px; height: 32px; }
+  .demo { position: fixed; left: 16px; bottom: 76px; z-index: 30; display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border: 1px dashed #b37feb; border-radius: 12px; background: #fcf8ff; font-size: 12px; color: #722ed1; }
+  .demo button { height: 28px; padding: 0 10px; border: 1px solid #d3adf7; border-radius: 14px; background: #fff; color: #531dab; font: 600 12px var(--tv-font); cursor: pointer; }
+  .done { max-width: 620px; margin: 60px auto; padding: 0 16px; text-align: center; }
+  .done .tv-panel { padding: 30px; }
+  .done .score { font-size: 56px; font-weight: 700; color: var(--tv-primary); line-height: 1.1; }
+  @media (max-width: 900px) { .xwrap { grid-template-columns: 1fr; } .passage { position: static; max-height: none; } .xbar .t span { display: none; } .who { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="tv-overlay" id="warn" hidden><div class="tv-modal warnbox" role="alertdialog" aria-labelledby="warnTitle"><div class="ic"><i data-lucide="triangle-alert"></i></div><h2 id="warnTitle"></h2><p class="tv-lead" id="warnText"></p><button class="tv-btn tv-btn--primary tv-btn--lg" style="margin-top:18px" data-act="back">Quay lại bài thi</button></div></div>
+<div class="tv-overlay" id="confirm" hidden><div class="tv-modal" role="dialog" aria-labelledby="cfTitle"><h2 id="cfTitle">Nộp bài?</h2><p class="tv-lead" id="cfText"></p><div class="tv-row" style="justify-content:center;margin-top:18px;gap:10px"><button class="tv-btn tv-btn--outline" data-act="cancelSubmit">Làm tiếp</button><button class="tv-btn tv-btn--primary" data-act="doSubmit">Nộp bài</button></div></div></div>
+
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../tvet.js"></script>
+<script src="../tvet-dict.js"></script>
+<script>
+(function () {
+  var PASSAGE = 'In many Vietnamese families today, both parents work full-time, so sharing housework has become more important than ever. In the Nguyen family, each member has a clear role. Mr Nguyen does the heavy lifting and takes out the rubbish, while Mrs Nguyen is responsible for cooking dinner. Their son, Minh, washes the dishes every evening, and their daughter, Lan, does the laundry at weekends. At first, the children complained about their chores. However, they soon realised that working together gave the family more free time to enjoy activities such as watching films or visiting their grandparents. As a result, family members feel closer and more responsible.';
+  var QS = [
+    ['What is the passage mainly about?', ['How a family shares housework', 'Vietnamese food', 'Children’s school life', 'Weekend trips'], 0],
+    ['Who cooks dinner in the Nguyen family?', ['Mr Nguyen', 'Mrs Nguyen', 'Minh', 'Lan'], 1],
+    ['Lan does the laundry ___.', ['every evening', 'every morning', 'at weekends', 'once a month'], 2],
+    ['The word “complained” in the passage is closest in meaning to ___.', ['said they were unhappy', 'felt excited', 'agreed', 'forgot'], 0],
+    ['According to the passage, sharing housework helps the family ___.', ['earn more money', 'have more free time together', 'move house', 'buy a new car'], 1],
+    ['My brother is responsible ___ taking out the rubbish.', ['on', 'for', 'with', 'at'], 1],
+    ['She ___ the dishes every evening.', ['wash', 'washing', 'washes', 'washed'], 2],
+    ['Which word is a household chore?', ['laundry', 'lantern', 'language', 'library'], 0]
+  ];
+  var stage = 'rules', cur = 0, ans = QS.map(function () { return -1; }), flags = {}, left = 45 * 60, online = navigator.onLine, warns = 0, pendingOffline = 0;
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function now() { var d = new Date(); return pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()); }
+  function icons() { if (window.lucide) lucide.createIcons(); }
+
+  function renderRules() {
+    $('app').innerHTML = '<div class="gate"><div class="tv-panel">' +
+      '<img src="../assets/logo_bn.png" alt="" style="height:64px;margin:0 auto">' +
+      '<h1>KIỂM TRA GIỮA KỲ I · TIẾNG ANH 10</h1><p class="tv-muted" style="text-align:center">Phòng P01 · Phòng máy 1 · Ca 1 (08:00 – 08:45)</p>' +
+      '<div class="who"><div><span>Số báo danh</span><b>TS01</b></div><div><span>Họ tên</span><b>Nguyễn Minh Anh</b></div><div><span>Máy thi</span><b>P01-M01</b></div><div><span>Thời gian</span><b>45 phút</b></div><div><span>Số câu</span><b>' + QS.length + ' câu (bản mẫu)</b></div><div><span>Hình thức</span><b>Trắc nghiệm</b></div></div>' +
+      '<h3 class="tv-h3" style="margin-bottom:10px">Quy chế phòng thi</h3><ul class="rules">' +
+      '<li class="hl"><i data-lucide="maximize"></i><div>Bài thi chạy toàn màn hình. Rời cửa sổ thi hoặc thoát toàn màn hình sẽ được <b>ghi nhận và báo ngay</b> cho cán bộ coi thi.</div></li>' +
+      '<li><i data-lucide="wifi-off"></i><div>Nếu mất mạng, cứ làm bài bình thường. Bài làm vẫn lưu tại máy và tự gửi khi có mạng lại.</div></li>' +
+      '<li><i data-lucide="book-x"></i><div>Tra từ điển và các công cụ ngoài bị tắt trong bài thi.</div></li></ul>' +
+      '<label class="agree"><input type="checkbox" id="agree"> Tôi đã đọc và đồng ý với quy chế phòng thi</label>' +
+      '<button class="tv-btn tv-btn--primary tv-btn--lg tv-btn--block" data-act="start" id="startBtn" disabled>Vào thi</button></div></div>';
+    icons();
+  }
+
+  function renderExam() {
+    var q = QS[cur];
+    $('app').innerHTML = '<div class="xbar"><img src="../assets/logo_bn.png" alt=""><div class="t"><b>Kiểm tra giữa kỳ I · Tiếng Anh 10</b><span>TS01 · Nguyễn Minh Anh · Máy P01-M01</span></div>' +
+      '<span class="pill ' + (online ? 'pill--net' : 'pill--off') + '" id="net"><i data-lucide="' + (online ? 'wifi' : 'wifi-off') + '"></i>' + (online ? 'Đã kết nối' : 'Mất kết nối · đang lưu tại máy') + '</span>' +
+      '<span class="pill pill--time"><i data-lucide="timer"></i><span id="clock">' + pad(Math.floor(left / 60)) + ':' + pad(left % 60) + '</span></span></div>' +
+      '<div class="xwrap"><section class="tv-panel passage" data-dict-locked="Tra từ điển bị tắt trong bài thi để bảo đảm công bằng giữa các thí sinh."><h2>Read the passage and answer questions 1–5.</h2><p>' + esc(PASSAGE) + '</p></section>' +
+      '<section class="tv-panel qcard" data-dict-locked="Tra từ điển bị tắt trong bài thi để bảo đảm công bằng giữa các thí sinh."><div class="tv-row"><span class="tv-num">' + (cur + 1) + '</span><span class="tv-muted tv-small">Câu ' + (cur + 1) + '/' + QS.length + '</span><span style="flex:1"></span><button class="tv-btn tv-btn--ghost tv-btn--sm" data-act="flag"><i data-lucide="flag"' + (flags[cur] ? ' style="color:var(--tv-warning)"' : '') + '></i>' + (flags[cur] ? 'Bỏ đánh dấu' : 'Đánh dấu xem lại') + '</button></div>' +
+      '<p class="stem">' + esc(q[0]) + '</p>' + q[1].map(function (o, i) { return '<label class="tv-check' + (ans[cur] === i ? ' is-selected' : '') + '" data-opt="' + i + '"><span class="dot"></span><span class="k">' + 'ABCD'[i] + '.</span>' + esc(o) + '</label>'; }).join('') +
+      '<p class="tv-caption" style="margin-top:14px">Bài làm được lưu tự động sau mỗi lựa chọn' + (online ? '.' : ' (đang lưu tại máy, sẽ gửi khi có mạng).') + '</p></section></div>' +
+      '<div class="xfoot"><button class="tv-btn tv-btn--outline' + (cur ? '' : ' is-disabled') + '" data-act="prev"><i data-lucide="chevron-left"></i>Câu trước</button><div class="nums">' +
+      QS.map(function (x, i) { return '<button class="' + (ans[i] >= 0 ? 'is-ans' : '') + (i === cur ? ' is-cur' : '') + (flags[i] ? ' is-flag' : '') + '" data-go="' + i + '">' + (i + 1) + '</button>'; }).join('') + '</div>' +
+      (cur < QS.length - 1 ? '<button class="tv-btn tv-btn--outline" data-act="next">Câu sau<i data-lucide="chevron-right"></i></button>' : '') + '<button class="tv-btn tv-btn--primary" data-act="submit">Nộp bài</button></div>' +
+      '<div class="demo"><b>Bản mẫu · giả lập</b><button data-act="simLeave">Rời cửa sổ thi</button><button data-act="simNet">' + (online ? 'Mất mạng' : 'Có mạng lại') + '</button></div>';
+    icons();
+  }
+
+  function renderDone() {
+    var right = QS.filter(function (q, i) { return ans[i] === q[2]; }).length, score = right * 10 / QS.length;
+    $('app').innerHTML = '<div class="done"><div class="tv-panel"><img src="../assets/logo_bn.png" alt="" style="height:56px;margin:0 auto 10px"><h1 class="tv-h1">Đã nộp bài lúc ' + now() + '</h1>' +
+      '<p class="tv-muted" style="margin-top:6px">Phần trắc nghiệm được chấm tự động</p><div class="score" style="margin-top:14px">' + String(+score.toFixed(2)).replace('.', ',') + '</div><p class="tv-muted">' + right + '/' + QS.length + ' câu đúng</p>' +
+      '<p class="tv-small" style="margin-top:22px;color:var(--tv-success)">✓ Bài làm đã được gửi về hệ thống. Bạn có thể rời phòng thi.</p><div class="tv-row" style="justify-content:center;gap:10px;margin-top:18px"><a class="tv-btn tv-btn--outline" href="12-my-tasks.html">Bài tập của tôi</a><a class="tv-btn tv-btn--primary" href="06-exam.html">Xem kết quả và xem lại bài</a></div></div></div>';
+  }
+
+  function render() { if (stage === 'rules') renderRules(); else if (stage === 'exam') renderExam(); else renderDone(); }
+
+  // Vi phạm: rời cửa sổ thi hoặc thoát toàn màn hình → báo cán bộ coi thi
+  function violation(kind) {
+    if (stage !== 'exam' || !$('warn').hidden) return;
+    warns++;
+    $('warnTitle').textContent = kind === 'fs' ? 'Bạn đã thoát chế độ toàn màn hình' : 'Bạn vừa rời khỏi cửa sổ thi';
+    $('warnText').innerHTML = 'Vi phạm lần ' + warns + ' đã được ghi vào nhật ký kỳ thi và gửi tới cán bộ coi thi lúc <b>' + now() + '</b>' + (online ? '' : ' (sẽ gửi khi có mạng lại)') + '.';
+    $('warn').hidden = false;
+    icons();
+  }
+  function enterFullscreen() { var el = document.documentElement; if (el.requestFullscreen && !document.fullscreenElement) el.requestFullscreen().catch(function () {}); }
+  function setOnline(v) { online = v; if (v && pendingOffline) pendingOffline = 0; if (stage === 'exam') renderExam(); }
+
+  document.addEventListener('visibilitychange', function () { if (document.hidden) violation('tab'); });
+  document.addEventListener('fullscreenchange', function () { if (!document.fullscreenElement) violation('fs'); });
+  window.addEventListener('offline', function () { setOnline(false); });
+  window.addEventListener('online', function () { setOnline(true); });
+
+  document.addEventListener('change', function (e) { if (e.target.id === 'agree') $('startBtn').disabled = !e.target.checked; });
+  document.addEventListener('click', function (e) {
+    var el;
+    if ((el = e.target.closest('[data-opt]')) && stage === 'exam') { ans[cur] = +el.dataset.opt; if (!online) pendingOffline++; return renderExam(); }
+    if ((el = e.target.closest('[data-go]'))) { cur = +el.dataset.go; return renderExam(); }
+    if (!(el = e.target.closest('[data-act]'))) return;
+    var a = el.dataset.act;
+    if (a === 'start') { stage = 'exam'; enterFullscreen(); render(); }
+    if (a === 'prev' && cur > 0) { cur--; renderExam(); }
+    if (a === 'next' && cur < QS.length - 1) { cur++; renderExam(); }
+    if (a === 'flag') { flags[cur] = !flags[cur]; renderExam(); }
+    if (a === 'back') { $('warn').hidden = true; enterFullscreen(); }
+    if (a === 'simLeave') violation('tab');
+    if (a === 'simNet') setOnline(!online);
+    if (a === 'submit') { var miss = ans.filter(function (x) { return x < 0; }).length; $('cfText').textContent = miss ? 'Bạn còn ' + miss + ' câu chưa trả lời. Sau khi nộp sẽ không sửa được bài.' : 'Bạn đã trả lời tất cả các câu. Sau khi nộp sẽ không sửa được bài.'; $('confirm').hidden = false; }
+    if (a === 'cancelSubmit') $('confirm').hidden = true;
+    if (a === 'doSubmit') { $('confirm').hidden = true; stage = 'done'; if (document.fullscreenElement) document.exitFullscreen().catch(function () {}); render(); }
+  });
+  setInterval(function () {
+    if (stage !== 'exam') return;
+    if (left > 0) left--;
+    var c = $('clock'); if (c) c.textContent = pad(Math.floor(left / 60)) + ':' + pad(left % 60);
+    if (!left) { stage = 'done'; render(); }
+  }, 1000);
+  render();
+})();
+</script>
+</body>
+</html>

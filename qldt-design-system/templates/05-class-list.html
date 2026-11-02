@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QLĐT · Danh sách lớp học</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../qldt.css">
+</head>
+<body>
+<header class="qd-header">
+  <div class="qd-container qd-header__in">
+    <a class="qd-brand" href="02-home-modules.html">
+      <span class="qd-brand__logo"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></span>
+      <span><span class="qd-brand__name">Sở Giáo dục và Đào tạo Bắc Ninh</span><br><span class="qd-brand__sub">Hệ thống quản trị đào tạo trực tuyến</span></span>
+    </a>
+    <div class="qd-header__right">
+      <div class="qd-header__tools">
+        <button class="qd-hicon" aria-label="Lịch"><svg class="qd-i "><use href="#qd-calendar"/></svg></button>
+        <button class="qd-hicon" aria-label="Cài đặt"><svg class="qd-i "><use href="#qd-settings"/></svg></button>
+        <button class="qd-lang">VI</button>
+        <span class="qd-vsep"></span>
+        <button class="qd-hicon" aria-label="Việc cần làm"><svg class="qd-i "><use href="#qd-clipboard"/></svg></button>
+        <button class="qd-hicon qd-hicon--bell" aria-label="Thông báo"><svg class="qd-i "><use href="#qd-bell"/></svg><span class="qd-hicon__badge">6</span></button>
+        <button class="qd-user"><img src="../assets/default-avatar.jpg" alt=""><span>Nguyễn Văn Sơn</span><svg class="qd-i "><use href="#qd-chevron-down"/></svg></button>
+      </div>
+      <div class="qd-week">Năm học <b>2026-2027</b> · Tuần <b>9</b> (Học kỳ <b>I</b>): <a href="#">02/11 - 07/11</a></div>
+    </div>
+  </div>
+</header>
+<nav class="qd-nav">
+  <div class="qd-container qd-nav__in">
+      <div class="qd-nav__item" data-nav="dashboard"><a class="qd-nav__link" href="08-management-dashboard.html">Dashboard</a></div>
+      <div class="qd-nav__item" data-nav="tong-quan"><a class="qd-nav__link" href="09-executive-report.html#tong-quan">Tổng quan</a></div>
+      <div class="qd-nav__item" data-nav="nguoi-dung"><button class="qd-nav__link">Người dùng</button><div class="qd-menu"><a href="09-executive-report.html#nguoi-dung">Hoạt động người dùng</a><a href="09-executive-report.html#khao-sat">Khảo sát người dùng</a></div></div>
+      <div class="qd-nav__item" data-nav="day-hoc"><button class="qd-nav__link">Dạy và học</button><div class="qd-menu"><a href="09-executive-report.html#day-hoc">Hoạt động dạy và học</a><a href="09-executive-report.html#chat-luong">Chất lượng dạy và học</a></div></div>
+      <div class="qd-nav__item" data-nav="tan-suat"><button class="qd-nav__link">Tần suất</button><div class="qd-menu"><a href="09-executive-report.html#tan-suat-hs">Tần suất học tập của học sinh</a><a href="09-executive-report.html#tan-suat-gv">Giảng dạy online của giáo viên</a></div></div>
+      <div class="qd-nav__item" data-nav="ky-thi"><a class="qd-nav__link" href="09-executive-report.html#ky-thi">Kỳ thi chung</a></div>
+      <div class="qd-nav__item" data-nav="hoc-lieu"><a class="qd-nav__link" href="09-executive-report.html#hoc-lieu">Học liệu</a></div>
+      <div class="qd-nav__item" data-nav="ha-tang"><a class="qd-nav__link" href="09-executive-report.html#ha-tang">Hạ tầng</a></div>
+      <div class="qd-nav__item" data-nav="xep-hang"><a class="qd-nav__link" href="09-executive-report.html#xep-hang">Xếp hạng</a></div>
+    <div class="qd-nav__right">
+      <div class="qd-role">
+        <button class="qd-role__btn"><span>Quản lý Sở</span></button>
+        <div class="qd-role__menu">
+          <small>Sở Giáo dục và Đào tạo Bắc Ninh</small>
+          <a href="#" data-short="Lãnh đạo Sở">Lãnh đạo Sở</a>
+          <a href="#" class="is-selected" data-short="Quản lý Sở">Chuyên viên Phòng GD Trung học</a>
+          <small>UBND Phường Kinh Bắc</small>
+          <a href="#" data-short="Quản lý phường">Cán bộ phụ trách giáo dục</a>
+          <small>Trường THPT Hàn Thuyên</small>
+          <a href="#" data-short="Hiệu trưởng">Hiệu trưởng</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<main class="qd-wrap">
+  <div class="qd-tabs">
+    <a href="#" class="is-active">Danh sách lớp</a>
+    <div class="qd-tabs__right"><a href="#">Export</a><a href="#" data-qd-loading="1200" onclick="setTimeout(function(){QD.toast('Đã đồng bộ 2.316 lớp học từ CSDL ngành')},1200)">Đồng bộ dữ liệu</a></div>
+  </div>
+  <div class="qd-filterbar" style="padding-left:0;padding-right:0">
+    <span class="qd-filter-tag" style="height:34px;padding:0 26px 0 16px"><svg class="qd-i "><use href="#qd-funnel"/></svg> Bộ lọc</span>
+    <button class="qd-select qd-select--wide" style="width:150px"><span>2026-2027</span></button>
+    <button class="qd-select" style="width:170px"><span>THPT Hàn Thuyên, THPT Chuyên Bắc Ninh</span></button>
+    <button class="qd-select is-empty" style="width:150px"><span>[Khối]</span></button>
+    <button class="qd-select is-empty" style="width:150px"><span>[Tổ hợp môn]</span></button>
+    <button class="qd-select" style="width:150px"><span>[Tất cả GVCN]</span></button>
+    <input class="qd-input" style="width:200px" placeholder="Nhập tên lớp">
+    <span class="qd-spacer"></span>
+    <button class="qd-kebab" aria-label="Thêm thao tác">⋮</button>
+  </div>
+  <h2 class="qd-h2">Danh sách các lớp học</h2>
+  <section id="tbl">
+    <div class="qd-pagerbar">
+        <label class="qd-selectall"><input type="checkbox" data-qd-selectall="tbl"> Select All</label>
+        <div class="qd-pager"><button disabled aria-label="Trang đầu"><svg class="qd-i "><use href="#qd-first"/></svg></button><button disabled aria-label="Trang trước"><svg class="qd-i "><use href="#qd-prev"/></svg></button><span>1-200 of 2316</span><button aria-label="Trang sau"><svg class="qd-i "><use href="#qd-next"/></svg></button><button aria-label="Trang cuối"><svg class="qd-i "><use href="#qd-last"/></svg></button></div>
+        <label class="qd-rows">Số dòng <select class="qd-select-native"><option>50</option><option>100</option><option selected>200</option></select></label>
+      </div>
+    <div class="qd-table-wrap"><table class="qd-table">
+      <thead><tr><th class="w-check"></th><th>STT</th><th style="width:150px">Trường</th><th>Lớp</th><th>Khối</th><th>Năm học</th><th>Sĩ số</th><th>Tổ hợp môn</th><th>GVCN</th><th style="width:180px">Lớp trưởng</th><th style="width:180px">Bí thư chi đoàn</th><th>Sửa</th></tr></thead>
+      <tbody>
+          <tr><td class="w-check"><input type="checkbox"></td><td>1</td><td>THPT Hàn Thuyên</td><td><a href="#">10A1</a></td><td>10</td><td>2026-2027</td><td>45</td><td><a href="#">KHTN1</a></td><td><a href="#">Nguyễn Thị Thu Hằng</a></td><td>Nguyễn Minh Anh</td><td>Trần Thu Hà</td><td><a href="#" data-qd-toggle="m-edit" data-class="10A1">Sửa</a></td></tr>
+          <tr><td class="w-check"><input type="checkbox"></td><td>2</td><td>THPT Hàn Thuyên</td><td><a href="#">10A2</a></td><td>10</td><td>2026-2027</td><td>44</td><td><a href="#">KHTN2</a></td><td><a href="#">Trần Văn Đức</a></td><td>Lê Bảo Ngọc</td><td>Phạm Quốc Khánh</td><td><a href="#" data-qd-toggle="m-edit" data-class="10A2">Sửa</a></td></tr>
+          <tr><td class="w-check"><input type="checkbox"></td><td>3</td><td>THPT Hàn Thuyên</td><td><a href="#">10D1</a></td><td>10</td><td>2026-2027</td><td>43</td><td><a href="#">KHXH1</a></td><td><a href="#">Đỗ Thị Lan Anh</a></td><td>Vũ Hải Yến</td><td>Ngô Thanh Tùng</td><td><a href="#" data-qd-toggle="m-edit" data-class="10D1">Sửa</a></td></tr>
+          <tr><td class="w-check"><input type="checkbox"></td><td>4</td><td>THPT Hàn Thuyên</td><td><a href="#">11A1</a></td><td>11</td><td>2026-2027</td><td>42</td><td><a href="#">KHTN1</a></td><td><a href="#">Phạm Văn Hải</a></td><td>Hoàng Gia Huy</td><td>Đặng Mai Phương</td><td><a href="#" data-qd-toggle="m-edit" data-class="11A1">Sửa</a></td></tr>
+          <tr><td class="w-check"><input type="checkbox"></td><td>5</td><td>THPT Hàn Thuyên</td><td><a href="#">11A3</a></td><td>11</td><td>2026-2027</td><td>41</td><td><a href="#">Tin học-CN</a></td><td><a href="#">Lê Thị Lan</a></td><td></td><td></td><td><a href="#" data-qd-toggle="m-edit" data-class="11A3">Sửa</a></td></tr>
+          <tr><td class="w-check"><input type="checkbox"></td><td>6</td><td>THPT Chuyên Bắc Ninh</td><td><a href="#">12 Toán</a></td><td>12</td><td>2026-2027</td><td>35</td><td><a href="#">Chuyên Toán</a></td><td><a href="#">Nguyễn Đức Toàn</a></td><td>Bùi Khánh Linh</td><td>Trịnh Minh Quân</td><td><a href="#" data-qd-toggle="m-edit" data-class="12 Toán">Sửa</a></td></tr>
+          <tr><td class="w-check"><input type="checkbox"></td><td>7</td><td>THPT Chuyên Bắc Ninh</td><td><a href="#">12 Pháp</a></td><td>12</td><td>2026-2027</td><td>32</td><td><a href="#">Chuyên Pháp</a></td><td><a href="#">Như Thị Nga</a></td><td>Lương Thảo Vy</td><td>Cao Đức Mạnh</td><td><a href="#" data-qd-toggle="m-edit" data-class="12 Pháp">Sửa</a></td></tr>
+      </tbody></table></div>
+  </section>
+</main>
+<div class="qd-overlay" id="m-edit" hidden>
+  <div class="qd-modal" role="dialog" aria-labelledby="me-t">
+    <div class="qd-modal__head"><h3 id="me-t">Sửa lớp: <span id="me-name"></span></h3><button data-qd-close aria-label="Đóng">×</button></div>
+    <div class="qd-modal__body"><div class="qd-form">
+      <div class="qd-field"><label>Tên lớp <span class="req">*</span></label><input class="qd-input" id="me-input"></div>
+      <div class="qd-field"><label>Khối</label><select class="qd-select-native"><option>10</option><option>11</option><option>12</option></select></div>
+      <div class="qd-field"><label>Tổ hợp môn</label><select class="qd-select-native"><option>KHTN1</option><option>KHTN2</option><option>KHXH1</option><option>KHXH2</option><option>Tin học-CN</option></select></div>
+      <div class="qd-field"><label>Giáo viên chủ nhiệm</label><input class="qd-input" value="Nguyễn Thị Thu Hằng"></div>
+      <div class="qd-field"><label>Lớp trưởng</label><input class="qd-input" placeholder="Nhập mã học sinh hoặc họ tên"></div>
+      <div class="qd-field"><label>Bí thư chi đoàn</label><input class="qd-input" placeholder="Nhập mã học sinh hoặc họ tên"></div>
+    </div></div>
+    <div class="qd-modal__foot"><button class="qd-btn qd-btn--default" data-qd-close>Huỷ</button><button class="qd-btn qd-btn--primary" data-qd-close onclick="QD.toast('Đã lưu thông tin lớp','success')">Lưu</button></div>
+  </div>
+</div>
+<footer class="qd-footer">
+  <h4>Hệ thống do Sở Giáo dục và Đào tạo Bắc Ninh vận hành</h4>
+</footer>
+<script src="../qldt.js"></script>
+<script>
+document.addEventListener('click', function (e) {
+  var a = e.target.closest('[data-class]');
+  if (!a) return;
+  document.getElementById('me-name').textContent = a.dataset.class;
+  document.getElementById('me-input').value = a.dataset.class;
+});
+</script>
+</body>
+</html>

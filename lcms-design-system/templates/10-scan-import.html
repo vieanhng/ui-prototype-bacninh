@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LCMS · Quét đề từ ảnh/PDF</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="stylesheet" href="../lcms.css">
+<style>
+  .has-browser .lc-layout, .has-browser .lc-main { height: calc(100vh - 44px); }
+  .has-browser .lc-drawer, .has-browser .lc-drawer-mask { top: 44px; }
+  .has-browser .lc-toast { top: calc(44px + var(--lc-header-h) + 12px); }
+  .review-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+  .review-grid > .left { position: sticky; top: 0; }
+  .review-grid .lc-viewer__canvas { max-height: calc(100vh - 44px - 64px - 65px - 120px); }
+  .stem-clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; max-width: 520px; }
+  .lc-table tr.is-new td { background: #f6ffed; }
+  .lc-header__actions .lc-user b { white-space: nowrap; }
+  .menu-wrap { position: relative; }
+  .katex { font-size: 1.05em; }
+  @media (max-width: 1100px) { .review-grid { grid-template-columns: 1fr; } .review-grid > .left { position: static; } }
+  @media (max-width: 760px) { .lc-browser__url, .lc-browser__tag, .lc-user > div { display: none; } .lc-header .lc-page-title { font-size: 16px; } }
+</style>
+</head>
+<body class="has-browser">
+
+<!-- Thanh trình duyệt mô phỏng: để trình diễn Chrome Extension -->
+<div class="lc-browser">
+  <div class="lc-browser__nav"><span>‹</span><span>›</span><span>⟳</span></div>
+  <div class="lc-browser__url">🔒 <span><b>https://</b>lcms.bacninh.edu.vn/ngan-hang-cau-hoi</span></div>
+  <span class="lc-browser__tag">Trình duyệt mô phỏng</span>
+  <button class="lc-browser__icon" title="Tiện ích" aria-label="Tiện ích">🧩</button>
+  <button class="lc-browser__icon" id="extIcon" title="Quét đề LCMS (Chrome Extension)" aria-label="Mở tiện ích Quét đề"><img src="../assets/favicon_bn.png" alt=""><span class="bd" id="extBadge" hidden></span></button>
+</div>
+<div class="lc-ext" id="ext" hidden></div>
+
+<div class="lc-layout">
+  <aside class="lc-sider">
+    <div class="lc-sider__logo"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></div>
+    <nav class="lc-menu" data-demo-menu="nganhang"></nav>
+  </aside>
+  <div class="lc-main">
+    <header class="lc-header">
+      <button class="lc-burger" data-lc-collapse aria-label="Thu gọn menu"><img src="../assets/icons/menu.svg" alt=""></button>
+      <h1 class="lc-page-title" id="pageTitle">Ngân hàng câu hỏi</h1>
+      <div class="lc-header__actions">
+        <button class="lc-bell" aria-label="Thông báo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22Zm7-6V11a7 7 0 0 0-5-6.7V3.5a2 2 0 1 0-4 0v.8A7 7 0 0 0 5 11v5l-2 2v1h18v-1l-2-2Z"/></svg></button>
+        <div class="lc-user"><img class="lc-avatar" src="../assets/default-avatar.jpg" alt=""><div><b>Nguyễn Thị Lan</b><span>Giáo viên Toán · THPT Demo số 1</span></div></div>
+      </div>
+    </header>
+    <main class="lc-content lc-content--soft" id="main"></main>
+    <footer class="lc-footer" id="foot"></footer>
+  </div>
+</div>
+
+<div id="drawerRoot"></div>
+
+<!-- Modal: nhập từ Word/Excel (UC100) để so sánh -->
+<div class="lc-overlay" id="mWord" hidden>
+  <div class="lc-modal" role="dialog" aria-labelledby="mWordTitle" style="max-width:760px">
+    <div class="lc-modal__head"><h3 id="mWordTitle">Nhập câu hỏi từ tệp Word/Excel</h3><button class="lc-modal__close" data-lc-close aria-label="Đóng">×</button></div>
+    <div class="lc-modal__body lc-stack" id="mWordBody" style="gap:14px"></div>
+    <div class="lc-modal__foot"><button class="lc-btn lc-btn--outline" data-lc-close>Huỷ</button><button class="lc-btn lc-btn--primary" data-action="wordImport" id="wordImportBtn" disabled>Nhập vào ngân hàng</button></div>
+  </div>
+</div>
+
+<div class="lc-toast" id="toast" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="../lcms.js"></script>
+<script src="../lcms-demo.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+  var clone = function (o) { return JSON.parse(JSON.stringify(o)); };
+  var T = new Date(2026, 10, 1, 9, 10);
+  function now() { T = new Date(T.getTime() + 60000); return pad(T.getHours()) + ':' + pad(T.getMinutes()) + ' ' + pad(T.getDate()) + '/' + pad(T.getMonth() + 1) + '/' + T.getFullYear(); }
+
+  // Hiển thị văn bản có công thức $...$ bằng KaTeX (nếu không tải được KaTeX thì hiện mã LaTeX)
+  function tex(s) {
+    s = s == null ? '' : String(s);
+    var out = '', re = /\$([^$]+)\$/g, last = 0, m;
+    while ((m = re.exec(s))) {
+      out += esc(s.slice(last, m.index));
+      out += window.katex ? window.katex.renderToString(m[1], { throwOnError: false }) : '<code>' + esc(m[1]) + '</code>';
+      last = re.lastIndex;
+    }
+    return out + esc(s.slice(last));
+  }
+
+  // ---------- Khung chương trình (trích mô phỏng Toán 10, giống template 09) ----------
+  var KHUNG = [
+    { mach: 'Đại số và Một số yếu tố Giải tích', chude: 'Mệnh đề toán học. Tập hợp', bai: 'Mệnh đề toán học', yccd: [['T10.MĐ.1', 'Thiết lập và phát biểu được các mệnh đề toán học (phủ định, đảo, tương đương, chứa ∀, ∃).'], ['T10.MĐ.2', 'Xác định được tính đúng/sai của một mệnh đề toán học trong trường hợp đơn giản.']] },
+    { mach: 'Đại số và Một số yếu tố Giải tích', chude: 'Mệnh đề toán học. Tập hợp', bai: 'Tập hợp. Các phép toán trên tập hợp', yccd: [['T10.TH.1', 'Nhận biết được các khái niệm cơ bản về tập hợp.'], ['T10.TH.2', 'Thực hiện được phép toán trên các tập hợp.']] },
+    { mach: 'Đại số và Một số yếu tố Giải tích', chude: 'Hàm số, đồ thị và ứng dụng', bai: 'Hàm số bậc hai, đồ thị và ứng dụng', yccd: [['T10.HS.1', 'Thiết lập được bảng giá trị của hàm số bậc hai.'], ['T10.HS.2', 'Vẽ được parabol là đồ thị hàm số bậc hai.'], ['T10.HS.3', 'Nhận biết được tính chất cơ bản của parabol như đỉnh, trục đối xứng.']] },
+    { mach: 'Hình học và Đo lường', chude: 'Hệ thức lượng trong tam giác. Vectơ', bai: 'Hệ thức lượng trong tam giác', yccd: [['T10.GT.1', 'Giải thích được định lí côsin, định lí sin, công thức tính diện tích tam giác.'], ['T10.GT.2', 'Mô tả được cách giải tam giác và vận dụng vào bài toán thực tiễn.']] },
+    { mach: 'Hình học và Đo lường', chude: 'Hệ thức lượng trong tam giác. Vectơ', bai: 'Vectơ', yccd: [['T10.VT.1', 'Nhận biết được khái niệm vectơ, vectơ bằng nhau, vectơ-không.'], ['T10.VT.2', 'Thực hiện được các phép toán trên vectơ.']] }
+  ];
+  var LEVELS = ['Nhận biết', 'Thông hiểu', 'Vận dụng', 'Vận dụng cao'];
+  function uniq(a) { return a.filter(function (x, i) { return a.indexOf(x) === i; }); }
+
+  // ---------- 3 tệp mẫu (đúng checklist demo mục 4) ----------
+  var SAMPLES = {
+    img: { id: 'img', name: 'anh-de-on-tap-toan-10.jpg', label: 'Ảnh chụp đề có công thức', type: 'pdf', thumb: 'JPG', size: '1,8 MB', pages: 1, secs: 14, tilt: 0, photo: false,
+      head: ['TRƯỜNG THPT DEMO SỐ 1', 'ĐỀ ÔN TẬP CHƯƠNG – MÔN TOÁN 10', 'Thời gian làm bài: 45 phút'],
+      parts: [{ page: 1, title: 'PHẦN I. Câu trắc nghiệm nhiều phương án lựa chọn', qs: [0, 1, 2] }, { page: 1, title: 'PHẦN III. Câu trắc nghiệm trả lời ngắn', qs: [3] }],
+      key: { page: 1, text: 'Đáp án: 1.B   2.A   3.A   4. 1' }, keyNote: 'Đáp án lấy từ dòng “Đáp án” cuối đề',
+      qs: [
+        { type: 'mcq', stem: 'Cho tập hợp $A = \\{x \\in \\mathbb{N} \\mid x < 4\\}$. Số phần tử của tập hợp $A$ là', opts: ['$3$', '$4$', '$5$', '$2$'], correct: 1 },
+        { type: 'mcq', stem: 'Đỉnh của parabol $y = x^2 - 4x + 3$ là điểm', opts: ['$I(2;-1)$', '$I(-2;1)$', '$I(2;1)$', '$I(1;0)$'], correct: 0 },
+        { type: 'mcq', stem: 'Cho tam giác $ABC$ có $AB = 5$, $AC = 8$ và $\\widehat{BAC} = 60^\\circ$. Độ dài cạnh $BC$ bằng', opts: ['$7$', 'V89', '$49$', '$\\sqrt{129}$'], correct: 0, issues: [{ f: 'opt1', found: 'V89', fix: '$\\sqrt{89}$', msg: 'Ký hiệu căn có thể bị đọc thành chữ “V”' }] },
+        { type: 'short', stem: 'Trong mặt phẳng $Oxy$, cho $\\vec{a} = (1;2)$ và $\\vec{b} = (3;-1)$. Tính tích vô hướng $\\vec{a}\\cdot\\vec{b}$.', answer: '1' }
+      ] },
+    pdf: { id: 'pdf', name: 'de-kiem-tra-giua-ki-1-toan-10.pdf', label: 'PDF nhiều câu, có phần Đúng/Sai', type: 'pdf', thumb: 'PDF', size: '640 KB', pages: 2, secs: 21, tilt: 0, photo: false,
+      head: ['TRƯỜNG THPT DEMO SỐ 1', 'ĐỀ KIỂM TRA GIỮA HỌC KÌ I – MÔN TOÁN 10', 'Thời gian làm bài: 60 phút'],
+      parts: [{ page: 1, title: 'PHẦN I. Câu trắc nghiệm nhiều phương án lựa chọn', qs: [0, 1, 2] }, { page: 2, title: 'PHẦN II. Câu trắc nghiệm đúng sai', qs: [3] }, { page: 2, title: 'PHẦN III. Câu trắc nghiệm trả lời ngắn', qs: [4] }],
+      key: { page: 2, text: 'ĐÁP ÁN — Phần I: 1.A  2.C  3.B · Phần II: Câu 4: a) Đ  b) Đ  c) S  d) Đ · Phần III: Câu 5: 2' }, keyNote: 'Đáp án lấy từ bảng đáp án ở trang 2',
+      qs: [
+        { type: 'mcq', stem: 'Mệnh đề phủ định của mệnh đề “$\\forall x \\in \\mathbb{R},\\ x^2 \\ge 0$” là', opts: ['$\\exists x \\in \\mathbb{R},\\ x^2 < 0$', '$\\forall x \\in \\mathbb{R},\\ x^2 < 0$', '$\\exists x \\in \\mathbb{R},\\ x^2 \\ge 0$', '$\\forall x \\in \\mathbb{R},\\ x^2 \\le 0$'], correct: 0 },
+        { type: 'mcq', stem: 'Cho $A = \\{1;2;3;4\\}$ và $B = \\{3;4;5\\}$. Tập hợp $A \\setminus B$ là', opts: ['$\\{3;4\\}$', '$\\{5\\}$', '$\\{1;2\\}$', '$\\{1;2;3;4;5\\}$'], correct: 2 },
+        { type: 'mcq', stem: 'Cho hình bình hành $ABCD$. Vectơ $\\overrightarrow{AB} + \\overrightarrow{AD}$ bằng', opts: ['$\\overrightarrow{BD}$', '$\\overrightarrow{AC}$', '$\\overrightarrow{CA}$', '$\\overrightarrow{DB}$'], correct: 1 },
+        { type: 'tf', stem: 'Cho hàm số $y = -x^2 + 2x + 3$ có đồ thị là parabol $(P)$.', stmts: [{ t: '$(P)$ có trục đối xứng là đường thẳng $x = 1$.', ok: true }, { t: 'Hàm số đồng biến trên khoảng $(-\\infty;1)$.', ok: true }, { t: 'Giá trị lớn nhất của hàm số bằng $3$.', ok: false }, { t: '$(P)$ cắt trục hoành tại hai điểm có hoành độ $-1$ và $3$.', ok: true }] },
+        { type: 'short', stem: 'Cho tam giác $ABC$ có $BC = 2\\sqrt{3}$ và $\\widehat{BAC} = 60^\\circ$. Tính bán kính $R$ của đường tròn ngoại tiếp tam giác $ABC$.', answer: '2' }
+      ] },
+    phone: { id: 'phone', name: 'IMG_20261031_2048.jpg', label: 'Ảnh chụp điện thoại, hơi nghiêng', type: 'pdf', thumb: 'JPG', size: '3,2 MB', pages: 1, secs: 17, tilt: -5, photo: true,
+      head: ['PHIẾU BÀI TẬP – HÀM SỐ BẬC HAI', 'Lớp 10A1 · Tiết 12'],
+      parts: [{ page: 1, title: 'Bài tập trắc nghiệm', qs: [0, 1, 2] }], key: null, keyNote: 'Đề không có đáp án',
+      qs: [
+        { type: 'mcq', stem: 'Trục đối xứng của parabol $y = 2x^2 - 8x + 1$ là đường thẳng', opts: ['$x = 2$', '$x = -2$', '$x = 4$', '$x = -4$'], correct: null, issues: [{ f: 'answer', msg: 'Đề không có đáp án. Chọn đáp án đúng:' }] },
+        { type: 'mcq', stem: 'Hàm số $y = x^2 - 2x$ nghịch biến trên khoảng', opts: ['$(1;+\\infty)$', '$(-\\infty;1)$', '$(-\\infty;2)$', '$(0;+\\infty)$'], correct: null, issues: [{ f: 'answer', msg: 'Đề không có đáp án. Chọn đáp án đúng:' }] },
+        { type: 'mcq', stem: 'Parabol $y = x^2 + bx + c$ đi qua điểm $M(l;0)$ và có trục đối xứng là đường thẳng $x = 2$. Giá trị của $b + c$ bằng', opts: ['$-1$', '$1$', '$-7$', '$7$'], correct: null, issues: [{ f: 'stem', found: 'M(l;0)', fix: 'M(1;0)', msg: 'Ảnh mờ: chữ “l” có thể là số 1' }, { f: 'answer', msg: 'Đề không có đáp án. Chọn đáp án đúng:' }] }
+      ] }
+  };
+  // Nội dung thật trên ảnh = dữ liệu nhận dạng sau khi áp dụng các gợi ý sửa
+  function truth(sample, i) {
+    var q = clone(sample.qs[i]);
+    (q.issues || []).forEach(function (is) {
+      if (!is.found) return;
+      if (is.f === 'stem') q.stem = q.stem.replace(is.found, is.fix);
+      else if (is.f.indexOf('opt') === 0) q.opts[+is.f.slice(3)] = q.opts[+is.f.slice(3)].replace(is.found, is.fix);
+    });
+    return q;
+  }
+
+  // ---------- Ngân hàng câu hỏi (dữ liệu có sẵn) ----------
+  var BANK_NAME = 'Toán 10 – Kho cá nhân';
+  var bank = [
+    { id: 'b1', type: 'mcq', stem: 'Cho $A = \\{1;2;3;4\\}$ và $B = \\{3;4;5\\}$. Tập hợp $A \\cap B$ là', opts: ['$\\{3;4\\}$', '$\\{1;2\\}$', '$\\{1;2;3;4;5\\}$', '$\\{5\\}$'], correct: 0, lab: { mach: KHUNG[1].mach, chude: KHUNG[1].chude, bai: KHUNG[1].bai, yccd: ['T10.TH.2'], level: 'Nhận biết' }, src: { kind: 'manual' }, created: '08:40 28/10/2026' },
+    { id: 'b2', type: 'mcq', stem: 'Mệnh đề nào sau đây là mệnh đề đúng?', opts: ['$\\pi$ là số hữu tỉ', '$2$ là số nguyên tố chẵn duy nhất', '$\\sqrt{4}$ là số vô tỉ', 'Tổng hai số lẻ là số lẻ'], correct: 1, lab: { mach: KHUNG[0].mach, chude: KHUNG[0].chude, bai: KHUNG[0].bai, yccd: ['T10.MĐ.2'], level: 'Nhận biết' }, src: { kind: 'word', file: 'ngan-hang-chuong-1.xlsx' }, created: '15:20 29/10/2026' },
+    { id: 'b3', type: 'short', stem: 'Tìm giá trị nhỏ nhất của hàm số $y = x^2 - 6x + 10$.', answer: '1', lab: { mach: KHUNG[2].mach, chude: KHUNG[2].chude, bai: KHUNG[2].bai, yccd: ['T10.HS.3'], level: 'Thông hiểu' }, src: { kind: 'manual' }, created: '10:05 30/10/2026' }
+  ];
+  var seq = 0;
+
+  // ---------- Trạng thái ----------
+  var S = { view: 'bank', bankType: 'all', bankBai: '', bankLevel: '', bankSrc: '', bankQ: '', highlight: [], drawerId: null,
+    ext: { open: false, tab: 'scan', sample: 'img', file: null, note: '', phase: 'idle', step: 0, target: BANK_NAME, formula: true, answer: true, deskew: true, autoOpen: true, service: 'AI OCR (mặc định)' },
+    history: [{ name: 'de-on-tap-hoc-ki-1.pdf', when: '16:40 31/10/2026', n: 12 }, { name: 'IMG_1932.jpg', when: '10:05 30/10/2026', n: 4 }],
+    rv: null, word: null };
+  var TYPE_NAME = { mcq: 'Trắc nghiệm 4 lựa chọn', tf: 'Đúng/Sai 4 mệnh đề', short: 'Trả lời ngắn' };
+
+  function hasAnswer(q) { return q.type === 'mcq' ? q.correct != null : q.type === 'tf' ? q.stmts.every(function (s) { return s.ok === true || s.ok === false; }) : !!String(q.answer || '').trim(); }
+  function openIssues(q) { return (q.issues || []).filter(function (is) { return is.f === 'answer' ? !hasAnswer(q) : !is.done; }); }
+  function labeled(q) { return !!(q.lab && q.lab.bai); }
+  function labelChips(q) {
+    if (!labeled(q)) return '<span class="lc-chip-label lc-chip-label--warn">Chưa gán nhãn</span>';
+    var l = q.lab, c = ['<span class="lc-chip-label lc-chip-label--primary">Toán 10</span>', '<span class="lc-chip-label">' + esc(l.bai) + '</span>'];
+    if (l.yccd && l.yccd.length) c.push('<span class="lc-chip-label">' + l.yccd.join(', ') + '</span>');
+    if (l.level) c.push('<span class="lc-chip-label">' + esc(l.level) + '</span>');
+    return '<div class="lc-chips">' + c.join('') + '</div>';
+  }
+  function sourceChip(q) {
+    if (q.src.kind === 'scan') return '<span class="lc-source lc-source--school" title="' + esc(q.src.file) + '">Quét đề · trang ' + q.src.page + '</span>';
+    if (q.src.kind === 'word') return '<span class="lc-source lc-source--me">Nhập Word/Excel</span>';
+    return '<span class="lc-source lc-source--me">Soạn trực tiếp</span>';
+  }
+  function answerHtml(q, opts) {
+    opts = opts || {};
+    if (q.type === 'mcq') return '<div class="lc-ocr__opts">' + q.opts.map(function (o, k) {
+      var iss = (q.issues || []).some(function (is) { return is.f === 'opt' + k && !is.done; });
+      return '<div class="lc-ocr__opt' + (q.correct === k ? ' is-correct' : '') + (iss ? ' is-issue' : '') + '"><b>' + 'ABCD'[k] + '.</b><span>' + tex(o) + '</span></div>';
+    }).join('') + '</div>';
+    if (q.type === 'tf') return '<table class="lc-tf"><tr><th>Mệnh đề</th><th class="c">Đúng</th><th class="c">Sai</th></tr>' + q.stmts.map(function (s, k) {
+      return '<tr><td><b>' + 'abcd'[k] + ')</b> ' + tex(s.t) + '</td><td class="c">' + (s.ok === true ? '<span class="yes">✓</span>' : s.ok == null ? '?' : '') + '</td><td class="c">' + (s.ok === false ? '<span class="yes">✓</span>' : s.ok == null ? '?' : '') + '</td></tr>';
+    }).join('') + '</table>';
+    return '<p style="margin-top:8px;font-size:14px">Đáp án: <b>' + (String(q.answer || '').trim() ? tex(q.answer) : '<span class="lc-err">chưa có</span>') + '</b></p>';
+  }
+
+  // ---------- View: ngân hàng câu hỏi ----------
+  function bankRows() {
+    var qq = S.bankQ.toLowerCase();
+    return bank.filter(function (q) {
+      if (S.bankType !== 'all' && q.type !== S.bankType) return false;
+      if (S.bankBai && (S.bankBai === 'none' ? labeled(q) : !labeled(q) || q.lab.bai !== S.bankBai)) return false;
+      if (S.bankLevel && (!q.lab || q.lab.level !== S.bankLevel)) return false;
+      if (S.bankSrc && q.src.kind !== S.bankSrc) return false;
+      return !qq || q.stem.toLowerCase().indexOf(qq) >= 0;
+    });
+  }
+  function bankTable() {
+    var rows = bankRows();
+    if (!rows.length) return '<div class="lc-empty"><img src="../assets/workflow-progress.svg" alt="">Không có câu hỏi phù hợp.</div>';
+    return '<div class="lc-table-wrap"><table class="lc-table lc-table--plain"><thead><tr><th>Câu hỏi</th><th>Dạng</th><th>Nhãn</th><th>Nguồn</th><th>Ngày tạo</th><th class="c">Hành động</th></tr></thead><tbody>' +
+      rows.map(function (q) {
+        var isNew = S.highlight.indexOf(q.id) >= 0;
+        return '<tr class="' + (isNew ? 'is-new' : '') + '"><td><div class="stem-clamp">' + (isNew ? '<span class="lc-tag lc-tag--sm lc-tag--success" style="margin-right:6px">Mới nhập</span>' : '') + tex(q.stem) + '</div></td><td style="white-space:nowrap">' + TYPE_NAME[q.type] + '</td><td style="max-width:260px">' + labelChips(q) + '</td><td>' + sourceChip(q) + '</td><td class="lc-secondary" style="white-space:nowrap">' + q.created + '</td><td class="c"><button class="lc-btn lc-btn--text lc-btn--sm" data-action="open" data-id="' + q.id + '">Chi tiết</button></td></tr>';
+      }).join('') + '</tbody></table></div>';
+  }
+  function viewBank() {
+    var n = function (t) { return bank.filter(function (q) { return t === 'all' || q.type === t; }).length; };
+    var opt = function (t, label) { return '<option value="' + t + '"' + (S.bankType === t ? ' selected' : '') + '>' + label + ' (' + n(t) + ')</option>'; };
+    // Bộ lọc phụ: [khoá trong S, nhãn, độ rộng, [[giá trị, tên]]]
+    var FILTERS = [
+      ['bankBai', 'Tất cả bài', 260, KHUNG.map(function (k) { return [k.bai, k.bai]; }).concat([['none', 'Chưa gán nhãn']])],
+      ['bankLevel', 'Tất cả mức độ', 170, LEVELS.map(function (l) { return [l, l]; })],
+      ['bankSrc', 'Tất cả nguồn', 180, [['manual', 'Soạn trực tiếp'], ['scan', 'Quét đề'], ['word', 'Nhập Word/Excel']]]
+    ];
+    var filtered = S.bankType !== 'all' || S.bankBai || S.bankLevel || S.bankSrc;
+    var filterBar = '<div class="lc-listbar">' +
+      '<select class="lc-select lc-select--flat" style="width:200px" data-change="bankType" aria-label="Lọc dạng câu hỏi">' + opt('all', 'Tất cả dạng câu') + opt('mcq', 'Trắc nghiệm') + opt('tf', 'Đúng/Sai') + opt('short', 'Trả lời ngắn') + '</select>' +
+      FILTERS.map(function (f) { return '<select class="lc-select lc-select--flat" style="width:' + f[2] + 'px" data-change="bankFilter" data-k="' + f[0] + '" aria-label="' + f[1] + '"><option value="">' + f[1] + '</option>' + f[3].map(function (o) { return '<option value="' + esc(o[0]) + '"' + (S[f[0]] === o[0] ? ' selected' : '') + '>' + esc(o[1]) + '</option>'; }).join('') + '</select>'; }).join('') +
+      (filtered ? '<button class="lc-btn lc-btn--text lc-btn--sm" data-action="clearBankFilter">Xoá bộ lọc</button>' : '') +
+      '<span class="lc-caption" id="bankCount" style="margin-left:auto">' + bankRows().length + ' / ' + bank.length + ' câu</span></div>';
+    return {
+      title: 'Ngân hàng câu hỏi',
+      html: '<div class="lc-row" style="margin-bottom:12px"><span class="lc-chip-label lc-chip-label--primary">' + esc(BANK_NAME) + '</span><span class="lc-caption">' + bank.length + ' câu hỏi</span></div>' +
+        '<div class="lc-listbar" style="margin-bottom:14px"><div class="lc-search"><input placeholder="Tìm nội dung câu hỏi" data-input="bankQ" value="' + esc(S.bankQ) + '" aria-label="Tìm câu hỏi"><button aria-label="Tìm">⌕</button></div>' +
+        '<div class="menu-wrap" style="margin-left:auto"><button class="lc-btn lc-btn--outline" data-lc-toggle="importMenu">Nhập câu hỏi ▾</button>' +
+          '<div class="lc-menu-pop" id="importMenu" data-lc-pop hidden style="position:absolute;right:0;top:46px;z-index:20;width:300px">' +
+            '<a href="#" data-action="openExt"><span>📷</span><div><b style="display:block">Từ ảnh / PDF</b><small class="lc-secondary">Quét đề bằng Chrome Extension</small></div></a>' +
+            '<a href="#" data-action="openWord"><span>📄</span><div><b style="display:block">Từ tệp Word / Excel</b><small class="lc-secondary">Soạn theo tệp mẫu của hệ thống</small></div></a></div></div></div>' +
+        filterBar + '<div id="bankTable">' + bankTable() + '</div>',
+      foot: '<button class="lc-btn lc-btn--primary" data-action="newQ">+ Tạo câu hỏi</button>'
+    };
+  }
+
+  // ---------- View: duyệt kết quả nhận dạng ----------
+  function scanHtml() {
+    var rv = S.rv, sm = SAMPLES[rv.sample], page = rv.page, warnAt = {};
+    rv.qs.forEach(function (q, i) { if (openIssues(q).length) warnAt[i] = true; });
+    var html = page === 1 ? '<div class="lc-scan__head">' + sm.head.map(function (h, k) { return k === 1 ? '<b>' + esc(h) + '</b>' : '<div>' + esc(h) + '</div>'; }).join('') + '</div>' : '';
+    sm.parts.filter(function (p) { return p.page === page; }).forEach(function (p) {
+      html += '<div class="lc-scan__part">' + esc(p.title) + '</div>';
+      p.qs.forEach(function (i) {
+        var q = truth(sm, i), body = '<b>Câu ' + (i + 1) + '.</b> ' + tex(q.stem);
+        if (q.type === 'mcq') { var long = q.opts.some(function (o) { return o.length > 18; }); body += '<div class="lc-scan__opts' + (long ? ' is-2' : '') + '">' + q.opts.map(function (o, k) { return '<div><b>' + 'ABCD'[k] + '.</b> ' + tex(o) + '</div>'; }).join('') + '</div>'; }
+        if (q.type === 'tf') body += q.stmts.map(function (s, k) { return '<div>' + 'abcd'[k] + ') ' + tex(s.t) + '</div>'; }).join('');
+        html += '<div class="lc-scan__q' + (rv.sel === i ? ' is-sel' : '') + (warnAt[i] ? ' is-warn' : '') + '" data-action="selq" data-i="' + i + '"><span class="no">' + (i + 1) + '</span>' + body + '</div>';
+      });
+    });
+    if (sm.key && sm.key.page === page) html += '<div class="lc-scan__key">' + esc(sm.key.text) + '</div>';
+    var rot = sm.tilt && !rv.straight ? sm.tilt : 0;
+    return '<div class="lc-scan' + (sm.photo ? ' is-photo' : '') + '" style="transform:rotate(' + rot + 'deg) scale(' + rv.zoom + ')">' + html + '</div>';
+  }
+  function viewerHtml() {
+    var rv = S.rv, sm = SAMPLES[rv.sample], pages = '';
+    for (var p = 1; p <= sm.pages; p++) pages += '<button class="' + (rv.page === p ? 'is-active' : '') + '" data-action="page" data-v="' + p + '">Trang ' + p + '</button>';
+    return '<div class="lc-viewer"><div class="lc-viewer__bar"><b style="color:var(--lc-text-strong)">Tệp gốc</b>' + pages + '<span class="lc-spacer"></span>' +
+      (sm.tilt ? '<button class="' + (rv.straight ? '' : 'is-active') + '" data-action="straight" data-v="0">Ảnh gốc</button><button class="' + (rv.straight ? 'is-active' : '') + '" data-action="straight" data-v="1">Đã căn thẳng</button>' : '') +
+      '<button data-action="zoom" data-v="-1" aria-label="Thu nhỏ">−</button><span>' + Math.round(rv.zoom * 100) + '%</span><button data-action="zoom" data-v="1" aria-label="Phóng to">+</button></div>' +
+      (sm.tilt ? '<p class="lc-caption">' + (rv.straight ? 'Đã tự động căn thẳng ảnh (nghiêng ' + Math.abs(sm.tilt) + '°) trước khi nhận dạng.' : 'Ảnh gốc chụp bằng điện thoại, nghiêng ' + Math.abs(sm.tilt) + '°.') + '</p>' : '') +
+      '<div class="lc-viewer__canvas" id="scanCanvas">' + scanHtml() + '</div><p class="lc-caption">Bấm vào một vùng trên đề để xem câu hỏi tương ứng bên phải.</p></div>';
+  }
+  function issueHtml(q, i) {
+    return openIssues(q).map(function (is) {
+      if (is.f === 'answer') {
+        var pick = q.type === 'mcq' ? q.opts.map(function (o, k) { return '<button class="lc-btn lc-btn--outline" data-action="pickAns" data-i="' + i + '" data-v="' + k + '">' + 'ABCD'[k] + '</button>'; }).join('') : '<button class="lc-btn lc-btn--outline" data-action="editq" data-i="' + i + '">Nhập đáp án</button>';
+        return '<div class="lc-issue">⚠ ' + esc(is.msg) + ' <span style="display:inline-flex;gap:4px;margin-left:auto">' + pick + '</span></div>';
+      }
+      var k = q.issues.indexOf(is);
+      return '<div class="lc-issue">⚠ ' + esc(is.msg) + ': <code>' + esc(is.found) + '</code> → <span>' + tex(is.fix) + '</span><button class="lc-btn lc-btn--primary" data-action="fix" data-i="' + i + '" data-k="' + k + '">Áp dụng gợi ý</button></div>';
+    }).join('');
+  }
+  function confTag(q) {
+    if (openIssues(q).length) return '<span class="lc-tag lc-tag--sm lc-tag--warning">Cần kiểm tra</span>';
+    if (q.touched) return '<span class="lc-tag lc-tag--sm lc-tag--success">Đã kiểm tra</span>';
+    return '<span class="lc-tag lc-tag--sm lc-tag--info">Nhận dạng tốt</span>';
+  }
+  function editHtml(q, i) {
+    var body = '<div class="lc-ocr__edit"><select class="lc-select" style="height:36px;width:220px" data-change="e.type" data-i="' + i + '" aria-label="Dạng câu hỏi">' + Object.keys(TYPE_NAME).map(function (t) { return '<option value="' + t + '"' + (q.type === t ? ' selected' : '') + '>' + TYPE_NAME[t] + '</option>'; }).join('') + '</select>' +
+      '<label class="lc-caption" for="st' + i + '">Nội dung (gõ công thức trong cặp dấu $…$)</label><textarea class="lc-textarea" id="st' + i + '" data-input="e.stem" data-i="' + i + '">' + esc(q.stem) + '</textarea>';
+    if (q.type === 'mcq') body += q.opts.map(function (o, k) { return '<label class="lc-row" style="gap:8px"><input type="radio" name="cr' + i + '" data-change="e.correct" data-i="' + i + '" value="' + k + '"' + (q.correct === k ? ' checked' : '') + ' title="Đáp án đúng"><b style="width:16px;color:var(--lc-primary)">' + 'ABCD'[k] + '</b><input class="lc-input" data-input="e.opt" data-i="' + i + '" data-k="' + k + '" value="' + esc(o) + '" aria-label="Phương án ' + 'ABCD'[k] + '"></label>'; }).join('') + '<p class="lc-caption">Chọn nút tròn ở phương án đúng.</p>';
+    if (q.type === 'tf') body += q.stmts.map(function (s, k) { return '<div class="lc-row" style="gap:8px"><b style="width:16px">' + 'abcd'[k] + ')</b><input class="lc-input" data-input="e.stmt" data-i="' + i + '" data-k="' + k + '" value="' + esc(s.t) + '" aria-label="Mệnh đề ' + 'abcd'[k] + '"><select class="lc-select" style="height:36px;width:90px" data-change="e.stmtOk" data-i="' + i + '" data-k="' + k + '" aria-label="Đúng hay sai"><option value=""' + (s.ok == null ? ' selected' : '') + '>?</option><option value="1"' + (s.ok === true ? ' selected' : '') + '>Đúng</option><option value="0"' + (s.ok === false ? ' selected' : '') + '>Sai</option></select></div>'; }).join('');
+    if (q.type === 'short') body += '<label class="lc-row" style="gap:8px"><span class="lc-caption" style="width:60px">Đáp án</span><input class="lc-input" data-input="e.answer" data-i="' + i + '" value="' + esc(q.answer || '') + '" style="width:160px"></label>';
+    return body + '<span class="lc-caption">Xem trước</span><div class="lc-ocr__preview" id="prev' + i + '">' + tex(q.stem) + '</div><div class="lc-row" style="justify-content:flex-end"><button class="lc-btn lc-btn--primary lc-btn--sm" data-action="doneq" data-i="' + i + '">Xong</button></div></div>';
+  }
+  function cardHtml(q, i) {
+    var rv = S.rv, editing = rv.edit === i;
+    return '<article class="lc-ocr' + (rv.sel === i ? ' is-sel' : '') + (q.inc ? '' : ' is-off') + '" id="ocr' + i + '" data-action="selq" data-i="' + i + '">' +
+      '<div class="lc-ocr__head"><input type="checkbox" data-change="inc" data-i="' + i + '"' + (q.inc ? ' checked' : '') + ' aria-label="Chọn câu ' + (i + 1) + '"><b>Câu ' + (i + 1) + '</b><span class="lc-chip-label">' + TYPE_NAME[q.type] + '</span>' + confTag(q) + '<span class="lc-caption">Trang ' + q.page + '</span>' +
+      '<span class="acts">' + (editing ? '' : '<button class="lc-btn lc-btn--text lc-btn--sm" data-action="editq" data-i="' + i + '">Sửa</button>') + '</span></div>' +
+      (editing ? editHtml(q, i) : '<div class="lc-ocr__stem">' + tex(q.stem) + '</div>' + answerHtml(q)) + issueHtml(q, i) +
+      '<div style="margin-top:10px">' + labelChips(q) + '</div></article>';
+  }
+  function bulkHtml() {
+    var b = S.rv.bulk, nSel = S.rv.qs.filter(function (q) { return q.inc; }).length;
+    var machs = uniq(KHUNG.map(function (k) { return k.mach; }));
+    var chudes = b.mach ? uniq(KHUNG.filter(function (k) { return k.mach === b.mach; }).map(function (k) { return k.chude; })) : [];
+    var bais = b.chude ? KHUNG.filter(function (k) { return k.chude === b.chude; }).map(function (k) { return k.bai; }) : [];
+    var yccds = b.bai ? KHUNG.filter(function (k) { return k.bai === b.bai; })[0].yccd : [];
+    var sel = function (key, list, ph, dis, vals) { return '<select class="lc-select" style="height:36px" data-change="b.' + key + '"' + (dis ? ' disabled' : '') + ' aria-label="' + ph + '"><option value="">' + ph + '</option>' + list.map(function (v, k) { var val = vals ? vals[k] : v; return '<option value="' + esc(val) + '"' + (b[key] === val ? ' selected' : '') + '>' + esc(v) + '</option>'; }).join('') + '</select>'; };
+    return '<section class="lc-card lc-card--pad" style="margin-bottom:14px"><div class="lc-row" style="justify-content:space-between;margin-bottom:10px"><b>Gán nhãn cho các câu đã chọn (' + nSel + ')</b><span class="lc-chip-label lc-chip-label--primary">Toán · Lớp 10</span></div>' +
+      '<div class="lc-grid lc-grid-2" style="gap:8px">' + sel('mach', machs, 'Mạch nội dung') + sel('chude', chudes, 'Chủ đề', !b.mach) + sel('bai', bais, 'Bài', !b.chude) +
+      sel('yccd', yccds.map(function (y) { return y[0] + ' · ' + y[1].slice(0, 36) + '…'; }), 'Yêu cầu cần đạt', !b.bai, yccds.map(function (y) { return y[0]; })) + sel('level', LEVELS, 'Mức độ') +
+      '<button class="lc-btn lc-btn--primary" style="height:36px" data-action="applyBulk"' + (b.bai && nSel ? '' : ' disabled') + '>Áp dụng cho ' + nSel + ' câu</button></div></section>';
+  }
+  function viewReview() {
+    var rv = S.rv, sm = SAMPLES[rv.sample], inc = rv.qs.filter(function (q) { return q.inc; });
+    var nIssue = rv.qs.filter(function (q) { return q.inc && openIssues(q).length; }).length, nNoLab = inc.filter(function (q) { return !labeled(q); }).length;
+    var nFormula = rv.qs.filter(function (q) { return /\$/.test(q.stem); }).length;
+    return {
+      title: 'Kết quả quét đề',
+      html: '<div class="lc-row" style="margin-bottom:14px;flex-wrap:wrap;gap:12px"><button class="lc-btn lc-btn--text lc-btn--sm" data-action="goBank">← Ngân hàng câu hỏi</button>' +
+          '<div class="lc-file"><span class="lc-thumb lc-thumb--' + (sm.thumb === 'PDF' ? 'pdf' : 'doc') + '" style="width:40px;height:40px;font-size:10px">' + sm.thumb + '</span><div><b style="cursor:default">' + esc(sm.name) + '</b><small>' + sm.size + ' · ' + sm.pages + ' trang · xử lý trong ' + sm.secs + ' giây · ' + esc(sm.keyNote) + '</small></div></div>' +
+          '<span class="lc-spacer"></span><span class="lc-chip-label lc-chip-label--primary">' + rv.qs.length + ' câu đã tách</span><span class="lc-chip-label">' + nFormula + ' câu có công thức</span>' + (nIssue ? '<span class="lc-chip-label lc-chip-label--warn">' + nIssue + ' câu cần kiểm tra</span>' : '<span class="lc-source lc-source--so">✓ Đã kiểm tra hết</span>') + '</div>' +
+        '<div class="lc-callout" style="margin-bottom:16px">Đối chiếu từng câu với tệp gốc bên trái, sửa chỗ nhận dạng sai rồi mới nhập vào ngân hàng. <span class="lc-caption">Nhận dạng bởi: ' + esc(S.ext.service) + ' · dịch vụ tách rời khỏi hệ thống chính, có thể thay thế.</span></div>' +
+        '<div class="review-grid"><div class="left" id="viewer">' + viewerHtml() + '</div><div>' + '<div id="bulk">' + bulkHtml() + '</div>' +
+          '<label class="lc-check" style="margin:0 0 10px 4px"><input type="checkbox" data-change="incAll"' + (inc.length === rv.qs.length ? ' checked' : '') + '>Chọn tất cả</label><div class="lc-stack" style="gap:12px" id="cards">' + rv.qs.map(cardHtml).join('') + '</div></div></div>',
+      foot: '<span class="lc-secondary" style="margin-right:auto">Đã chọn ' + inc.length + '/' + rv.qs.length + ' câu' + (nIssue ? ' · <b style="color:#d46b08">' + nIssue + ' câu cần kiểm tra</b>' : '') + (nNoLab ? ' · ' + nNoLab + ' câu chưa gán nhãn' : '') + '</span>' +
+        '<button class="lc-btn lc-btn--outline" data-action="goBank">Huỷ</button><button class="lc-btn lc-btn--primary" data-action="import"' + (inc.length ? '' : ' disabled') + '>Nhập ' + inc.length + ' câu vào ngân hàng</button>'
+    };
+  }
+
+  // ---------- Popup extension ----------
+  var STEPS = function (sm) { return ['Tải tệp lên dịch vụ nhận dạng', sm.pages > 1 ? 'Tách ' + sm.pages + ' trang PDF' : (sm.tilt ? 'Căn thẳng và làm rõ ảnh' : 'Làm rõ ảnh'), 'Nhận dạng chữ và công thức', 'Tách câu hỏi, phương án, đáp án']; };
+  function renderExt() {
+    var e = S.ext, el = $('ext');
+    el.hidden = !e.open; $('extIcon').classList.toggle('is-open', e.open);
+    var bd = $('extBadge'); bd.hidden = e.phase === 'idle'; bd.textContent = e.phase === 'processing' ? '…' : '✓'; bd.className = 'bd' + (e.phase === 'done' ? ' bd--ok' : '');
+    if (!e.open) return;
+    var body = '', foot = '';
+    if (e.tab === 'scan') {
+      if (e.phase === 'idle') {
+        body = '<label class="lc-dropzone"><img src="../assets/upload-img.svg" alt=""><b>Kéo thả ảnh hoặc PDF vào đây</b><span class="lc-caption">JPG, PNG, PDF · tối đa 20 trang</span><input type="file" hidden accept="image/*,.pdf" data-change="extFile"></label>' +
+          '<div class="lc-ext-actions"><button data-action="extCapture">✂ Chụp vùng màn hình</button><button data-action="extPaste">📋 Dán ảnh (Ctrl+V)</button></div>' +
+          (e.note ? '<div class="lc-callout lc-callout--warn" style="font-size:13px">' + e.note + '</div>' : '') +
+          '<div><div class="lc-caption" style="margin-bottom:6px">Tệp mẫu để demo</div><div class="lc-stack" style="gap:6px">' + Object.keys(SAMPLES).map(function (k) { var s = SAMPLES[k]; return '<div class="lc-sample' + (e.sample === k && !e.file ? ' is-active' : '') + '" data-action="extSample" data-v="' + k + '"><span class="lc-thumb lc-thumb--' + (s.thumb === 'PDF' ? 'pdf' : 'doc') + '">' + s.thumb + '</span><div><b>' + esc(s.label) + '</b><small>' + esc(s.name) + ' · ' + s.size + '</small></div></div>'; }).join('') + '</div></div>' +
+          '<div class="lc-field"><label class="lc-label" style="font-size:14px" for="extTarget">Nhập vào ngân hàng</label><select class="lc-select" id="extTarget" style="height:36px" data-change="extTarget"><option' + (e.target === BANK_NAME ? ' selected' : '') + '>' + BANK_NAME + '</option><option' + (e.target !== BANK_NAME ? ' selected' : '') + '>Toán 10 – Ôn tập chương II</option></select></div>' +
+          '<div class="lc-stack" style="gap:8px"><label class="lc-switch" style="font-size:13px"><input type="checkbox" data-change="extOpt" data-k="formula"' + (e.formula ? ' checked' : '') + '>Nhận dạng công thức (LaTeX)</label><label class="lc-switch" style="font-size:13px"><input type="checkbox" data-change="extOpt" data-k="answer"' + (e.answer ? ' checked' : '') + '>Tự tìm bảng đáp án trong đề</label><label class="lc-switch" style="font-size:13px"><input type="checkbox" data-change="extOpt" data-k="deskew"' + (e.deskew ? ' checked' : '') + '>Tự căn thẳng ảnh chụp nghiêng</label></div>' +
+          '<div class="lc-callout lc-callout--warn" style="font-size:12px">Chỉ dùng cho đề ôn tập, bài tập. Không dùng cho đề thi chính thức còn trong thời gian bảo mật.</div>';
+        foot = '<button class="lc-btn lc-btn--primary" data-action="extRun">Gửi xử lý</button>';
+      } else {
+        var sm = SAMPLES[e.sample], st = STEPS(sm), pct = e.phase === 'done' ? 100 : Math.round(e.step / st.length * 100);
+        body = '<div class="lc-file"><span class="lc-thumb lc-thumb--' + (sm.thumb === 'PDF' ? 'pdf' : 'doc') + '" style="width:40px;height:40px;font-size:10px">' + sm.thumb + '</span><div><b style="cursor:default">' + esc(sm.name) + '</b><small>' + sm.size + ' · ' + sm.pages + ' trang → ' + esc(e.target) + '</small></div></div>' +
+          '<div class="lc-progress"><span style="width:' + pct + '%"></span></div><ol class="lc-steplist">' + st.map(function (s, k) { var c = e.phase === 'done' || k < e.step ? 'is-done' : k === e.step ? 'is-run' : ''; return '<li class="' + c + '"><span class="s">' + (c === 'is-done' ? '✓' : '') + '</span>' + s + '</li>'; }).join('') + '</ol>' +
+          (e.phase === 'done' ? '<div class="lc-callout" style="font-size:13px">Đã tách <b>' + sm.qs.length + ' câu hỏi</b> trong ' + sm.secs + ' giây. ' + (sm.qs.some(function (q) { return q.issues; }) ? 'Có câu cần giáo viên kiểm tra lại.' : '') + '</div>' : '<p class="lc-caption">Có thể đóng popup, quá trình vẫn tiếp tục. Biểu tượng tiện ích hiện ✓ khi xong.</p>');
+        foot = e.phase === 'done' ? '<button class="lc-btn lc-btn--outline" data-action="extReset">Quét tệp khác</button><button class="lc-btn lc-btn--primary" data-action="extOpenResult">Mở kết quả trong LCMS</button>' : '<button class="lc-btn lc-btn--outline" data-action="extCancel">Huỷ</button>';
+      }
+    } else if (e.tab === 'history') {
+      body = S.history.map(function (h) { return '<div class="lc-sample" style="cursor:default"><span class="lc-thumb lc-thumb--' + (/\.pdf$/.test(h.name) ? 'pdf' : 'doc') + '">' + (/\.pdf$/.test(h.name) ? 'PDF' : 'JPG') + '</span><div><b>' + esc(h.name) + '</b><small>' + h.when + ' · ' + h.n + ' câu đã nhập</small></div></div>'; }).join('');
+    } else {
+      body = '<div class="lc-field"><label class="lc-label" style="font-size:14px" for="extSvc">Dịch vụ nhận dạng</label><select class="lc-select" id="extSvc" style="height:36px" data-change="extSvc"><option' + (e.service === 'AI OCR (mặc định)' ? ' selected' : '') + '>AI OCR (mặc định)</option><option' + (e.service !== 'AI OCR (mặc định)' ? ' selected' : '') + '>OCR dự phòng</option></select><span class="lc-caption">Dịch vụ AI tách rời khỏi LCMS, có thể thay hoặc nâng cấp mà không ảnh hưởng hệ thống chính.</span></div>' +
+        '<div class="lc-row" style="font-size:13px"><span class="lc-source lc-source--so">● Đang kết nối</span><span class="lc-caption">Phản hồi 120 ms</span></div>' +
+        '<div><div class="lc-row" style="justify-content:space-between;font-size:13px;margin-bottom:6px"><span>Hạn mức hôm nay</span><b>37 / 200 trang</b></div><div class="lc-progress"><span style="width:18.5%"></span></div></div>' +
+        '<label class="lc-switch" style="font-size:13px"><input type="checkbox" data-change="extOpt" data-k="autoOpen"' + (e.autoOpen ? ' checked' : '') + '>Tự mở kết quả trong LCMS khi xử lý xong</label>' +
+        '<p class="lc-caption">Phiên bản tiện ích 1.2.0 · đăng nhập bằng tài khoản LCMS</p>';
+    }
+    el.innerHTML = '<div class="lc-ext__head"><img src="../assets/favicon_bn.png" alt=""><div><b>Quét đề LCMS</b><span>Nguyễn Thị Lan · đã đăng nhập</span></div><button class="lc-modal__close" data-action="extClose" style="margin-left:auto;color:#fff" aria-label="Đóng">×</button></div>' +
+      '<div class="lc-ext__tabs">' + [['scan', 'Quét đề'], ['history', 'Lịch sử'], ['settings', 'Cài đặt']].map(function (t) { return '<button class="' + (e.tab === t[0] ? 'is-active' : '') + '" data-action="extTab" data-v="' + t[0] + '">' + t[1] + '</button>'; }).join('') + '</div>' +
+      '<div class="lc-ext__body">' + body + '</div>' + (foot ? '<div class="lc-ext__foot">' + foot + '</div>' : '');
+  }
+  var timer = null;
+  function runExt() {
+    var e = S.ext, sm = SAMPLES[e.sample], dur = [600, 700, 1300, 800];
+    e.phase = 'processing'; e.step = 0; renderExt();
+    (function tick() {
+      timer = setTimeout(function () {
+        e.step++;
+        if (e.step >= STEPS(sm).length) {
+          e.phase = 'done';
+          if (e.autoOpen) { e.open = false; openResult(); } else renderExt();
+          return;
+        }
+        renderExt(); tick();
+      }, dur[e.step]);
+    })();
+  }
+  function openResult() {
+    var sm = SAMPLES[S.ext.sample], pageOf = {};
+    sm.parts.forEach(function (p) { p.qs.forEach(function (i) { pageOf[i] = p.page; }); });
+    var qs = clone(sm.qs).map(function (q, i) {
+      q.page = pageOf[i]; q.inc = true; q.lab = null;
+      if (q.type === 'tf') q.stmts = q.stmts.map(function (s) { return { t: s.t, ok: s.ok }; });
+      return q;
+    });
+    S.rv = { sample: sm.id, qs: qs, sel: 0, edit: null, page: 1, zoom: 1, straight: !!sm.tilt && S.ext.deskew, bulk: { mach: '', chude: '', bai: '', yccd: '', level: '' } };
+    S.view = 'review'; S.drawerId = null; render();
+    toast('Đã nhận kết quả từ tiện ích: ' + qs.length + ' câu hỏi');
+  }
+
+  // ---------- Modal Word/Excel (UC100) ----------
+  var WORD_ROWS = [
+    { type: 'mcq', stem: 'Cho $A = (-1;3]$ và $B = [0;5)$. Tập hợp $A \\cap B$ là', opts: ['$[0;3]$', '$(-1;5)$', '$[0;3)$', '$(-1;0)$'], correct: 0, bai: KHUNG[1].bai, yccd: 'T10.TH.2' },
+    { type: 'mcq', stem: 'Tọa độ đỉnh của parabol $y = -x^2 + 4x$ là', opts: ['$(2;4)$', '$(-2;-12)$', '$(2;-4)$', '$(4;0)$'], correct: 0, bai: KHUNG[2].bai, yccd: 'T10.HS.3' },
+    { type: 'short', stem: 'Cho tam giác $ABC$ có $a = 3$, $b = 4$, $\\widehat{C} = 90^\\circ$. Tính $c$.', answer: '5', bai: KHUNG[3].bai, yccd: 'T10.GT.1' }
+  ];
+  function renderWord() {
+    var w = S.word;
+    $('mWordBody').innerHTML = '<div class="lc-callout">So với quét đề: nhập từ Word/Excel cần soạn đúng <b>tệp mẫu của hệ thống</b> (mỗi câu một dòng hoặc một khối, có cột đáp án và nhãn). Quét đề dùng thẳng ảnh hoặc PDF có sẵn, AI tách câu hỏi và giáo viên duyệt lại.</div>' +
+      '<div class="lc-row" style="flex-wrap:wrap"><b>Bước 1.</b> Tải tệp mẫu: <a href="#" data-action="wordTpl">mau-cau-hoi.docx</a> · <a href="#" data-action="wordTpl">mau-cau-hoi.xlsx</a></div>' +
+      '<div><b>Bước 2.</b> Chọn tệp đã soạn</div>' +
+      (w.file ? '<div class="lc-file" style="padding:10px;border:1px solid var(--lc-border-input);border-radius:10px"><span class="lc-thumb lc-thumb--q" style="width:40px;height:40px;font-size:10px">XLSX</span><div><b style="cursor:default">' + esc(w.file) + '</b><small>Đọc được ' + WORD_ROWS.length + ' câu · 0 lỗi định dạng</small></div></div>' +
+        '<div><b>Bước 3.</b> Kiểm tra trước khi nhập</div><div class="lc-table-wrap"><table class="lc-table lc-table--plain"><thead><tr><th>#</th><th>Nội dung</th><th>Dạng</th><th>Đáp án</th><th>Nhãn</th></tr></thead><tbody>' +
+          WORD_ROWS.map(function (r, k) { return '<tr><td>' + (k + 1) + '</td><td><div class="stem-clamp" style="max-width:300px">' + tex(r.stem) + '</div></td><td style="white-space:nowrap">' + TYPE_NAME[r.type] + '</td><td>' + (r.type === 'mcq' ? 'ABCD'[r.correct] : tex(r.answer)) + '</td><td><span class="lc-chip-label">' + r.yccd + '</span></td></tr>'; }).join('') + '</tbody></table></div>'
+        : '<label class="lc-dropzone" style="min-height:120px"><img src="../assets/upload-img.svg" alt=""><b>Chọn tệp .docx hoặc .xlsx</b><input type="file" hidden accept=".docx,.xlsx" data-change="wordFile"></label><p class="lc-caption" style="text-align:center">Bản mẫu: <a href="#" data-action="wordSample">dùng tệp ngan-hang-mau.xlsx</a></p>');
+    $('wordImportBtn').disabled = !w.file;
+    $('wordImportBtn').textContent = w.file ? 'Nhập ' + WORD_ROWS.length + ' câu vào ngân hàng' : 'Nhập vào ngân hàng';
+  }
+
+  // ---------- Drawer chi tiết câu hỏi ----------
+  function renderDrawer() {
+    var q = S.drawerId && bank.filter(function (x) { return x.id === S.drawerId; })[0];
+    if (!q) { $('drawerRoot').innerHTML = ''; return; }
+    var l = q.lab || {}, src = q.src.kind === 'scan' ? 'Quét từ <b>' + esc(q.src.file) + '</b>, trang ' + q.src.page : q.src.kind === 'word' ? 'Nhập từ tệp ' + esc(q.src.file || 'Word/Excel') : 'Soạn trực tiếp trên hệ thống';
+    $('drawerRoot').innerHTML = '<div class="lc-drawer-mask" data-action="closeDrawer"></div><aside class="lc-drawer" role="dialog" aria-label="Chi tiết câu hỏi"><div class="lc-drawer__head"><span class="lc-thumb lc-thumb--q" style="width:44px;height:44px;font-size:18px">?</span><div style="flex:1"><h3>' + TYPE_NAME[q.type] + '</h3><div style="margin-top:6px">' + sourceChip(q) + '</div></div><button class="lc-modal__close" data-action="closeDrawer" aria-label="Đóng">×</button></div>' +
+      '<div class="lc-drawer__body"><div class="lc-qprev"><div class="stem">' + tex(q.stem) + '</div>' + answerHtml(q) + '</div><h4 class="lc-sec-title">Nhãn</h4>' +
+      (labeled(q) ? '<dl class="lc-dl"><dt>Môn · Lớp</dt><dd>Toán · Lớp 10</dd><dt>Chủ đề</dt><dd>' + esc(l.chude) + '</dd><dt>Bài</dt><dd>' + esc(l.bai) + '</dd><dt>Yêu cầu cần đạt</dt><dd>' + esc((l.yccd || []).join(', ') || '—') + '</dd><dt>Mức độ</dt><dd>' + esc(l.level || '—') + '</dd></dl>' : '<div class="lc-callout lc-callout--warn">Chưa gán nhãn theo khung chương trình.</div>') +
+      '<h4 class="lc-sec-title">Nguồn</h4><p>' + src + '</p><p class="lc-caption" style="margin-top:4px">Tạo lúc ' + q.created + '</p></div><div class="lc-drawer__foot"><button class="lc-btn lc-btn--outline" data-action="closeDrawer">Đóng</button><a class="lc-btn lc-btn--primary" href="09-content-approval.html">Đề xuất lên kho dùng chung</a></div></aside>';
+  }
+
+  // ---------- Render ----------
+  function render() {
+    var keep = S.view === S.lastView ? $('main').scrollTop : 0, out = S.view === 'review' ? viewReview() : viewBank();
+    $('pageTitle').textContent = out.title;
+    $('main').innerHTML = out.html; $('foot').innerHTML = out.foot; $('foot').hidden = !out.foot;
+    $('main').scrollTop = keep; S.lastView = S.view;
+    renderDrawer(); renderExt();
+  }
+  function rerenderReview() { var keep = $('main').scrollTop, out = viewReview(); $('main').innerHTML = out.html; $('foot').innerHTML = out.foot; $('main').scrollTop = keep; }
+  function setSel(i, scrollCard) {
+    var rv = S.rv; rv.sel = i;
+    if (rv.qs[i].page !== rv.page) { rv.page = rv.qs[i].page; $('viewer').innerHTML = viewerHtml(); }
+    document.querySelectorAll('.lc-scan__q').forEach(function (el) { el.classList.toggle('is-sel', +el.dataset.i === i); });
+    document.querySelectorAll('.lc-ocr').forEach(function (el) { el.classList.toggle('is-sel', +el.dataset.i === i); });
+    var region = document.querySelector('.lc-scan__q[data-i="' + i + '"]'), card = $('ocr' + i);
+    if (region) region.scrollIntoView({ block: 'nearest' });
+    if (scrollCard && card) card.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+  function toast(msg, warn) { var t = $('toast'); t.innerHTML = '<span class="ok"' + (warn ? ' style="color:var(--lc-warning)"' : '') + '>' + (warn ? '!' : '✓') + '</span>' + msg; t.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(function () { t.hidden = true; }, 2800); }
+
+  // ---------- Sự kiện ----------
+  $('extIcon').addEventListener('click', function (ev) { ev.stopPropagation(); S.ext.open = !S.ext.open; renderExt(); });
+  document.addEventListener('click', function (ev) {
+    // Popup tiện ích đóng khi bấm ra ngoài, giống Chrome; quá trình xử lý vẫn chạy tiếp
+    if (S.ext.open && !ev.target.closest('#ext') && !ev.target.closest('[data-action="openExt"]')) { S.ext.open = false; renderExt(); }
+    var el = ev.target.closest('[data-action]'); if (!el) return;
+    var a = el.dataset.action, i = +el.dataset.i, rv = S.rv, q = rv && rv.qs[i];
+    if (a === 'selq' && ev.target.closest('input,textarea,select,label,button')) return;
+    if (el.tagName === 'A' && el.getAttribute('href') === '#') ev.preventDefault();
+    switch (a) {
+      case 'clearBankFilter': S.bankType = 'all'; S.bankBai = S.bankLevel = S.bankSrc = ''; render(); break;
+      case 'goBank': S.view = 'bank'; render(); break;
+      case 'open': S.drawerId = el.dataset.id; renderDrawer(); break;
+      case 'closeDrawer': S.drawerId = null; renderDrawer(); break;
+      case 'newQ': toast('Soạn câu hỏi trực tiếp: xem template 09 (Tạo câu hỏi)'); break;
+      case 'openExt': $('importMenu') && ($('importMenu').hidden = true); S.ext.open = true; S.ext.tab = 'scan'; renderExt(); break;
+      case 'openWord': $('importMenu').hidden = true; S.word = { file: null }; renderWord(); $('mWord').hidden = false; break;
+      case 'extClose': S.ext.open = false; renderExt(); break;
+      case 'extTab': S.ext.tab = el.dataset.v; renderExt(); break;
+      case 'extSample': S.ext.sample = el.dataset.v; S.ext.file = null; S.ext.note = ''; renderExt(); break;
+      case 'extCapture': case 'extPaste': S.ext.note = 'Bản mẫu: chụp vùng màn hình và dán ảnh cần tiện ích thật. Hãy chọn một tệp mẫu bên dưới.'; renderExt(); break;
+      case 'extRun':
+        if (S.ext.file) { S.ext.note = 'Bản mẫu chưa kết nối dịch vụ nhận dạng nên không xử lý được tệp <b>' + esc(S.ext.file) + '</b>. Hãy chọn một trong 3 tệp mẫu.'; S.ext.file = null; renderExt(); break; }
+        runExt(); break;
+      case 'extCancel': clearTimeout(timer); S.ext.phase = 'idle'; renderExt(); break;
+      case 'extReset': S.ext.phase = 'idle'; renderExt(); break;
+      case 'extOpenResult': S.ext.open = false; openResult(); break;
+      case 'selq': setSel(i, !ev.target.closest('.lc-ocr')); break;
+      case 'page': rv.page = +el.dataset.v; $('viewer').innerHTML = viewerHtml(); break;
+      case 'zoom': rv.zoom = Math.min(1.6, Math.max(0.6, Math.round((rv.zoom + 0.1 * +el.dataset.v) * 10) / 10)); $('viewer').innerHTML = viewerHtml(); break;
+      case 'straight': rv.straight = el.dataset.v === '1'; $('viewer').innerHTML = viewerHtml(); break;
+      case 'editq': rv.edit = i; rv.sel = i; rerenderReview(); break;
+      case 'doneq': rv.edit = null; q.touched = true; rerenderReview(); break;
+      case 'fix': {
+        var is = q.issues[+el.dataset.k];
+        if (is.f === 'stem') q.stem = q.stem.replace(is.found, is.fix); else q.opts[+is.f.slice(3)] = q.opts[+is.f.slice(3)].replace(is.found, is.fix);
+        is.done = true; q.touched = true; rerenderReview(); toast('Đã sửa câu ' + (i + 1) + ' theo gợi ý'); break;
+      }
+      case 'pickAns': q.correct = +el.dataset.v; q.touched = true; rerenderReview(); break;
+      case 'applyBulk': {
+        var b = rv.bulk, k = KHUNG.filter(function (x) { return x.bai === b.bai; })[0], n = 0;
+        rv.qs.forEach(function (x) { if (x.inc) { x.lab = { mach: k.mach, chude: k.chude, bai: k.bai, yccd: b.yccd ? [b.yccd] : [], level: b.level }; n++; } });
+        rerenderReview(); toast('Đã gán nhãn cho ' + n + ' câu'); break;
+      }
+      case 'import': {
+        var inc = rv.qs.filter(function (x) { return x.inc; }), miss = inc.filter(function (x) { return !hasAnswer(x); })[0];
+        if (miss) { toast('Câu ' + (rv.qs.indexOf(miss) + 1) + ' chưa có đáp án. Chọn đáp án trước khi nhập.', true); setSel(rv.qs.indexOf(miss), true); break; }
+        var sm = SAMPLES[rv.sample], ids = [], t = now();
+        inc.forEach(function (x) {
+          var id = 's' + (++seq); ids.push(id);
+          bank.unshift({ id: id, type: x.type, stem: x.stem, opts: x.opts, correct: x.correct, stmts: x.stmts, answer: x.answer, lab: x.lab, src: { kind: 'scan', file: sm.name, page: x.page }, created: t });
+        });
+        S.history.unshift({ name: sm.name, when: t, n: inc.length });
+        S.highlight = ids; S.view = 'bank'; S.bankType = 'all'; S.ext.phase = 'idle'; render();
+        toast('Đã nhập ' + inc.length + ' câu vào «' + esc(S.ext.target) + '»'); break;
+      }
+      case 'wordTpl': toast('Bản mẫu: tải tệp mẫu Word/Excel'); break;
+      case 'wordSample': S.word.file = 'ngan-hang-mau.xlsx'; renderWord(); break;
+      case 'wordImport': {
+        var tw = now(), wids = [];
+        WORD_ROWS.forEach(function (r) { var k2 = KHUNG.filter(function (x) { return x.bai === r.bai; })[0], id = 'w' + (++seq); wids.push(id); bank.unshift({ id: id, type: r.type, stem: r.stem, opts: r.opts, correct: r.correct, answer: r.answer, lab: { mach: k2.mach, chude: k2.chude, bai: k2.bai, yccd: [r.yccd], level: '' }, src: { kind: 'word', file: S.word.file }, created: tw }); });
+        $('mWord').hidden = true; S.highlight = wids; S.view = 'bank'; render(); toast('Đã nhập ' + WORD_ROWS.length + ' câu từ ' + S.word.file); break;
+      }
+    }
+  });
+  document.addEventListener('change', function (ev) {
+    var t = ev.target, k = t.dataset.change, rv = S.rv, i = +t.dataset.i; if (!k) return;
+    var e = S.ext;
+    switch (k) {
+      case 'bankType': S.bankType = t.value; render(); return;
+      case 'bankFilter': S[t.dataset.k] = t.value; render(); return;
+      case 'extFile': if (t.files.length) { e.file = t.files[0].name; e.note = 'Đã chọn <b>' + esc(e.file) + '</b>.'; renderExt(); } return;
+      case 'extTarget': e.target = t.value; return;
+      case 'extOpt': e[t.dataset.k] = t.checked; return;
+      case 'extSvc': e.service = t.value; return;
+      case 'wordFile': if (t.files.length) { S.word.file = t.files[0].name; renderWord(); } return;
+      case 'inc': rv.qs[i].inc = t.checked; rerenderReview(); return;
+      case 'incAll': rv.qs.forEach(function (q) { q.inc = t.checked; }); rerenderReview(); return;
+      case 'e.correct': rv.qs[i].correct = +t.value; return;
+      case 'e.stmtOk': rv.qs[i].stmts[+t.dataset.k].ok = t.value === '' ? null : t.value === '1'; return;
+      case 'e.type': {
+        var q = rv.qs[i]; q.type = t.value;
+        if (q.type === 'mcq' && !q.opts) { q.opts = ['', '', '', '']; q.correct = null; }
+        if (q.type === 'tf' && !q.stmts) q.stmts = [{ t: '', ok: null }, { t: '', ok: null }, { t: '', ok: null }, { t: '', ok: null }];
+        rerenderReview(); return;
+      }
+    }
+    if (k.indexOf('b.') === 0) {
+      var key = k.slice(2), b = rv.bulk, order = ['mach', 'chude', 'bai', 'yccd'], p = order.indexOf(key);
+      b[key] = t.value; if (p >= 0) order.slice(p + 1).forEach(function (o) { b[o] = ''; });
+      $('bulk').innerHTML = bulkHtml();
+    }
+  });
+  document.addEventListener('input', function (ev) {
+    var t = ev.target, k = t.dataset.input; if (!k) return;
+    if (k === 'bankQ') { S.bankQ = t.value; $('bankTable').innerHTML = bankTable(); $('bankCount').textContent = bankRows().length + ' / ' + bank.length + ' câu'; return; }
+    var q = S.rv && S.rv.qs[+t.dataset.i]; if (!q) return;
+    if (k === 'e.stem') { q.stem = t.value; var pv = $('prev' + t.dataset.i); if (pv) pv.innerHTML = tex(q.stem); }
+    else if (k === 'e.opt') q.opts[+t.dataset.k] = t.value;
+    else if (k === 'e.stmt') q.stmts[+t.dataset.k].t = t.value;
+    else if (k === 'e.answer') q.answer = t.value;
+  });
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key !== 'Escape') return;
+    if (S.ext.open) { S.ext.open = false; renderExt(); return; }
+    if (S.drawerId && !document.querySelector('.lc-overlay:not([hidden])')) { S.drawerId = null; renderDrawer(); }
+  }, true);
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thư viện điện tử</title>
+<link rel="stylesheet" href="../tvet.css">
+<style>
+  body { background: var(--tv-surface-alt); }
+  /* Thanh trên mang nhận diện riêng của Thư viện (giống màn mô phỏng LCMS 17) */
+  .lib-top { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 14px; height: 64px; padding: 0 28px; background: #8c1d40; color: #fff; }
+  .lib-top > svg { width: 26px; height: 26px; flex: none; }
+  .lib-top b { font-size: 18px; white-space: nowrap; }
+  .lib-top .who { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .lib-top .who span b { font-size: 14px; }
+  .lib-top .tv-avatar { width: 34px; height: 34px; }
+  .lib-top .back { height: 34px; padding: 0 14px; border-radius: 17px; background: #fff; color: #8c1d40; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .lib-top .back svg { width: 16px; height: 16px; }
+  .lib { max-width: 1200px; margin: 0 auto; padding: 24px 20px 60px; }
+  .lib h2 { font-size: 18px; font-weight: 600; color: var(--tv-heading); margin: 28px 0 12px; }
+  .reading { display: flex; gap: 18px; align-items: center; padding: 16px; }
+  .reading .cover { width: 96px; flex: none; }
+  .reading .t { flex: 1; min-width: 0; }
+  .reading .t b { display: block; font-size: 16px; color: var(--tv-heading); }
+  .bar { height: 8px; border-radius: 4px; background: var(--tv-track); overflow: hidden; margin: 10px 0 6px; max-width: 360px; }
+  .bar span { display: block; height: 100%; background: var(--tv-primary); }
+  .filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 4px; }
+  .filters .tv-input--search { width: 280px; height: 40px; }
+  .ftab { height: 32px; padding: 0 14px; border-radius: 16px; border: 1px solid var(--tv-border); background: var(--tv-surface); font: 600 13px var(--tv-font); color: var(--tv-text-muted); cursor: pointer; }
+  .ftab.is-on { border-color: var(--tv-primary); background: var(--tv-primary-soft); color: var(--tv-primary); }
+  .books { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 18px; }
+  .book { display: block; padding: 8px; border-radius: 12px; border: 2px solid transparent; color: inherit; cursor: pointer; background: none; text-align: left; font: inherit; }
+  .book:hover { border-color: var(--tv-primary-soft); background: var(--tv-surface); }
+  .cover { aspect-ratio: 3/4; border-radius: 6px; padding: 12px 10px; display: flex; flex-direction: column; justify-content: space-between; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,.15); }
+  .cover b { font-size: 14px; line-height: 1.3; }
+  .cover small { font-size: 10px; opacity: .85; }
+  .book h4 { font-size: 14px; font-weight: 600; margin-top: 8px; line-height: 1.35; color: var(--tv-heading); }
+  .book p { font-size: 12px; color: var(--tv-text-muted); }
+  .session { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--tv-r-md); background: var(--tv-success-bg); color: var(--tv-success); font-size: 14px; margin-bottom: 20px; }
+  .session svg { width: 18px; height: 18px; flex: none; }
+  .session button { margin-left: auto; border: 0; background: none; color: inherit; cursor: pointer; font-size: 18px; line-height: 1; }
+  /* Trình duyệt mô phỏng + màn xác thực tự động LMS → Thư viện */
+  .bro { position: sticky; top: 0; z-index: 40; height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 12px; background: #dee1e6; border-bottom: 1px solid #c8ccd2; font-size: 13px; color: #3c4043; }
+  .bro__nav { display: flex; gap: 4px; color: #5f6368; }
+  .bro__nav span { width: 28px; text-align: center; }
+  .bro__url { flex: 1; min-width: 0; height: 30px; display: flex; align-items: center; gap: 6px; padding: 0 14px; border-radius: 15px; background: #fff; color: #202124; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bro__url b { color: #188038; font-weight: 400; }
+  .bro__tag { padding: 2px 8px; border-radius: 10px; background: #fff; color: #722ed1; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .lib-top { top: 44px; }
+  .auth { position: fixed; inset: 44px 0 0; z-index: 30; display: grid; place-items: center; padding: 16px; background: var(--tv-surface-alt); }
+  .auth__box { width: 100%; max-width: 500px; padding: 28px; border-radius: 16px; background: var(--tv-surface); box-shadow: 0 12px 32px rgba(0,0,0,.12); }
+  .auth__brand { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 18px; color: var(--tv-text-muted); }
+  .auth__brand img { height: 40px; }
+  .auth__brand .lib-ic { width: 40px; height: 40px; border-radius: 10px; background: #8c1d40; color: #fff; display: grid; place-items: center; }
+  .auth__brand .arrow { display: flex; gap: 4px; }
+  .auth__brand .arrow i { width: 6px; height: 6px; border-radius: 50%; background: var(--tv-primary-tint); animation: hop 1s infinite; }
+  .auth__brand .arrow i:nth-child(2) { animation-delay: .15s; } .auth__brand .arrow i:nth-child(3) { animation-delay: .3s; }
+  @keyframes hop { 50% { background: var(--tv-primary); } }
+  .auth h1 { font-size: 18px; font-weight: 600; color: var(--tv-heading); text-align: center; }
+  .step { display: flex; gap: 12px; padding: 10px 0; font-size: 14px; color: var(--tv-text-muted); border-top: 1px solid var(--tv-divider); }
+  .step:first-of-type { border-top: 0; }
+  .step .d { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--tv-track); font-size: 12px; font-weight: 600; flex: none; }
+  .step code { display: block; margin-top: 2px; font-size: 12px; color: var(--tv-text-muted); word-break: break-all; }
+  .step.is-ok { color: var(--tv-heading); }
+  .step.is-ok .d { background: var(--tv-success-solid); color: #fff; }
+  .step.is-run { color: var(--tv-heading); }
+  .step.is-run .d { border: 2px solid var(--tv-primary); border-top-color: transparent; background: none; animation: spin .8s linear infinite; }
+  .step.is-err { color: var(--tv-danger); }
+  .step.is-err .d { background: var(--tv-danger); color: #fff; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .auth__err { margin-top: 14px; padding: 12px 14px; border-radius: var(--tv-r-md); background: var(--tv-danger-bg); color: var(--tv-danger); font-size: 14px; }
+  .demo { position: fixed; left: 16px; bottom: 16px; z-index: 50; display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border: 1px dashed #b37feb; border-radius: 12px; background: #fcf8ff; font-size: 12px; color: #722ed1; }
+  .demo button { height: 28px; padding: 0 10px; border: 1px solid #d3adf7; border-radius: 14px; background: #fff; color: #531dab; font: 600 12px var(--tv-font); cursor: pointer; }
+  @media (max-width: 700px) { .bro__tag { display: none; } .demo { left: 8px; bottom: 8px; } }
+  @media (max-width: 700px) { .lib-top { padding: 0 16px; } .lib-top .who span { display: none; } .lib-top b { font-size: 16px; } .filters .tv-input--search { width: 100%; } }
+</style>
+</head>
+<body>
+<div class="bro"><div class="bro__nav"><span>‹</span><span>›</span><span>⟳</span></div><div class="bro__url" id="url"></div><span class="bro__tag">Trình duyệt mô phỏng</span></div>
+<div class="auth" id="auth" hidden></div>
+<header class="lib-top">
+  <i data-lucide="library"></i><b>Thư viện điện tử Bắc Ninh</b>
+  <div class="who">
+    <span>Xin chào, <b>Nguyễn Minh Anh</b> · Lớp 10A1</span>
+    <img class="tv-avatar" src="../assets/default-avatar.jpg" alt="">
+    <a class="back" href="02-app-sidebar-list.html"><i data-lucide="arrow-left"></i>Quay lại học tập</a>
+  </div>
+</header>
+
+<main class="lib">
+  <div class="session" id="session" hidden></div>
+  <h2 style="margin-top:0">Đang xem</h2>
+  <div class="tv-panel reading" id="reading"></div>
+
+  <h2>Kho sách</h2>
+  <div class="filters">
+    <div class="tv-input tv-input--search"><i data-lucide="search"></i><input id="q" placeholder="Tìm sách, tác giả, chủ đề…" aria-label="Tìm trong thư viện"></div>
+    <div id="ftabs" class="filters" style="margin:0"></div>
+  </div>
+  <div class="books" id="books" style="margin-top:16px"></div>
+</main>
+<div class="demo"><b>Bản mẫu · giả lập</b><button data-act="replay">Chạy lại xác thực từ LMS</button><button data-act="expire">Giả lập mã hết hạn</button></div>
+
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../tvet.js"></script>
+<script>
+(function () {
+  var BOOKS = [
+    { id: 'b1', type: 'sgk', title: 'Sách giáo khoa Toán 10 – Tập một', sub: 'Sách giáo khoa · PDF', pages: 132, color: '#1579ad' },
+    { id: 'b5', type: 'sgk', title: 'Sách giáo khoa Toán 10 – Tập hai', sub: 'Sách giáo khoa · PDF', pages: 120, color: '#0958d9' },
+    { id: 'b7', type: 'sgk', title: 'Sách giáo khoa Ngữ văn 10 – Tập một', sub: 'Sách giáo khoa · PDF', pages: 148, color: '#cf1322' },
+    { id: 'b8', type: 'sgk', title: 'Sách giáo khoa Tiếng Anh 10', sub: 'Sách giáo khoa · PDF', pages: 160, color: '#08979c' },
+    { id: 'b2', type: 'tk', title: 'Bài tập Hình học 10 nâng cao', sub: 'Tuyển chọn 300 bài', pages: 210, color: '#2f9e44' },
+    { id: 'b3', type: 'tk', title: 'Toán học và đời sống: Đo đạc', sub: 'Ứng dụng lượng giác', pages: 96, color: '#d46b08' },
+    { id: 'b6', type: 'tk', title: 'Sổ tay công thức Toán THPT', sub: 'Tra cứu nhanh', pages: 64, color: '#c41d7f' },
+    { id: 'b4', type: 'tc', title: 'Tạp chí Toán tuổi trẻ số 10/2026', sub: 'Chuyên đề tam giác', pages: 48, color: '#722ed1' }
+  ];
+  var TYPES = [['all', 'Tất cả'], ['sgk', 'Sách giáo khoa'], ['tk', 'Sách tham khảo'], ['tc', 'Tạp chí']];
+  var type = 'all', $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function cover(b) { return '<div class="cover" style="background:linear-gradient(160deg,' + b.color + ',' + b.color + 'cc)"><small>THƯ VIỆN ĐIỆN TỬ BẮC NINH</small><b>' + esc(b.title) + '</b><small>' + b.pages + ' trang</small></div>'; }
+
+  // Sách của Thư viện là file (PDF) xem trực tuyến, không tải về
+  function openBook(id, page) { var b = BOOKS.filter(function (x) { return x.id === id; })[0]; if (b) TvViewer.open({ title: b.title, pages: b.pages, page: page, note: 'Thư viện điện tử Bắc Ninh · xem trực tuyến, không tải về' }); }
+  var cur = BOOKS[0];
+  $('reading').innerHTML = cover(cur) + '<div class="t"><b>' + esc(cur.title) + '</b><span class="tv-small tv-muted">Bài 2 · Định lí côsin và định lí sin · trang 70/' + cur.pages + '</span><div class="bar"><span style="width:' + Math.round(70 / cur.pages * 100) + '%"></span></div><span class="tv-caption">Giáo viên gắn vào bài học Toán 10 · Cô Nguyễn Thị Lan</span></div>' +
+    '<button class="tv-btn tv-btn--primary" data-book="' + cur.id + '" data-page="70">Xem tiếp<i data-lucide="chevron-right"></i></button>';
+
+  function render() {
+    var q = $('q').value.trim().toLowerCase();
+    $('ftabs').innerHTML = TYPES.map(function (t) { return '<button class="ftab' + (type === t[0] ? ' is-on' : '') + '" data-type="' + t[0] + '">' + t[1] + '</button>'; }).join('');
+    var list = BOOKS.filter(function (b) { return (type === 'all' || b.type === type) && (!q || (b.title + ' ' + b.sub).toLowerCase().indexOf(q) >= 0); });
+    $('books').innerHTML = list.map(function (b) {
+      var inner = cover(b) + '<h4>' + esc(b.title) + '</h4><p>' + esc(b.sub) + '</p>';
+      return '<button class="book" data-book="' + b.id + '">' + inner + '</button>';
+    }).join('') || '<p class="tv-muted">Không tìm thấy sách phù hợp.</p>';
+    if (window.lucide) lucide.createIcons();
+  }
+  /* ---------- Xác thực tự động: LMS cấp mã một lần → Thư viện xác minh → mở phiên, không có màn đăng nhập ---------- */
+  var STEPS = [
+    ['Hệ thống học tập cấp mã truy cập dùng một lần', 'hiệu lực 60 giây · gắn với tài khoản và thiết bị hiện tại', 'hoctap.bacninh.edu.vn/lien-thong/thu-vien?redirect=/sach'],
+    ['Thư viện điện tử xác minh mã với Hệ thống học tập', 'code=7f3a9c…e21b · state=b21e', 'thuvien.bacninh.edu.vn/xac-thuc/lms?code=7f3a9c…e21b&state=b21e'],
+    ['Ánh xạ tài khoản học sinh', 'HS · Nguyễn Minh Anh · Lớp 10A1 · THPT Demo số 1', 'thuvien.bacninh.edu.vn/xac-thuc/lms/xac-minh'],
+    ['Mở phiên làm việc tại Thư viện', 'phiên hết hạn sau 8 giờ hoặc khi đăng xuất khỏi Hệ thống học tập', 'thuvien.bacninh.edu.vn/sach']
+  ];
+  var timers = [];
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function setUrl(u) { $('url').innerHTML = '🔒 <span><b>https://</b>' + esc(u) + '</span>'; }
+  function runAuth(fail) {
+    timers.forEach(clearTimeout); timers = [];
+    $('session').hidden = true;
+    $('auth').hidden = false;
+    $('auth').innerHTML = '<div class="auth__box"><div class="auth__brand"><img src="../assets/logo_bn.png" alt="Hệ thống học tập"><span class="arrow"><i></i><i></i><i></i></span><span class="lib-ic"><i data-lucide="library"></i></span></div>' +
+      '<h1 id="authTitle">Đang chuyển sang Thư viện điện tử…</h1><p class="tv-small tv-muted" style="text-align:center;margin:4px 0 14px">Xác thực tự động giữa hai hệ thống, bạn không cần đăng nhập lại</p>' +
+      STEPS.map(function (st, i) { return '<div class="step" id="st' + i + '"><span class="d">' + (i + 1) + '</span><div>' + st[0] + '<code>' + esc(st[1]) + '</code></div></div>'; }).join('') +
+      '<div id="authErr"></div></div>';
+    if (window.lucide) lucide.createIcons();
+    var stopAt = fail ? 1 : STEPS.length;
+    for (var k = 0; k <= stopAt; k++) (function (i) {
+      timers.push(setTimeout(function () {
+        if (i) $('st' + (i - 1)).className = 'step is-ok';
+        if (i === stopAt) return fail ? showError() : done();
+        $('st' + i).className = 'step is-run';
+        setUrl(STEPS[i][2]);
+      }, 300 + i * 800));
+    })(k);
+  }
+  function showError() {
+    $('st1').className = 'step is-err';
+    setUrl(STEPS[1][2]);
+    $('authTitle').textContent = 'Chưa mở được Thư viện điện tử';
+    $('authErr').innerHTML = '<div class="auth__err"><b>Mã truy cập đã hết hạn</b> (quá 60 giây hoặc đã được dùng). Thư viện từ chối mã và không mở phiên. Bấm Thử lại để Hệ thống học tập cấp mã mới.</div>' +
+      '<div class="tv-row" style="justify-content:center;margin-top:16px;gap:10px"><a class="tv-btn tv-btn--outline" href="02-app-sidebar-list.html">Quay lại học tập</a><button class="tv-btn tv-btn--primary" data-act="replay">Thử lại</button></div>';
+  }
+  function done() {
+    var d = new Date();
+    $('auth').hidden = true;
+    setUrl(STEPS[STEPS.length - 1][2]);
+    $('session').innerHTML = '<i data-lucide="shield-check"></i><span>Đã xác thực tự động từ Hệ thống học tập lúc <b>' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + '</b> · không qua màn đăng nhập</span><button data-act="hideSession" aria-label="Ẩn">×</button>';
+    $('session').hidden = false;
+    if (window.lucide) lucide.createIcons();
+  }
+
+  $('q').addEventListener('input', render);
+  document.addEventListener('click', function (e) {
+    var el;
+    if ((el = e.target.closest('[data-type]'))) { type = el.dataset.type; render(); }
+    if ((el = e.target.closest('[data-book]'))) openBook(el.dataset.book, +el.dataset.page || 1);
+    if ((el = e.target.closest('[data-act]'))) {
+      if (el.dataset.act === 'replay') runAuth(false);
+      if (el.dataset.act === 'expire') runAuth(true);
+      if (el.dataset.act === 'hideSession') $('session').hidden = true;
+    }
+  });
+  render();
+  setUrl(STEPS[STEPS.length - 1][2]);
+  if (/[?&]from=lms\b/.test(location.search)) runAuth(false);
+})();
+</script>
+</body>
+</html>

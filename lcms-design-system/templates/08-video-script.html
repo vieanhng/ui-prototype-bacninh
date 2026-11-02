@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LCMS · Kịch bản video</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../lcms.css">
+<style>
+  .video-table td, .video-table th { padding: 14px 16px; }
+  .icon-btn-plain { border: 0; background: none; padding: 0; cursor: pointer; display: inline-grid; place-items: center; }
+  .icon-btn-plain svg { width: 22px; height: 22px; }
+</style>
+</head>
+<body>
+<!-- ============ TRANG NỀN: form bài giảng dạng video (trình soạn) ============ -->
+<div class="lc-layout is-collapsed">
+  <aside class="lc-sider">
+    <nav class="lc-rail" data-demo-rail="khoahoc"></nav>
+  </aside>
+
+  <div class="lc-main">
+    <header class="lc-header">
+      <button class="lc-burger" aria-label="Menu"><img src="../assets/icons/menu.svg" alt=""></button>
+      <h1 class="lc-page-title">Sửa chương trình học <em>Toán 10 – Lớp 10A1</em></h1>
+      <img class="lc-avatar" src="../assets/default-avatar.jpg" alt="">
+    </header>
+
+    <div style="flex:1;min-height:0">
+      <div class="lc-split">
+        <div class="lc-split__left" style="padding:8px">
+          <section class="lc-chapter is-open">
+            <div class="lc-chapter__head" style="padding:16px 12px 16px 28px;gap:16px"><svg class="toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 6 6 6-6 6M12 6l6 6-6 6"/></svg><div><div class="lc-chapter__title" style="color:var(--lc-text-strong)">Unit 1: Greetings</div><div class="lc-chapter__meta">1 Video - 0 Tài liệu</div><div class="lc-chapter__date">Phát hành: 00:00 22/10/2026</div></div><button class="lc-icon-btn lc-icon-btn--ghost"><img src="../assets/icons/three-dots-vertical.svg" alt=""></button></div>
+            <a class="lc-collapse-link" href="#">Rút gọn</a>
+            <div class="lc-lessons" style="padding-left:32px"><div class="lc-add-row"><span class="lc-num">01</span><button class="lc-add-btn">+ Thêm nội dung</button></div></div>
+          </section>
+        </div>
+        <div class="lc-split__handle">↔</div>
+        <div class="lc-split__right">
+          <div class="lc-tabs"><a href="#" class="is-active">Nội dung</a><a href="#">Tài liệu (0)</a><a href="#">Tài liệu đã ẩn (0)</a><a href="#">Tài liệu đã xoá (0)</a><a href="#">Đồng bộ</a></div>
+          <div style="background:#fff;border-radius:20px;padding:24px 22px;margin-top:18px" class="lc-stack">
+            <div class="lc-field"><label class="lc-label" for="l-name">Tên bài giảng<span class="req">*</span></label><input class="lc-input" id="l-name" value="Unit 1 – Video bài giảng"></div>
+            <div class="lc-row"><button class="lc-btn lc-btn--primary lc-btn--sm" style="font-weight:400;font-size:16px">Chèn file nội dung</button><button class="lc-btn lc-btn--primary lc-btn--sm" style="font-weight:400;font-size:16px">Chèn âm thanh</button></div>
+            <div class="lc-field"><label class="lc-label" for="l-file">Chèn file</label><input class="lc-input" id="l-file" value="https://vcdn.example.vn/output/unit1-greetings.mp4/manifest.m3u8"></div>
+            <div class="lc-field"><label class="lc-label" for="l-vtype">Loại video</label><select class="lc-select" id="l-vtype" style="width:152px;border:0;box-shadow:var(--lc-sh-header)"><option>Video bài giảng</option><option>Video mô phỏng</option></select></div>
+            <div class="lc-table-wrap"><table class="lc-table lc-table--plain video-table">
+              <thead><tr><th>Tên Video</th><th class="c">Ngày phát hành</th><th class="c">Lượt xem</th><th class="c">Hành động</th></tr></thead>
+              <tbody><tr><td><div class="lc-row" style="justify-content:space-between">manifest.m3u8 <button class="icon-btn-plain" data-lc-toggle="mScript" aria-label="Sửa kịch bản"><img src="../assets/icons/edit-action.svg" alt="" style="width:22px"></button></div></td><td class="c">22-10-2026</td><td class="c">128</td><td class="c"><span class="lc-action"><button class="icon-btn-plain" aria-label="Xem"><svg viewBox="0 0 24 24" fill="#1677ff"><path d="M12 5C6 5 2 12 2 12s4 7 10 7 10-7 10-7-4-7-10-7Zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z"/></svg></button><img src="../assets/icons/delete-action.svg" alt="Xoá"></span></td></tr></tbody>
+            </table></div>
+            <div style="text-align:right"><button class="lc-btn lc-btn--dashed" style="height:42px;padding:0 40px" data-lc-toggle="mScript">+ Soạn kịch bản video</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lc-toolbar">
+      <button class="lc-toolbar__item lc-toolbar__item--magenta">☰ Tính năng<span style="margin-left:auto">⌄</span></button>
+      <button class="lc-toolbar__item lc-toolbar__item--blue">✥ Đổi vị trí các khối</button>
+      <button class="lc-toolbar__item lc-toolbar__item--orange">▶ Xem thử bản web</button>
+      <div class="lc-toolbar__end"><button class="lc-btn lc-btn--outline" style="height:42px">Huỷ chỉnh sửa</button><button class="lc-btn lc-btn--primary" style="height:40px">Lưu</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL 1: TẠO KỊCH BẢN VIDEO ============ -->
+<div class="lc-overlay" id="mScript">
+  <div class="lc-modal lc-modal--xl" role="dialog" aria-labelledby="mScriptTitle" style="height:min(773px,calc(100vh - 32px))">
+    <button class="lc-modal__close" data-lc-close style="position:absolute;right:24px;top:22px" aria-label="Đóng">×</button>
+    <h2 class="lc-modal__title" id="mScriptTitle">Tạo kịch bản video <span class="lc-proposal-note" style="margin-left:12px">┆ viền tím nét đứt = đề xuất bổ sung, không có trên site gốc</span></h2>
+
+    <div class="lc-scenario">
+      <!-- Cột trái: thông tin video -->
+      <form class="lc-scenario__left" onsubmit="event.preventDefault()">
+        <div class="lc-field"><label class="lc-label" for="v-title">Tiêu đề video</label><input class="lc-input" id="v-title" placeholder="Tên video" value="manifest.m3u8"></div>
+        <div class="lc-field"><label class="lc-label" for="v-date">Ngày phát hành<span class="req">*</span></label><div class="lc-input-affix"><input class="lc-input" id="v-date" placeholder="Chọn ngày bắt đầu" value="10:33 22/10/2026" style="font-size:14px"><svg class="affix" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7Zm-2 8h14v10H5V10Zm2 2v2h2v-2H7Zm4 0v2h2v-2h-2Zm4 0v2h2v-2h-2Z"/></svg></div></div>
+        <div class="lc-field"><label class="lc-label" for="v-url">URL Video<span class="req">*</span></label><input class="lc-input" id="v-url" placeholder="URL Video" value="https://vcdn.example.vn/output/unit1-greetings.mp4/manifest.m3u8"></div>
+        <div class="lc-field"><span class="lc-label">Backup Links</span><div class="lc-backup" id="backupList"></div><button type="button" class="lc-dashed-btn" id="addBackup">+ Thêm backup link</button></div>
+        <div class="lc-field"><span class="lc-label">Trạng thái<span class="req">*</span></span>
+          <div class="lc-radio-grid">
+            <label class="lc-radio"><input type="radio" name="v-status" checked>Hiện với học sinh</label><label class="lc-radio"><input type="radio" name="v-status">Ẩn</label><label class="lc-radio"><input type="radio" name="v-status">Hẹn giờ phát hành</label>
+            <label class="lc-radio"><input type="radio" name="v-status">Tham khảo thêm</label>
+          </div></div>
+        <div class="lc-field"><label class="lc-label" for="v-kind">Kịch bản</label><select class="lc-select" id="v-kind" style="height:32px"><option>Kịch bản video</option><option>Kịch bản chữa bài tập</option></select></div>
+        <div class="lc-field"><label class="lc-label" for="v-onopen">Khi mở kịch bản</label><select class="lc-select" id="v-onopen" style="height:32px"><option value="continue">Video tiếp tục chạy</option><option value="pause" selected>Video không chạy</option></select></div>
+      </form>
+
+      <!-- Cột phải: player + danh sách kịch bản + chi tiết -->
+      <div class="lc-scenario__right">
+        <div class="lc-player" id="player">
+          <div class="lc-player__screen">Video preview · bấm ▶ để chạy thử (tốc độ ×4)</div>
+          <div class="lc-player__overlay" id="playerOverlay" hidden><div class="card" id="overlayCard"></div></div>
+          <div class="lc-player__bar">
+            <div class="lc-player__track lc-proposal" id="track"><div class="lc-player__fill" id="fill"></div><div class="lc-player__knob" id="knob"></div></div>
+            <div class="lc-player__controls">
+              <button id="btnPlay" aria-label="Phát"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg></button>
+              <button id="btnBack" aria-label="Lùi 10 giây"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 6v12L2 12zm11 0v12l-9-6z"/></svg></button>
+              <button id="btnFwd" aria-label="Tới 10 giây"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 6v12l9-6zM2 6v12l9-6z"/></svg></button>
+              <button aria-label="Âm lượng"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3Zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4Z"/></svg></button>
+              <span id="clock">00:00 / 10:00</span>
+              <span class="sp">1x</span>
+              <button aria-label="Toàn màn hình"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="lc-scenario__body">
+          <div class="lc-scenario-list" id="scenarioList"></div>
+          <div class="lc-scenario-info" id="scenarioInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lc-modal__foot" style="border-top:1px solid var(--lc-divider-2);padding:16px 10px 10px"><button class="lc-btn lc-btn--outline" data-lc-close style="height:40px">Huỷ</button><button class="lc-btn lc-btn--primary" data-lc-close style="height:40px">Lưu</button></div>
+  </div>
+</div>
+
+<!-- ============ MODAL 2: CHỌN BỘ CÂU HỎI ============ -->
+<div class="lc-overlay lc-overlay--2" id="mPicker" hidden>
+  <div class="lc-modal lc-modal--lg" role="dialog" aria-labelledby="mPickerTitle" style="padding:20px 0 0">
+    <button class="lc-modal__close" data-lc-close style="position:absolute;right:20px;top:18px" aria-label="Đóng">×</button>
+    <div style="text-align:center;padding:0 24px 14px;border-bottom:1px solid var(--lc-divider-2)"><h3 id="mPickerTitle" style="font-size:20px;font-weight:600">Chọn câu hỏi từ danh sách các bài tập đã tạo</h3><p style="font-size:16px;margin-top:6px">(Chỉ chọn dạng bài tập)</p></div>
+    <div class="lc-pick-list" id="pickList"></div>
+    <div class="lc-row" style="padding:10px;border-top:1px solid var(--lc-divider-2)"><button class="lc-btn lc-btn--primary lc-btn--sm" id="btnNewQuestion">+ Thêm câu hỏi mới</button><span class="lc-spacer"></span><button class="lc-btn lc-btn--outline lc-btn--sm" data-lc-close>Huỷ</button><button class="lc-btn lc-btn--primary lc-btn--sm" id="btnPickSave">Lưu</button></div>
+  </div>
+</div>
+
+<!-- ============ MODAL 3: CHƯA CÓ CÂU HỎI – CHỌN CÁCH TẠO ============ -->
+<div class="lc-overlay lc-overlay--3" id="mCreate" hidden>
+  <div class="lc-modal lc-modal--lg" role="dialog" aria-label="Tạo câu hỏi" style="min-height:560px;text-align:center">
+    <button class="lc-modal__close" data-lc-close style="position:absolute;right:20px;top:18px" aria-label="Đóng">×</button>
+    <img src="../assets/workflow-progress.svg" alt="" style="width:220px;margin:16px auto 12px">
+    <p style="font-size:16px">Bạn chưa tạo câu hỏi nào. Hãy bắt đầu bằng một trong các lựa chọn dưới đây!</p>
+    <div class="lc-create-opts">
+      <button id="btnCreateDirect">+ Tạo trực tiếp trên hệ thống</button>
+      <label><button type="button" onclick="this.nextElementSibling.click()">+ Tạo từ file có sẵn</button><input type="file" accept=".docx,.xlsx" hidden></label>
+      <label><button type="button" onclick="this.nextElementSibling.click()">Tải file Tag</button><input type="file" accept=".xlsx,.csv" hidden></label>
+      <label><button type="button" onclick="this.nextElementSibling.click()">Tải file + bảng câu</button><input type="file" accept=".docx,.xlsx" hidden></label>
+    </div>
+    <button class="lc-btn lc-btn--primary" style="padding:0 32px" data-lc-close>Lưu bộ câu hỏi vào kịch bản</button>
+  </div>
+</div>
+
+<!-- ============ MODAL 4: TRÌNH SOẠN BỘ CÂU HỎI ============ -->
+<div class="lc-overlay lc-overlay--4" id="mSet" hidden>
+  <div class="lc-modal lc-modal--full" role="dialog" aria-label="Danh sách câu hỏi">
+    <span class="lc-qset__crumb" id="setCrumb"></span>
+    <button class="lc-modal__close" data-lc-close style="position:absolute;right:22px;top:18px" aria-label="Đóng">×</button>
+    <div class="lc-qset">
+      <div class="lc-qset__head">
+        <div class="f"><b>Bộ câu hỏi</b><span class="count" id="setCount">0 câu</span></div>
+        <div class="f"><b>Chế độ xem</b><select class="lc-select" id="viewMode"><option value="full">Xem chi tiết</option><option value="compact">Thu gọn</option></select></div>
+        <div class="f"><b>Chế độ xem chi tiết từ vựng</b><select class="lc-select"><option>Xem chi tiết</option><option>Thu gọn</option></select></div>
+        <div class="add">
+          <button class="lc-btn lc-btn--primary" style="height:32px;padding:0 16px" data-lc-toggle="addQMenu">+ Thêm câu hỏi</button>
+          <div class="lc-dropdown" id="addQMenu" data-lc-pop hidden style="position:absolute;right:0;top:40px;z-index:5;width:160px"><button data-add="single">Câu đơn</button><button data-add="two">Câu hỏi 2 cấp</button><button data-add="three">Câu hỏi 3 cấp</button></div>
+        </div>
+      </div>
+      <div class="lc-qset__body">
+        <div class="lc-qset__left" id="qLeft"></div>
+        <div class="lc-qset__right" id="qRight"></div>
+      </div>
+      <div class="lc-qset__foot">
+        <button class="preview"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h6l2 2h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Zm6 6v6l5-3-5-3Z"/></svg>Xem thử bản web</button>
+        <button class="lc-btn lc-btn--primary" id="btnSaveSet">Lưu bộ câu hỏi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../lcms.js"></script>
+<script src="../lcms-demo.js"></script>
+<script>
+(function () {
+  var DURATION = 600; // giây (video mẫu 10 phút)
+  var LESSON = 'Unit 1 – Video bài giảng';
+
+  // 8 dạng kịch bản và thao tác tương ứng (đúng theo site)
+  var TYPES = [
+    { v: 'bai_tap', n: 'Bài tập', act: 'qset' },
+    { v: 'tai_lieu', n: 'Tài liệu', act: 'upload', labels: ['Chọn'], accept: '.pdf,.doc,.docx,.ppt,.pptx,.xlsx,image/*' },
+    { v: 'video', n: 'Video', act: 'link' },
+    { v: 'song_ngu', n: 'Song ngữ', act: 'qset' },
+    { v: 'file_audio', n: 'File Audio', act: 'upload', labels: ['Chọn'], accept: 'audio/*' },
+    { v: 'subtitle', n: 'Subtitle', act: 'upload', labels: ['Upload file en', 'Upload file vn'], accept: '.srt,.vtt' },
+    { v: 'audio_live', n: 'Audio in live', act: 'upload', labels: ['Chọn'], accept: 'audio/*' },
+    { v: 'shadowing', n: 'Shadowing', act: 'upload', labels: ['Upload file vtt', 'Tool Upload'], accept: '.vtt' }
+  ];
+  function typeOf(v) { return TYPES.filter(function (t) { return t.v === v; })[0]; }
+
+  // Bộ câu hỏi có sẵn (modal "Chọn câu hỏi từ danh sách các bài tập đã tạo")
+  var BANK = [
+    { id: 'q1', name: 'Unit 1 – Greetings quiz', count: 6 },
+    { id: 'q2', name: 'Unit 1 – Listening check', count: 4 },
+    { id: 'q3', name: 'Từ vựng chào hỏi', count: 10 }
+  ];
+
+  var scripts = [
+    { title: 'Kịch bản 1', dm: 2, ds: 0, am: 1, as: 35, type: 'bai_tap', qset: BANK[0], files: [], link: '' },
+    { title: 'Kịch bản 2', dm: 0, ds: 0, am: 4, as: 10, type: 'tai_lieu', qset: null, files: ['Bang-tu-vung-Unit1.pdf'], link: '' },
+    { title: 'Kịch bản 3', dm: 0, ds: 0, am: 7, as: 0, type: 'subtitle', qset: null, files: [], link: '' }
+  ];
+  var active = 0, now = 0, timer = null, fired = {};
+
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+  var at = function (s) { return (+s.am || 0) * 60 + (+s.as || 0); };
+  var hms = function (sec) { return '00:' + pad(Math.floor(sec / 60)) + ':' + pad(sec % 60); };
+  var ms = function (sec) { return pad(Math.floor(sec / 60)) + ':' + pad(Math.floor(sec % 60)); };
+  var clockIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+
+  // ---------- Danh sách kịch bản ----------
+  function renderList() {
+    var html = scripts.map(function (s, i) {
+      return '<div class="lc-scenario-item' + (i === active ? ' is-active' : '') + '" data-i="' + i + '">' +
+        '<div><b>' + esc(s.title || 'Kịch bản ' + (i + 1)) + '</b><span class="time">' + clockIcon + hms(at(s)) + '</span><span class="type">' + typeOf(s.type).n + '</span></div>' +
+        '<button class="del" data-del="' + i + '" aria-label="Xoá kịch bản"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 3h6l1 2h4v2H4V5h4l1-2Zm-3 6h12l-1 12H7L6 9Z"/></svg></button></div>';
+    }).join('');
+    var list = $('scenarioList');
+    list.innerHTML = html + '<button class="lc-scenario-add" id="addScript">+ Thêm kịch bản</button>';
+    var cur = list.querySelector('.is-active');
+    if (cur && (cur.offsetTop < list.scrollTop || cur.offsetTop + cur.offsetHeight > list.scrollTop + list.clientHeight)) list.scrollTop = cur.offsetTop - 8;
+    renderMarkers();
+  }
+
+  // ---------- Chi tiết kịch bản đang chọn ----------
+  function actionHtml(s) {
+    var t = typeOf(s.type);
+    if (t.act === 'qset') {
+      return '<button class="lc-select-card" data-act="pick">Chọn bộ câu hỏi</button>' +
+        (s.qset ? '<span class="lc-attach">' + esc(s.qset.name) + ' · ' + s.qset.count + ' câu <button data-act="clear" aria-label="Bỏ chọn">×</button></span>' : '');
+    }
+    if (t.act === 'link') return '<input class="lc-input" data-f="link" placeholder="Link video" value="' + esc(s.link) + '" style="width:280px">';
+    var btns = t.labels.map(function (l, k) {
+      return '<label class="lc-select-card" style="display:inline-flex;align-items:center;max-width:130px">' + l + '<input type="file" hidden accept="' + t.accept + '" data-up="' + k + '"></label>';
+    }).join('');
+    var files = (s.files || []).map(function (f, k) { return '<span class="lc-attach">' + esc(f) + ' <button data-act="rmfile" data-k="' + k + '" aria-label="Gỡ file">×</button></span>'; }).join('');
+    return btns + files;
+  }
+  function renderInfo() {
+    var s = scripts[active];
+    if (!s) { $('scenarioInfo').innerHTML = '<p class="lc-secondary" style="grid-column:1/-1;padding:24px 0">Chưa có kịch bản. Bấm “+ Thêm kịch bản” để thêm câu hỏi / học liệu xuất hiện trong video.</p>'; return; }
+    var opts = TYPES.map(function (t) { return '<option value="' + t.v + '"' + (t.v === s.type ? ' selected' : '') + '>' + t.n + '</option>'; }).join('');
+    $('scenarioInfo').innerHTML =
+      '<label class="k" for="s-title">1. Tiêu đề</label><div class="v"><input class="lc-input" id="s-title" data-f="title" placeholder="Tiêu đề" value="' + esc(s.title) + '"></div>' +
+      '<span class="k">2. Thời gian làm bài</span><div class="v lc-time"><input class="lc-input" type="number" min="0" data-f="dm" placeholder="Phút" value="' + s.dm + '" aria-label="Phút làm bài"><span class="colon">:</span><input class="lc-input" type="number" min="0" max="59" data-f="ds" placeholder="Giây" value="' + s.ds + '" aria-label="Giây làm bài"></div>' +
+      '<span class="k">3. Thời gian xuất hiện</span><div class="v lc-time"><input class="lc-input" type="number" min="0" data-f="am" placeholder="Phút" value="' + s.am + '" aria-label="Phút xuất hiện"><span class="colon">:</span><input class="lc-input" type="number" min="0" max="59" data-f="as" placeholder="Giây" value="' + s.as + '" aria-label="Giây xuất hiện">' +
+        '<button class="lc-btn lc-btn--text lc-btn--sm lc-proposal" data-act="now" title="Đề xuất: lấy thời điểm đang phát trên player">⌖ Lấy thời điểm hiện tại</button></div>' +
+      '<label class="k" for="s-type">4. Dạng</label><div class="v"><select class="lc-select" id="s-type" data-f="type">' + opts + '</select>' + actionHtml(s) + '</div>';
+  }
+
+  // ---------- Player giả lập + marker ----------
+  function renderMarkers() {
+    var tr = $('track');
+    [].slice.call(tr.querySelectorAll('.lc-player__marker')).forEach(function (m) { m.remove(); });
+    scripts.forEach(function (s, i) {
+      var m = document.createElement('span');
+      m.className = 'lc-player__marker' + (i === active ? ' is-active' : '');
+      m.style.left = Math.min(100, at(s) / DURATION * 100) + '%';
+      m.title = (s.title || 'Kịch bản') + ' · ' + ms(at(s));
+      m.dataset.i = i;
+      tr.appendChild(m);
+    });
+  }
+  function renderClock() {
+    var pct = now / DURATION * 100;
+    $('fill').style.width = pct + '%'; $('knob').style.left = pct + '%';
+    $('clock').textContent = ms(now) + ' / ' + ms(DURATION);
+  }
+  function setPlaying(on) {
+    clearInterval(timer); timer = null;
+    $('btnPlay').innerHTML = on ? '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>' : '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg>';
+    if (!on) return;
+    $('playerOverlay').hidden = true;
+    timer = setInterval(function () {
+      var prev = now; now = Math.min(DURATION, now + 1); renderClock();
+      scripts.forEach(function (s, i) { var t = at(s); if (t > prev && t <= now && !fired[i]) { fired[i] = true; openOverlay(s, i); } });
+      if (now >= DURATION) setPlaying(false);
+    }, 250);
+  }
+  function openOverlay(s, i) {
+    var t = typeOf(s.type), detail = t.act === 'qset' ? (s.qset ? s.qset.count + ' câu hỏi · làm trong ' + s.dm + ':' + pad(+s.ds) : 'chưa chọn bộ câu hỏi') : (t.act === 'link' ? (s.link || 'chưa có link') : ((s.files || []).join(', ') || 'chưa có file'));
+    $('overlayCard').innerHTML = '<div class="lc-caption">' + ms(at(s)) + ' · ' + t.n + '</div><b style="font-size:16px">' + esc(s.title) + '</b><p class="lc-secondary" style="margin:6px 0 12px">' + esc(detail) + '</p><div class="lc-row" style="justify-content:flex-end"><button class="lc-btn lc-btn--outline lc-btn--sm" data-act="ovclose">Đóng</button><button class="lc-btn lc-btn--primary lc-btn--sm" data-act="ovopen" data-i="' + i + '">Sửa kịch bản</button></div>';
+    $('playerOverlay').hidden = false;
+    if ($('v-onopen').value === 'pause') setPlaying(false);
+    else setTimeout(function () { $('playerOverlay').hidden = true; }, 2500);
+  }
+
+  // ---------- Sự kiện modal kịch bản ----------
+  $('mScript').addEventListener('click', function (e) {
+    var t = e.target;
+    var del = t.closest('[data-del]');
+    if (del) { scripts.splice(+del.dataset.del, 1); active = Math.max(0, Math.min(active, scripts.length - 1)); renderList(); renderInfo(); return; }
+    var item = t.closest('.lc-scenario-item'), mk = t.closest('.lc-player__marker');
+    if (item || mk) { active = +(item || mk).dataset.i; renderList(); renderInfo(); return; }
+    if (t.closest('#addScript')) { scripts.push({ title: 'Kịch bản ' + (scripts.length + 1), dm: 0, ds: 0, am: Math.floor(now / 60), as: Math.floor(now % 60), type: 'bai_tap', qset: null, files: [], link: '' }); active = scripts.length - 1; renderList(); renderInfo(); return; }
+    var act = t.closest('[data-act]');
+    if (!act) {
+      if (t.closest('#track') && !mk) { seek(e); }
+      return;
+    }
+    var s = scripts[active];
+    switch (act.dataset.act) {
+      case 'pick': openPicker(); break;
+      case 'clear': s.qset = null; renderInfo(); break;
+      case 'rmfile': s.files.splice(+act.dataset.k, 1); renderInfo(); break;
+      case 'now': s.am = Math.floor(now / 60); s.as = Math.floor(now % 60); renderInfo(); renderList(); break;
+      case 'ovclose': $('playerOverlay').hidden = true; break;
+      case 'ovopen': active = +act.dataset.i; $('playerOverlay').hidden = true; renderList(); renderInfo(); break;
+    }
+  });
+  $('mScript').addEventListener('input', function (e) {
+    var f = e.target.dataset.f; if (!f || !scripts[active]) return;
+    scripts[active][f] = e.target.value;
+    if (f === 'am' || f === 'as' || f === 'title') { fired = {}; renderList(); }
+  });
+  $('mScript').addEventListener('change', function (e) {
+    var t = e.target, s = scripts[active];
+    if (t.dataset.f === 'type') { s.type = t.value; s.files = []; renderList(); renderInfo(); }
+    if (t.dataset.up !== undefined && t.files.length) { s.files.push(t.files[0].name); renderInfo(); }
+  });
+  function seek(e) { var r = $('track').getBoundingClientRect(); now = Math.round(Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * DURATION); fired = {}; scripts.forEach(function (s, i) { if (at(s) <= now) fired[i] = true; }); renderClock(); }
+  $('btnPlay').onclick = function () { setPlaying(!timer); };
+  $('btnBack').onclick = function () { now = Math.max(0, now - 10); fired = {}; renderClock(); };
+  $('btnFwd').onclick = function () { now = Math.min(DURATION, now + 10); renderClock(); };
+
+  // Backup links
+  var backups = [];
+  function renderBackups() { $('backupList').innerHTML = backups.map(function (b, i) { return '<div class="lc-backup__row"><input class="lc-input" placeholder="Backup link ' + (i + 1) + '" value="' + esc(b) + '" data-b="' + i + '"><button type="button" class="lc-btn lc-btn--text lc-btn--sm" data-rmb="' + i + '" aria-label="Xoá link" style="color:var(--lc-danger);padding:0 8px">×</button></div>'; }).join(''); }
+  $('addBackup').onclick = function () { backups.push(''); renderBackups(); };
+  $('backupList').addEventListener('input', function (e) { if (e.target.dataset.b) backups[+e.target.dataset.b] = e.target.value; });
+  $('backupList').addEventListener('click', function (e) { var b = e.target.closest('[data-rmb]'); if (b) { backups.splice(+b.dataset.rmb, 1); renderBackups(); } });
+
+  // ---------- Modal 2: chọn bộ câu hỏi ----------
+  var picked = null;
+  function openPicker() {
+    picked = scripts[active].qset;
+    $('pickList').innerHTML = BANK.map(function (b) { return '<label class="lc-pick-item"><input type="radio" name="bank" value="' + b.id + '"' + (picked && picked.id === b.id ? ' checked' : '') + '><b>' + esc(b.name) + '</b><small>' + b.count + ' câu</small></label>'; }).join('');
+    $('mPicker').hidden = false;
+  }
+  $('pickList').addEventListener('change', function (e) { picked = BANK.filter(function (b) { return b.id === e.target.value; })[0]; });
+  $('btnPickSave').onclick = function () { scripts[active].qset = picked; $('mPicker').hidden = true; renderInfo(); };
+  $('btnNewQuestion').onclick = function () { $('mCreate').hidden = false; };
+  $('btnCreateDirect').onclick = function () { $('mCreate').hidden = true; openSet(); };
+
+  // ---------- Modal 4: trình soạn bộ câu hỏi ----------
+  var questions = [], editing = null;
+  function sampleQuestion() {
+    return { kind: 'two', form: 'Đọc điền đoạn hội thoại', level: 'Thông hiểu',
+      passage: 'Read the conversation and choose the best option for each blank.<br><br><b>Anna:</b> Hi, I\'m Anna. Nice to (1) ______ you.<br><b>Ben:</b> Nice to meet you, too. (2) ______ are you from?<br><b>Anna:</b> I\'m from Hanoi. And you?<br><b>Ben:</b> I\'m from Da Nang. I (3) ______ here last week.',
+      translate: [['Hi, I\'m Anna. Nice to meet you.', 'Chào, mình là Anna. Rất vui được gặp bạn.'], ['Where are you from?', 'Bạn đến từ đâu?']],
+      subs: [
+        { stem: '', choices: ['see', 'meet', 'know', 'greet'], correct: 1, knowledge: 'Cụm từ giao tiếp', explain: 'Nice to meet you: rất vui được gặp bạn (câu chào khi gặp lần đầu).', level: 'Nhận biết', game: '', skill: '' },
+        { stem: '', choices: ['What', 'Who', 'Where', 'When'], correct: 2, knowledge: 'Từ để hỏi', explain: 'Where … from? dùng để hỏi quê quán, xuất xứ.', level: 'Nhận biết', game: '', skill: '' },
+        { stem: '', choices: ['arrive', 'arrived', 'arriving', 'have arrived'], correct: 1, knowledge: 'Thì quá khứ đơn', explain: '“last week” là dấu hiệu thì quá khứ đơn → arrived.', level: 'Thông hiểu', game: '', skill: '' }
+      ] };
+  }
+  function blankSub() { return { stem: 'Nhập câu hỏi…', choices: ['Đáp án A', 'Đáp án B', 'Đáp án C', 'Đáp án D'], correct: 0, knowledge: 'Chưa cập nhật', explain: '', level: 'Nhận biết', game: '', skill: '' }; }
+  function openSet() {
+    if (!questions.length) questions = [sampleQuestion()];
+    $('setCrumb').textContent = LESSON + '/' + (scripts[active] ? scripts[active].title : 'Kịch bản') + ' / Danh sách câu hỏi';
+    renderSet(); $('mSet').hidden = false;
+  }
+  function total() { return questions.reduce(function (n, q) { return n + q.subs.length; }, 0); }
+  var L = 'ABCDEFGH';
+  function subHtml(q, qi, s, si) {
+    var isEdit = editing && editing[0] === qi && editing[1] === si;
+    var vocab = isEdit ? '<div class="lc-vocab"><label>Ví dụ en:<input class="lc-input"></label><label>Ví dụ vn:<input class="lc-input"></label><label>Họ từ<input class="lc-input"></label><label>Cụm từ liên quan<input class="lc-input"></label><label style="grid-column:1/-1">Khác<input class="lc-input"></label></div>' : '';
+    var choices = s.choices.map(function (c, ci) {
+      return '<div class="lc-choice' + (ci === s.correct ? ' is-correct' : '') + '" data-q="' + qi + '" data-s="' + si + '" data-c="' + ci + '" title="' + (isEdit ? 'Bấm chữ cái để đặt đáp án đúng' : '') + '"><span class="lc-choice__label">' + L[ci] + '</span><span class="lc-choice__text"' + (isEdit ? ' contenteditable="true" data-edit="choice"' : '') + '>' + esc(c) + '</span></div>';
+    }).join('');
+    var label = q.kind === 'single' ? 'Câu ' + (qi + 1) : 'Câu ' + (qi + 1) + '.' + (si + 1);
+    return '<div class="lc-subq">' + vocab +
+      '<div class="lc-qmeta"><span class="lc-qtag lc-qtag--volcano">Độ khó:</span><span class="val">' + s.level + '</span><button class="lc-pen" aria-label="Sửa độ khó">✎</button></div>' +
+      '<div class="lc-qmeta"><span class="lc-qtag lc-qtag--lime">Loại:</span><select class="lc-select"><option>Chọn loại</option><option>Trắc nghiệm</option><option>Điền từ</option></select></div>' +
+      '<div class="lc-qmeta"><span class="lc-qtag lc-qtag--lime">Kiến thức:</span><span class="val">' + esc(s.knowledge) + '</span><button class="lc-pen" aria-label="Sửa kiến thức">✎</button></div>' +
+      '<div class="lc-qtitle">' + label + '</div>' +
+      (s.stem || isEdit ? '<div class="lc-passage"' + (isEdit ? ' contenteditable="true" data-edit="stem"' : '') + ' style="min-height:40px">' + esc(s.stem) + '</div>' : '') +
+      '<div class="lc-choices">' + choices + '</div>' +
+      (s.explain || isEdit ? '<div class="lc-explain"' + (isEdit ? ' contenteditable="true" data-edit="explain"' : '') + '><b>Giải thích:</b> ' + esc(s.explain) + '<br><b>→ Chọn đáp án ' + L[s.correct] + '</b></div>' : '') +
+      '</div>';
+  }
+  function renderSet() {
+    var compact = $('viewMode').value === 'compact';
+    $('setCount').textContent = total() + ' câu';
+    $('qLeft').innerHTML = questions.map(function (q, qi) {
+      var head = '<div class="lc-qblock"><div class="lc-qblock__tools"><button data-rmq="' + qi + '" aria-label="Xoá câu"><img src="../assets/icons/delete-action.svg" alt=""></button><button aria-label="Sửa câu"><img src="../assets/icons/edit-action.svg" alt=""></button><button class="up" aria-label="Thu gọn">⌃</button></div>' +
+        '<div class="lc-qmeta"><span class="lc-qtag lc-qtag--lime">Loại:</span><select class="lc-select"><option>Chọn loại</option></select></div>' +
+        '<div class="lc-qmeta"><span class="lc-qtag lc-qtag--blue">Dạng bài:</span><span class="val">' + esc(q.form) + '</span><button class="lc-pen" aria-label="Sửa dạng bài">✎</button></div>';
+      if (q.kind === 'single') return head + subHtml(q, qi, q.subs[0], 0).replace('class="lc-subq"', 'class="lc-subq" style="margin-left:0;box-shadow:none;padding:0"') + '</div>';
+      var body = '<div class="lc-qtitle">Câu ' + (qi + 1) + (q.kind === 'three' ? ' <span class="lc-caption">(3 cấp · Phần 1)</span>' : '') + '</div>' +
+        '<div class="lc-passage">' + q.passage + '</div>' +
+        (compact ? '' : '<span class="lc-hint-toggle">Ẩn hướng dẫn giải ⌃</span>' +
+          (q.translate ? '<table class="lc-translate"><tr><th colspan="2">DỊCH BÀI</th></tr>' + q.translate.map(function (r) { return '<tr><td>' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td></tr>'; }).join('') + '</table>' : '') +
+          '<p style="margin:12px 0 0"><a href="#" style="color:var(--lc-ant-blue);font-weight:600">Audio giải thích</a> · <a href="#" style="color:var(--lc-ant-blue);font-weight:600">Chi tiết ⌄</a></p>' +
+          q.subs.map(function (s, si) { return subHtml(q, qi, s, si); }).join(''));
+      return head + body + '</div>';
+    }).join('') || '<div class="lc-empty">Chưa có câu hỏi.</div>';
+
+    $('qRight').innerHTML = '<label class="lc-check" style="padding:8px"><input type="checkbox"><b>Chọn tất cả câu cha</b></label>' + questions.map(function (q, qi) {
+      var cards = q.subs.map(function (s, si) {
+        var isEdit = editing && editing[0] === qi && editing[1] === si, dis = isEdit ? '' : ' disabled';
+        var ans = s.choices.map(function (c, ci) { return '<option' + (ci === s.correct ? ' selected' : '') + ' value="' + ci + '">' + L[ci] + '. ' + esc(c) + '</option>'; }).join('');
+        var label = q.kind === 'single' ? 'Câu ' + (qi + 1) : 'Câu ' + (qi + 1) + '.' + (si + 1);
+        return '<div class="lc-qcard' + (isEdit ? ' is-editing' : '') + '"><div class="lc-qcard__head"><input type="checkbox" aria-label="Chọn">' + label + '<span class="acts">' +
+          (isEdit ? '<button class="pill" data-cancel>Huỷ</button><button class="pill pill--fill" data-save>Lưu</button>' : '<button data-rms="' + qi + ',' + si + '" aria-label="Xoá"><img src="../assets/icons/delete-action.svg" alt=""></button><button data-edit="' + qi + ',' + si + '" aria-label="Sửa"><img src="../assets/icons/edit-action.svg" alt=""></button>') + '</span></div>' +
+          '<div class="lc-qcard__row"><span>Loại game</span><select class="lc-select"' + dis + '><option>Chọn kiểu game</option><option>Trắc nghiệm</option><option>Điền khuyết</option><option>Kéo thả</option></select></div>' +
+          '<div class="lc-qcard__row"><span>Đáp án đúng</span><select class="lc-select" data-correct="' + qi + ',' + si + '"' + dis + '>' + ans + '</select></div>' +
+          '<div class="lc-qcard__row"><span>Kỹ năng</span><select class="lc-select"' + dis + '><option>Chọn kỹ năng</option><option>Nghe</option><option>Nói</option><option>Đọc</option><option>Viết</option></select></div></div>';
+      }).join('');
+      return '<div class="lc-qgroup"><div class="lc-qgroup__head"><label class="lc-check"><input type="checkbox">Câu ' + (qi + 1) + '</label><label class="lc-check"><input type="checkbox">Chọn tất cả</label></div><div class="lc-qcards">' + cards + '</div>' +
+        '<div class="lc-qgroup__foot"><button class="lc-btn lc-btn--danger" data-rmq="' + qi + '">🗑 Xóa</button>' + (q.kind !== 'single' ? '<button class="lc-btn lc-btn--outline lc-btn--sm" data-addsub="' + qi + '">+ Câu con</button>' : '') + '<button class="lc-btn lc-btn--primary lc-btn--sm">Chỉnh sửa</button></div></div>';
+    }).join('');
+  }
+  $('viewMode').onchange = renderSet;
+  $('addQMenu').addEventListener('click', function (e) {
+    var k = e.target.dataset.add; if (!k) return;
+    var q = k === 'single' ? { kind: 'single', form: 'Câu đơn', subs: [blankSub()] } : { kind: k, form: k === 'two' ? 'Câu hỏi 2 cấp' : 'Câu hỏi 3 cấp', passage: 'Nhập đoạn văn / audio / hình ảnh cho câu cha…', translate: null, subs: [blankSub(), blankSub()] };
+    questions.push(q); editing = [questions.length - 1, 0]; $('addQMenu').hidden = true; renderSet();
+    $('qLeft').scrollTop = $('qLeft').scrollHeight;
+  });
+  $('mSet').addEventListener('click', function (e) {
+    var t = e.target, d;
+    if ((d = t.closest('[data-edit]')) && d.tagName === 'BUTTON') { editing = d.dataset.edit.split(',').map(Number); renderSet(); return; }
+    if (t.closest('[data-cancel]') || t.closest('[data-save]')) { editing = null; renderSet(); return; }
+    if ((d = t.closest('[data-rms]'))) { var p = d.dataset.rms.split(',').map(Number); questions[p[0]].subs.splice(p[1], 1); if (!questions[p[0]].subs.length) { questions.splice(p[0], 1); } renderSet(); return; }
+    if ((d = t.closest('[data-rmq]'))) { questions.splice(+d.dataset.rmq, 1); editing = null; renderSet(); return; }
+    if ((d = t.closest('[data-addsub]'))) { var qi = +d.dataset.addsub; questions[qi].subs.push(blankSub()); editing = [qi, questions[qi].subs.length - 1]; renderSet(); return; }
+    var lab = t.closest('.lc-choice__label');
+    if (lab) { var c = lab.parentElement, q = +c.dataset.q, s = +c.dataset.s; if (editing && editing[0] === q && editing[1] === s) { questions[q].subs[s].correct = +c.dataset.c; renderSet(); } }
+  });
+  $('mSet').addEventListener('change', function (e) { var d = e.target.dataset.correct; if (d) { var p = d.split(',').map(Number); questions[p[0]].subs[p[1]].correct = +e.target.value; renderSet(); } });
+  $('mSet').addEventListener('focusout', function (e) {
+    var f = e.target.dataset && e.target.dataset.edit; if (!f || !editing) return;
+    var s = questions[editing[0]].subs[editing[1]];
+    if (f === 'choice') s.choices[+e.target.parentElement.dataset.c] = e.target.textContent.trim();
+    if (f === 'stem') s.stem = e.target.textContent.trim();
+    if (f === 'explain') s.explain = e.target.textContent.replace(/^Giải thích:\s*/, '').replace(/→ Chọn đáp án [A-H]$/, '').trim();
+  });
+  $('btnSaveSet').onclick = function () {
+    var name = LESSON + ' – ' + (scripts[active] ? scripts[active].title : 'Bộ câu hỏi');
+    var entry = { id: 'new' + Date.now(), name: name, count: total() };
+    BANK.unshift(entry);
+    if (scripts[active]) scripts[active].qset = entry;
+    $('mSet').hidden = true; $('mPicker').hidden = true; renderInfo();
+  };
+
+  renderBackups(); renderList(); renderInfo(); renderClock();
+})();
+</script>
+</body>
+</html>

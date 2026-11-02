@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thông tin tài khoản</title>
+<link rel="stylesheet" href="../tvet.css">
+</head>
+<body>
+
+<header class="tv-header">
+  <div class="tv-container tv-header__inner">
+    <a class="tv-logo" href="01-landing.html"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></a>
+    <div class="tv-input tv-input--search" style="width:190px"><i data-lucide="search"></i><input placeholder="Tìm bài học, môn học..." aria-label="Tìm bài học, môn học"></div>
+    <nav class="tv-nav"><a href="02-app-sidebar-list.html">Học tập</a><a href="12-my-tasks.html">Bài tập</a><a href="15-shared-materials.html">Học liệu</a><a href="14-elibrary.html?from=lms">Thư viện</a></nav>
+    <div class="tv-header__actions"><button class="tv-icon-btn" data-tv-theme-toggle></button><span class="tv-icon-btn tv-icon-btn--warn"><i data-lucide="bell"></i></span><img class="tv-avatar" src="../assets/default-avatar.jpg" alt=""></div>
+  </div>
+</header>
+
+<div class="tv-container">
+  <nav class="tv-breadcrumb"><a href="02-app-sidebar-list.html">Trang chủ</a><i data-lucide="chevron-right"></i><span class="is-current">Thông tin tài khoản</span></nav>
+
+  <!-- Layout D rút gọn: cột profile 342px + form -->
+  <div class="tv-split tv-page" style="grid-template-columns:342px minmax(0,1fr)">
+    <aside class="tv-panel" style="border-radius:4px;padding:0;overflow:hidden">
+      <div style="text-align:center;padding:20px">
+        <img class="tv-avatar tv-avatar--lg" style="margin:0 auto" src="../assets/default-avatar.jpg" alt="">
+        <div style="font-weight:600;margin-top:12px">Nguyễn Minh Anh</div>
+        <div class="tv-small tv-muted">Lớp 10A1 · THPT Demo số 1</div>
+        <button class="tv-btn tv-btn--primary" style="margin-top:16px;padding:0 24px"><i data-lucide="camera"></i> Đổi ảnh đại diện</button>
+      </div>
+      <a class="tv-row" href="#" style="padding:12px 20px;border-top:1px solid var(--tv-divider);color:var(--tv-primary);font-size:14px;font-weight:600"><i data-lucide="user-round-cog" style="color:var(--tv-primary)"></i>Thông tin tài khoản</a>
+      <a class="tv-row" href="#" style="padding:12px 20px;border-top:1px solid var(--tv-divider);color:var(--tv-text);font-size:14px;font-weight:500"><i data-lucide="key-round" style="color:var(--tv-primary)"></i>Đổi mật khẩu</a>
+      <a class="tv-row" href="04-dashboard-report.html" style="padding:12px 20px;border-top:1px solid var(--tv-divider);color:var(--tv-text);font-size:14px;font-weight:500"><i data-lucide="chart-column" style="color:var(--tv-primary)"></i>Kết quả học tập</a>
+      <a class="tv-row" href="01-landing.html" style="padding:12px 20px;border-top:1px solid var(--tv-divider);color:var(--tv-text);font-size:14px;font-weight:500"><i data-lucide="log-out" style="color:var(--tv-primary)"></i>Đăng xuất</a>
+    </aside>
+
+    <form class="tv-panel" onsubmit="event.preventDefault()">
+      <div class="tv-panel__head"><div class="tv-panel__title"><i data-lucide="user-round-cog"></i>Thông tin cá nhân</div></div>
+      <div class="tv-grid tv-grid-2" style="gap:20px">
+        <div class="tv-field"><label class="tv-label">Họ và tên</label><div class="tv-input"><input value="Nguyễn Minh Anh"></div></div>
+        <div class="tv-field"><label class="tv-label">Email</label><div class="tv-input"><i data-lucide="mail"></i><input value="minhanh.10a1@thptdemo1.edu.vn"></div></div>
+        <div class="tv-field"><label class="tv-label">Số điện thoại phụ huynh</label><div class="tv-input"><i data-lucide="phone"></i><input value="0912 345 678"></div></div>
+        <div class="tv-field"><label class="tv-label">Ngày sinh</label><div class="tv-input"><i data-lucide="calendar-days"></i><input type="date" value="2010-05-12"></div></div>
+        <div class="tv-field"><label class="tv-label">Giới tính</label><select class="tv-select" style="height:40px;border-color:var(--tv-border)"><option>Nữ</option><option>Nam</option></select></div>
+        <div class="tv-field"><label class="tv-label">Trường · Lớp</label><div class="tv-input" style="background:var(--tv-surface-alt)"><i data-lucide="school"></i><input value="THPT Demo số 1 · Lớp 10A1" readonly title="Do nhà trường quản lý"></div></div>
+      </div>
+      <div class="tv-field" style="margin-top:20px"><label class="tv-label">Giới thiệu</label><textarea rows="4" style="border:1px solid var(--tv-border);border-radius:16px;padding:12px 16px;font:15px var(--tv-font);background:var(--tv-surface);color:var(--tv-text);resize:vertical"></textarea></div>
+      <div class="tv-row" style="justify-content:flex-end;margin-top:24px">
+        <button type="button" class="tv-btn tv-btn--outline">Huỷ</button>
+        <button class="tv-btn tv-btn--primary">Lưu thay đổi</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal đăng nhập (mở bằng nút "Đăng nhập" trên header) -->
+<div class="tv-overlay" id="login" hidden>
+  <div class="tv-modal" role="dialog" aria-labelledby="loginTitle">
+    <button class="tv-icon-btn tv-modal__close" style="color:var(--tv-text);width:36px;height:36px" onclick="document.getElementById('login').hidden=true"><i data-lucide="x"></i></button>
+    <h2 id="loginTitle">Đăng nhập</h2>
+    <p class="tv-lead">Đăng nhập bằng tài khoản do nhà trường cấp.</p>
+    <form class="tv-stack" style="gap:12px;margin:28px 16px 0;text-align:left" onsubmit="event.preventDefault();location.href='02-app-sidebar-list.html'">
+      <div class="tv-input"><i data-lucide="user-round"></i><input placeholder="Tài khoản đăng nhập"></div>
+      <div class="tv-input"><i data-lucide="lock"></i><input type="password" placeholder="Mật khẩu"></div>
+      <a href="#" style="font-weight:600">Quên mật khẩu</a>
+      <button class="tv-btn tv-btn--primary tv-btn--lg" style="width:272px;margin:16px auto 0;font-size:16px">Đăng nhập</button>
+    </form>
+    <div class="tv-divider-text">HOẶC</div>
+    <button class="tv-btn tv-btn--white" style="width:272px;height:48px;font-size:16px"><img src="https://www.google.com/favicon.ico" width="22" height="22" alt=""> Đăng nhập với Google</button>
+    <p style="margin-top:20px;color:var(--tv-text-muted)">Chưa có tài khoản? <a href="#" style="font-weight:600">Liên hệ giáo viên chủ nhiệm</a></p>
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../tvet.js"></script>
+<script>if (location.hash === '#dang-nhap') document.getElementById('login').hidden = false;</script>
+</body>
+</html>
