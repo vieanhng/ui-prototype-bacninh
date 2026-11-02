@@ -29,7 +29,7 @@ lcms-design-system/
 │   ├── 14-assignment.html          Giao bài cho lớp của khoá học (chọn bài → thiết lập → báo giao thành công), dữ liệu mẫu Toán 10; bật/tắt tra từ điển chỉ hiện với bài ngoại ngữ (cờ `lang`) (mục 7, 10)
 │   ├── 15-homeroom.html            GVCN: tổng quan, cảnh báo từ lớp bộ môn, phụ huynh, tài khoản (mục 8)
 │   ├── 16-video-results.html       (Đang ẩn khỏi menu và trang cổng) Kết quả video tương tác (mục 6)
-│   ├── 18-course-results.html     Tiến độ khoá học của GV bộ môn: tổng quan, theo bài giảng, theo bài tập (có điểm), theo học sinh; mở từ tab "Tiến độ học" và "Bài tập giao" của 04 (`#tasks`, `#lessons`, `#students` mở đúng tab)
+│   │   (màn Tiến độ khoá học đã chuyển sang LMS: `design-system/templates/17-tien-do-khoa-hoc.html`; 04 vẫn liên kết sang đó)
 │   └── 17-elibrary.html            Mẫu mô phỏng xác thực tự động LCMS → Thư viện điện tử (mục 9). Việc gắn sách vào bài làm ở tab Tài liệu của 06
 ├── assets/                 ← logo, favicon, ảnh khoá học mặc định, minh hoạ empty/upload
 │   └── icons/              ← 22 icon SVG gốc của site (menu, sửa, xoá, ⋮, lưới/bảng…)

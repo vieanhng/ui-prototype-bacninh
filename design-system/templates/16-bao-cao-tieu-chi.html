@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đánh giá theo tiêu chí</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../tvet.css">
+</head>
+<body>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../tvet.js"></script>
+<script src="../bao-cao.js"></script>
+<script>
+BC.shell({ tab: 'tieu-chi', title: 'Đánh giá theo tiêu chí', range: false,
+  extra: '<div class="tv-seg" id="obj" role="tablist" aria-label="Đối tượng"><button data-o="hs">Học sinh</button><button data-o="gv">Giáo viên</button><button data-o="dv">Đơn vị</button></div><select class="tv-select" id="phase" aria-label="Giai đoạn"><option value="1">Tháng 10/2026</option><option value="0.95">HK I 2026-2027 (đến tuần 9)</option><option value="1.05">Năm học 2025-2026</option></select>' });
+// Tiêu chí do Sở thiết lập; mức hoàn thành mỗi tiêu chí = thực tế / yêu cầu (tối đa 100%), % chung = trung bình các tiêu chí
+var OBJ = {
+  hs: { name: 'Học sinh', who: 'Học sinh · lớp 10A1 THPT Hàn Thuyên', crit: [['Lượt học / tuần', 'lượt', 4], ['Thời lượng học / tuần', 'phút', 90], ['Hoàn thành bài được giao', '%', 80]], rows: ['Nguyễn Minh Anh', 'Trần Gia Bảo', 'Lê Thu Hà', 'Phạm Đức Huy', 'Đỗ Khánh Linh', 'Vũ Hoàng Long', 'Ngô Phương Mai', 'Bùi Quang Minh'] },
+  gv: { name: 'Giáo viên', who: 'Giáo viên · THPT Hàn Thuyên', crit: [['Bài học online / tháng', 'bài', 4], ['Số tiết dạy online / tháng', 'tiết', 6], ['Bài giao cho học sinh / tháng', 'bài', 4], ['HS tham gia tối thiểu', '%', 80]], rows: ['Nguyễn Thị Hương · Toán', 'Trần Văn Nam · Ngữ văn', 'Lê Minh Châu · Tiếng Anh', 'Phạm Quốc Việt · Vật lí', 'Đỗ Thu Trang · Hoá học'] },
+  dv: { name: 'Đơn vị', who: 'Trường THPT', crit: [['Học sinh hoạt động', '%', 80], ['Giáo viên hoạt động', '%', 90], ['Hoàn thành đúng tiến độ', '%', 70], ['Điểm TB kỳ thi chung', 'điểm', 6.5]], rows: ['THPT Hàn Thuyên', 'THPT Lý Thái Tổ', 'THPT Quế Võ 1', 'THPT Gia Bình 1', 'THPT Yên Phong 2', 'THPT Lương Tài 2'] }
+};
+var cur = 'hs', TGT = {}; Object.keys(OBJ).forEach(function (k) { TGT[k] = OBJ[k].crit.map(function (c) { return c[2]; }); });
+function actual(k, i, j) { var f = .55 + ((i * 17 + j * 29 + k.length * 7) % 60) / 100; return Math.round(OBJ[k].crit[j][2] * f * (+$('phase').value) * 10) / 10; }
+function rowsOf(k) { return OBJ[k].rows.map(function (n, i) { var a = OBJ[k].crit.map(function (c, j) { return actual(k, i, j); }), p = Math.round(a.reduce(function (s, v, j) { return s + Math.min(1, v / TGT[k][j]); }, 0) / a.length * 100); return { n: n, a: a, p: p }; }); }
+function drawTable() {
+  var o = OBJ[cur], R = rowsOf(cur), ok = R.filter(function (r) { return r.p >= 70; }).length;
+  $('kp').innerHTML = kpis([['Số ' + o.name.toLowerCase() + ' được đánh giá', R.length, '', ''], ['Hoàn thành trung bình', Math.round(R.reduce(function (s, r) { return s + r.p; }, 0) / R.length) + '%', '', ''], ['Đạt (từ 70%)', ok, Math.round(ok / R.length * 100) + '%', 'up'], ['Chưa đạt (dưới 70%)', R.length - ok, '', R.length - ok ? 'down' : '']]);
+  fillTable('res', [o.name].concat(o.crit.map(function (c) { return c[0]; })).concat(['Hoàn thành']), R.map(function (r) { return [r.n].concat(r.a.map(function (v, j) { var t = fmt(v) + (o.crit[j][1] === '%' ? '%' : '') + ' / ' + fmt(TGT[cur][j]) + (o.crit[j][1] === '%' ? '%' : ''); return v < TGT[cur][j] ? '<span class="tv-flag">' + t + '</span>' : t; })).concat([meter(r.p)]); }));
+  if (window.lucide) lucide.createIcons();
+}
+BC.render = function () {
+  var o = OBJ[cur];
+  $('obj').querySelectorAll('button').forEach(function (b) { b.classList.toggle('is-active', b.dataset.o === cur); });
+  BC.draw({ html: head('Đánh giá theo tiêu chí', null, 'Thiết lập tiêu chí đánh giá phù hợp với yêu cầu quản lý; tổng hợp và hiển thị mức độ hoàn thành của học sinh, giáo viên và các đơn vị theo từng giai đoạn. Tiêu chí và cách tính là đề xuất, cần Sở xác nhận.') +
+    '<div class="tv-panel"><div class="tv-panel__head"><div class="tv-panel__title" style="font-size:16px">Thiết lập tiêu chí · ' + o.name + '</div><button class="tv-btn tv-btn--primary tv-btn--sm" data-toast="Đã lưu tiêu chí đánh giá ' + o.name.toLowerCase() + '">Lưu thiết lập</button></div><div class="tv-grid-auto">' +
+      o.crit.map(function (c, j) { return '<label class="tv-small">' + c[0] + ' (' + c[1] + ')<input class="tv-input" style="display:block;width:100%;height:37px;padding:0 12px;margin-top:6px" type="number" min="0" step="any" data-j="' + j + '" value="' + TGT[cur][j] + '"></label>'; }).join('') + '</div></div>' +
+    '<div id="kp"></div>' + tablePanel(o.who + ': mức độ hoàn thành theo giai đoạn', 'res', 'Ô thực tế / yêu cầu · đỏ: chưa đạt yêu cầu'),
+    after: drawTable });
+};
+document.addEventListener('input', function (e) { var j = e.target.dataset.j; if (j == null) return; TGT[cur][+j] = Math.max(0.1, +e.target.value || 0.1); drawTable(); });
+$('obj').onclick = function (e) { var b = e.target.closest('button'); if (b) { cur = b.dataset.o; BC.render(); } };
+$('phase').onchange = drawTable;
+BC.render();
+</script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Báo cáo và Dashboard</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../tvet.css">
+</head>
+<body>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../tvet.js"></script>
+<script src="../bao-cao.js"></script>
+<script>
+var D = {
+  province: { note: 'Số liệu dạy, học và thi trên LMS của toàn tỉnh: các cấp học do Sở và UBND cấp xã quản lý.',
+    stats: [['Trường sử dụng hệ thống', '1.589 / 1.642', '96,8%', 'up'], ['Khoá học', 18420, '+6,1%', 'up'], ['Học sinh hoạt động', '86,7%', '+1,8 điểm %', 'up'], ['Giáo viên hoạt động', '91,2%', '+0,9 điểm %', 'up'], ['Hoàn thành đúng tiến độ', '72,9%', '-0,6 điểm %', 'down'], ['Lượt làm bài kiểm tra', 2310400, '+12%', 'up']],
+    c1: ['Học sinh hoạt động theo cấp học (%)', [['Tiểu học', 88.2], ['THCS', 84.5], ['THPT', 79.1], ['GDTX', 61.3]], '%'],
+    c2: ['Kết quả học tập HK gần nhất theo cấp học (%)', [['Tiểu học', [62, 30, 7.5, .5]], ['THCS', [38, 41, 18.6, 2.4]], ['THPT', [41, 43, 14.8, 1.2]]]],
+    t: { title: 'Xã/phường cần chú ý', hint: 'Bấm một dòng để xem cấp xã/phường', child: 'commune', head: ['Xã/phường', 'Số trường', 'HS hoạt động', 'GV hoạt động', 'Đúng tiến độ', 'HS chưa đạt'],
+      rows: [['Phường Kinh Bắc', 18, 91.4, 95.2, 78.1, 1.1], ['Phường Từ Sơn', 22, 84.2, 90.6, 69.4, 2.0], ['Xã Gia Bình', 14, 76.8, 85.3, 62.7, 3.4], ['Xã Lương Tài', 13, 74.1, 83.9, 60.2, 3.9], ['Phường Bắc Giang', 24, 89.7, 93.8, 75.6, 1.4]] } },
+  commune: { note: 'UBND xã/phường quản lý trường mầm non, tiểu học, THCS trên địa bàn. Trường THPT do Sở quản lý.',
+    stats: [['Trường sử dụng hệ thống', '18 / 18', '100%', 'up'], ['Khoá học', 1240, '+5,2%', 'up'], ['Học sinh hoạt động', '91,4%', '+2,0 điểm %', 'up'], ['Giáo viên hoạt động', '95,2%', '+1,1 điểm %', 'up'], ['Hoàn thành đúng tiến độ', '78,1%', '+0,4 điểm %', 'up'], ['Lượt làm bài kiểm tra', 148200, '+10%', 'up']],
+    c1: ['Học sinh hoạt động theo trường (%)', [['THCS Nguyễn Đăng Đạo', 94.1], ['THCS Kinh Bắc', 90.3], ['TH Kinh Bắc', 92.8], ['TH Thị Cầu', 88.6], ['MN Hoa Sen', 81.2]], '%'],
+    c2: ['Kết quả học tập HK gần nhất (%)', [['Tiểu học', [65, 29, 5.6, .4]], ['THCS', [44, 39, 15.4, 1.6]]]],
+    t: { title: 'Trường trên địa bàn', hint: 'Bấm một dòng để xem cấp trường', child: 'school', head: ['Trường', 'Cấp học', 'HS hoạt động', 'GV hoạt động', 'Đúng tiến độ', 'HS chưa đạt'],
+      rows: [['THCS Nguyễn Đăng Đạo', 'THCS', 94.1, 97.0, 82.3, 0.6], ['THCS Kinh Bắc', 'THCS', 90.3, 95.1, 76.4, 2.2], ['TH Kinh Bắc', 'Tiểu học', 92.8, 96.0, 80.9, 0.3], ['TH Thị Cầu', 'Tiểu học', 88.6, 91.7, 66.8, 0.8], ['MN Hoa Sen', 'Mầm non', 81.2, 90.0, 71.5, 0]] } },
+  school: { note: 'Số liệu dạy, học và thi của một trường: theo khối và theo lớp.',
+    stats: [['Khoá học', 96, '', ''], ['Học sinh hoạt động', '94,1%', '+1,6 điểm %', 'up'], ['Giáo viên hoạt động', '97,0%', '', 'up'], ['Hoàn thành đúng tiến độ', '82,3%', '+1,0 điểm %', 'up'], ['Lượt làm bài kiểm tra', 31400, '+8%', 'up'], ['HS chưa đạt HK I', 7, '0,6%', 'up']],
+    c1: ['Học sinh hoạt động theo khối (%)', [['Khối 6', 95.2], ['Khối 7', 94.0], ['Khối 8', 93.6], ['Khối 9', 93.4]], '%'],
+    c2: ['Kết quả học tập HK gần nhất theo khối (%)', [['Khối 6', [48, 38, 13.2, .8]], ['Khối 7', [45, 40, 14.4, .6]], ['Khối 8', [43, 41, 15.5, .5]], ['Khối 9', [50, 37, 12.5, .5]]]],
+    t: { title: 'Lớp cần chú ý', hint: '', child: null, head: ['Lớp', 'GVCN', 'Sĩ số', 'HS hoạt động', 'Đúng tiến độ', 'HS chưa đạt'],
+      rows: [['6A3', 'Nguyễn Thị Thu Hằng', 44, 97.7, 90.1, 0], ['7A5', 'Trần Văn Đức', 43, 79.1, 62.3, 2], ['8A1', 'Đỗ Thị Lan Anh', 42, 95.2, 84.0, 0], ['9A2', 'Phạm Văn Hải', 41, 82.9, 68.5, 1]] } }
+};
+var COMMUNES = ['Phường Kinh Bắc', 'Phường Từ Sơn', 'Xã Gia Bình', 'Xã Lương Tài', 'Phường Bắc Giang'], SCHOOLS = ['THCS Nguyễn Đăng Đạo', 'THCS Kinh Bắc', 'TH Kinh Bắc', 'TH Thị Cầu', 'MN Hoa Sen'];
+var S = { level: 'province', commune: COMMUNES[0], school: SCHOOLS[0], };
+
+
+BC.shell({ tab: 'dashboard', title: 'Báo cáo và Dashboard', crumb: true,
+  role: '<select class="tv-select" id="role" aria-label="Vai trò (bản mẫu)"><option value="province">Chuyên viên Sở</option><option value="commune">Cán bộ xã/phường</option><option value="school">Hiệu trưởng</option></select>',
+  extra: '<div class="tv-seg" id="scope" role="tablist" aria-label="Cấp quản lý"><button data-level="province">Cấp Sở</button><button data-level="commune">Cấp xã/phường</button><button data-level="school">Cấp trường</button></div><select class="tv-select" id="commune-sel" aria-label="Xã/phường" hidden></select><select class="tv-select" id="school-sel" aria-label="Trường" hidden></select>' });
+var V = {
+  dashboard: function () {
+    var d = S.level === 'province' ? D.province : D[S.level], t = d.t, lv = S.level;
+    var bad = function (h, v) { return { 'HS hoạt động': v < 80, 'GV hoạt động': v < 90, 'Đúng tiến độ': v < 70, 'HS chưa đạt': lv === 'school' ? v > 1 : v > 2 }[h]; }, pct = { 'HS hoạt động': 1, 'GV hoạt động': 1, 'Đúng tiến độ': 1, 'HS chưa đạt': lv !== 'school' };
+    var out = '<div class="tv-panel"><p class="tv-small tv-muted">' + d.note + '</p></div>' + kpis(d.stats) + grid(chartPanel(d.c1[0], 'c1') + chartPanel(d.c2[0], 'c2', 0, KQ) + tablePanel(t.title, 't', t.hint));
+    return { html: out, after: function () {
+      hbar('c1', d.c1[1], '%'); altTable('c1', ['', 'Tỉ lệ (%)'], d.c1[1]); stack('c2', d.c2[1], KQ); altTable('c2', [''].concat(KQ.map(function (k) { return k[0] + ' (%)'; })), d.c2[1].map(function (r) { return [r[0]].concat(r[1]); }));
+      fillTable('t', ['STT'].concat(t.head), t.rows.map(function (r, i) { var o = { cells: [i + 1].concat(r.map(function (v, j) { return j === 0 ? (t.child ? '<a href="#">' + esc(v) + '</a>' : '<b>' + esc(v) + '</b>') : bad(t.head[j], v) !== undefined ? flag(v, bad(t.head[j], v), pct[t.head[j]] ? '%' : '') : typeof v === 'number' ? fmt(v) : esc(v); })) }; if (t.child) o.attrs = 'class="is-drill" data-child="' + t.child + '" data-name="' + esc(r[0]) + '"'; return o; }), 2);
+    } };
+  }
+};
+BC.render = function () {
+  $('scope').querySelectorAll('button').forEach(function (b) { b.classList.toggle('is-active', b.dataset.level === S.level); });
+  $('commune-sel').hidden = S.level === 'province'; $('school-sel').hidden = S.level !== 'school';
+  $('commune-sel').value = S.commune; $('school-sel').value = S.school; $('role').value = S.level;
+  var c = ['<a href="#" data-go="province">Toàn tỉnh Bắc Ninh</a>'];
+  if (S.level !== 'province') c.push(ic('chevron-right') + (S.level === 'commune' ? '<span class="is-current">' + esc(S.commune) + '</span>' : '<a href="#" data-go="commune">' + esc(S.commune) + '</a>'));
+  if (S.level === 'school') c.push(ic('chevron-right') + '<span class="is-current">' + esc(S.school) + '</span>');
+  if (S.level === 'province') c[0] = '<span class="is-current">Toàn tỉnh Bắc Ninh</span>';
+  $('crumb').innerHTML = c.join(' ');
+  BC.draw(V.dashboard());
+};
+$('commune-sel').innerHTML = COMMUNES.map(function (k) { return '<option>' + k + '</option>'; }).join('');
+$('school-sel').innerHTML = SCHOOLS.map(function (k) { return '<option>' + k + '</option>'; }).join('');
+$('commune-sel').onchange = function () { S.commune = this.value; BC.render(); };
+$('school-sel').onchange = function () { S.school = this.value; BC.render(); };
+$('role').onchange = function () { S.level = this.value; BC.render(); };
+$('scope').onclick = function (e) { var b = e.target.closest('button'); if (b) { S.level = b.dataset.level; BC.render(); } };
+document.addEventListener('click', function (e) {
+  var go = e.target.closest('[data-go]'); if (go) { e.preventDefault(); S.level = go.dataset.go; BC.render(); return; }
+  var row = e.target.closest('.is-drill'); if (row) { S[row.dataset.child] = row.dataset.name; S.level = row.dataset.child; BC.render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+});
+BC.render();
+</script>
+</body>
+</html>

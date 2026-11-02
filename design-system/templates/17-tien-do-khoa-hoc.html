@@ -1,95 +1,100 @@
 <!doctype html>
-<html lang="vi">
+<html lang="vi" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LCMS · Tiến độ khoá học</title>
+<title>Tiến độ khoá học</title>
 <link rel="icon" href="../assets/favicon_bn.png">
-<link rel="stylesheet" href="../lcms.css">
+<link rel="stylesheet" href="../tvet.css">
 <style>
   .bar-top { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 16px; }
-  .bar-top .lc-select { width: auto; min-width: 150px; }
-  .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin: 16px 0; }
-  .kpi { padding: 16px 18px; }
-  .kpi span { display: block; font-size: 13px; color: var(--lc-text-secondary); }
-  .kpi b { display: block; margin-top: 4px; font-size: 28px; font-weight: 700; color: var(--lc-text-strong); line-height: 1.2; }
-  .kpi small { font-size: 12px; color: var(--lc-text-secondary); }
+  .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin: 0 0 16px; }
+  .kpi { padding: 16px 18px; border-radius: var(--tv-r-md); }
+  .kpi span { display: block; font-size: 13px; color: var(--tv-text-muted); }
+  .kpi b { display: block; margin-top: 4px; font-size: 28px; font-weight: 700; color: var(--tv-heading); line-height: 1.2; }
+  .kpi small { font-size: 12px; color: var(--tv-text-muted); }
   .grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin-bottom: 16px; }
-  .card-h { display: flex; align-items: center; gap: 10px; padding: 14px 18px 0; }
-  .card-h h3 { margin: 0; font-size: 15px; font-weight: 600; color: var(--lc-text-strong); flex: 1; }
-  .card-b { padding: 12px 18px 18px; }
-  /* Thanh ngang đơn sắc */
+  .card-h { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .card-h h3 { margin: 0; font-size: 16px; font-weight: 600; color: var(--tv-heading); flex: 1; }
+  .card-b { padding: 0; }
   .hbars { display: grid; gap: 10px; }
   .hbar { display: grid; grid-template-columns: 190px minmax(0, 1fr) 48px; gap: 10px; align-items: center; font-size: 13px; }
   .hbar > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .hbar .track { height: 14px; }
-  .hbar .fill { height: 100%; border-radius: 0 4px 4px 0; background: var(--lc-primary); min-width: 2px; }
-  .hbar b { text-align: right; font-weight: 600; color: var(--lc-text-strong); }
-  .linkbtn { border: 0; background: none; padding: 0; font: 600 13px var(--lc-font); color: var(--lc-link); cursor: pointer; }
+  .hbar .track { height: 14px; background: var(--tv-track); border-radius: 0 4px 4px 0; }
+  .hbar .fill { height: 100%; border-radius: 0 4px 4px 0; background: var(--tv-primary); min-width: 2px; }
+  .hbar b { text-align: right; font-weight: 600; color: var(--tv-heading); }
+  .linkbtn { border: 0; background: none; padding: 0; font: 600 13px var(--tv-font); color: var(--tv-primary); cursor: pointer; }
   .tip { position: fixed; z-index: 1200; pointer-events: none; padding: 6px 10px; border-radius: 6px; background: rgba(0,0,0,.82); color: #fff; font-size: 12px; line-height: 1.45; max-width: 280px; }
-  /* Bảng */
-  .tbl-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 16px 0 10px; }
-  .tbl-tools .lc-search--round { width: 220px; }
-  .sticky th:first-child, .sticky td:first-child { position: sticky; left: 0; z-index: 1; background: var(--lc-bg); }
-  .sticky thead th:first-child { background: var(--lc-bg-subtle); }
-  .lc-table tr.click { cursor: pointer; }
-  .lc-table tr.chap td { background: var(--lc-bg-soft); font-weight: 600; color: var(--lc-text-strong); }
-  .lc-table tr.unrel td { color: var(--lc-text-secondary); }
+  .tbl-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 0 0 12px; }
+  .tbl-tools .tv-input { width: 220px; height: 37px; }
+  .tv-table th, .tv-table td { padding: 12px 14px; }
+  .tv-table .c { text-align: center; }
+  .sticky th:first-child, .sticky td:first-child { position: sticky; left: 0; z-index: 1; background: var(--tv-surface); }
+  .tv-table tr.click { cursor: pointer; }
+  .tv-table tr.click:hover td { background: var(--tv-primary-soft); }
+  .tv-table tr.chap td { background: var(--tv-muted-bg); font-weight: 600; color: var(--tv-heading); }
+  .tv-table tr.unrel td { color: var(--tv-text-muted); }
   .pcell { min-width: 120px; }
-  .pcell .lc-progress { height: 6px; margin-top: 4px; }
-  .pcell span { font-size: 12px; color: var(--lc-text-secondary); }
+  .pcell .tv-bar { height: 6px; margin-top: 4px; }
+  .pcell .tv-bar > span { background: var(--tv-primary); }
+  .pcell span { font-size: 12px; color: var(--tv-text-muted); }
+  .pcell .tv-bar > span { display: block; }
   .st { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; white-space: nowrap; }
-  .st--done { color: var(--lc-success-2); background: var(--lc-success-2-bg); }
-  .st--late { color: var(--lc-warning); background: var(--lc-warning-bg); }
-  .st--miss { color: var(--lc-danger); background: var(--lc-danger-bg); }
-  .st--doing { color: var(--lc-info); background: var(--lc-info-bg); }
-  .st--none, .st--open { color: var(--lc-text-secondary); background: var(--lc-bg-soft); }
-  .score { display: inline-block; min-width: 36px; text-align: right; font-weight: 700; color: var(--lc-text-strong); }
-  .score.low { color: var(--lc-danger); }
-  .stu { display: flex; align-items: center; gap: 10px; min-width: 200px; cursor: pointer; }
-  .stu b { font-weight: 600; color: var(--lc-primary); }
-  .stu small { display: block; font-size: 12px; color: var(--lc-text-secondary); }
+  .st--done { color: var(--tv-success); background: var(--tv-success-bg); }
+  .st--late { color: var(--tv-warning); background: var(--tv-warning-bg); }
+  .st--miss { color: var(--tv-danger); background: var(--tv-danger-bg); }
+  .st--doing { color: var(--tv-primary); background: var(--tv-primary-soft); }
+  .st--none, .st--open { color: var(--tv-text-muted); background: var(--tv-muted-bg); }
+  .score { display: inline-block; min-width: 36px; text-align: right; font-weight: 700; color: var(--tv-heading); }
+  .score.low { color: var(--tv-danger); }
+  .stu { display: flex; align-items: center; gap: 10px; min-width: 200px; cursor: pointer; text-align: left; }
+  .stu b { font-weight: 600; color: var(--tv-primary); }
+  .stu small { display: block; font-size: 12px; color: var(--tv-text-muted); }
+  .stu .tv-avatar { background: none; }
   .dl2 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 16px; }
-  .dl2 div { padding: 10px 12px; border-radius: 10px; background: var(--lc-bg-soft); }
-  .dl2 b { display: block; font-size: 18px; color: var(--lc-text-strong); }
-  .dl2 span { font-size: 12px; color: var(--lc-text-secondary); }
+  .dl2 div { padding: 10px 12px; border-radius: 10px; background: var(--tv-muted-bg); }
+  .dl2 b { display: block; font-size: 18px; color: var(--tv-heading); }
+  .dl2 span { font-size: 12px; color: var(--tv-text-muted); }
   .rowlist { display: grid; gap: 6px; }
-  .rowlist > div { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid var(--lc-divider); border-radius: 8px; font-size: 14px; }
+  .rowlist > div { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid var(--tv-divider); border-radius: 8px; font-size: 14px; }
   .rowlist > div > span:first-child { flex: 1; min-width: 0; }
-  .rowlist small { color: var(--lc-text-secondary); font-size: 12px; }
+  .rowlist small { color: var(--tv-text-muted); font-size: 12px; }
+  .sec-title { margin: 16px 0 8px; font-weight: 600; color: var(--tv-heading); }
   .seg { display: inline-flex; gap: 6px; flex-wrap: wrap; }
-  .seg button { height: 28px; padding: 0 12px; border: 1px solid var(--lc-divider); border-radius: 14px; background: var(--lc-bg); font: 600 13px var(--lc-font); color: var(--lc-text-tertiary); cursor: pointer; }
-  .seg button.is-on { border-color: var(--lc-primary); background: var(--lc-primary-soft); color: var(--lc-primary); }
+  .seg button { height: 28px; padding: 0 12px; border: 1px solid var(--tv-border); border-radius: 14px; background: var(--tv-surface); font: 600 13px var(--tv-font); color: var(--tv-text-muted); cursor: pointer; }
+  .seg button.is-on { border-color: var(--tv-primary); background: var(--tv-primary-soft); color: var(--tv-primary); }
+  .tv-drawer-mask { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 400; }
+  .tv-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(480px, 100vw); z-index: 401; background: var(--tv-surface); box-shadow: var(--tv-sh-pop); display: flex; flex-direction: column; }
+  .tv-drawer__head { display: flex; align-items: flex-start; gap: 12px; padding: 18px 20px; border-bottom: 1px solid var(--tv-divider); }
+  .tv-drawer__head h3 { margin: 0; font-size: 18px; color: var(--tv-heading); }
+  .tv-drawer__body { padding: 20px; overflow: auto; flex: 1; }
   @media (max-width: 1100px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .grid2 { grid-template-columns: 1fr; } }
   @media (max-width: 600px) { .hbar { grid-template-columns: 120px minmax(0, 1fr) 40px; } .dl2 { grid-template-columns: 1fr 1fr; } }
 </style>
 </head>
 <body>
-<div class="lc-layout">
-  <aside class="lc-sider">
-    <div class="lc-sider__logo"><img src="../assets/logo_bn.png" alt="Giáo dục và Đào tạo Bắc Ninh"></div>
-    <nav class="lc-menu" data-demo-menu="khoahoc"></nav>
-  </aside>
-  <div class="lc-main">
-    <header class="lc-header">
-      <button class="lc-burger" data-lc-collapse aria-label="Thu gọn menu"><img src="../assets/icons/menu.svg" alt=""></button>
-      <h1 class="lc-page-title">Toán 10 · <em>Tiến độ</em></h1>
-      <div class="lc-header__actions" style="margin-left:auto">
-        <div class="lc-user"><img class="lc-avatar" src="../assets/default-avatar.jpg" alt=""><div><b id="userName"></b><span id="userTitle"></span></div></div>
-      </div>
-    </header>
-    <main class="lc-content lc-content--soft" id="main"></main>
+<header class="tv-header" style="height:72px">
+  <div class="tv-header__inner" style="padding:0 24px">
+    <a class="tv-icon-btn" href="02-app-sidebar-list.html" aria-label="Góc học tập" style="width:38px;height:38px"><i data-lucide="house"></i></a>
+    <h1 style="font-size:24px;font-weight:600;color:var(--tv-heading)">Toán 10 · Tiến độ</h1>
+    <div class="tv-header__actions" style="margin-left:auto">
+      <select class="tv-select" id="role" aria-label="Vai trò (bản mẫu)"><option value="gv">Giáo viên bộ môn</option><option value="tt">Tổ trưởng</option><option value="ht">Hiệu trưởng</option></select>
+      <button class="tv-icon-btn" data-tv-theme-toggle></button>
+      <img class="tv-avatar" src="../assets/default-avatar.jpg" alt="">
+    </div>
   </div>
-</div>
+</header>
+<main style="padding:24px 24px 0" id="main"></main>
 <div id="drawer"></div>
 <div class="tip" id="tip" hidden></div>
-
+<div id="toast" class="tv-fab__label" style="position:fixed;left:50%;bottom:32px;transform:translateX(-50%);z-index:500" hidden></div>
 <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
-<script src="../lcms.js"></script>
-<script src="../lcms-demo.js"></script>
+<script src="../tvet.js"></script>
 <script>
 (function () {
-  var D = LcDemo, esc = D.esc, $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }, $ = function (id) { return document.getElementById(id); };
+  var icons = function () { if (window.lucide) lucide.createIcons(); };
+  var toast = function (t) { var e = $('toast'); e.textContent = t; e.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function () { e.hidden = true; }, 2200); };
 
   /* ---------- Dữ liệu mô phỏng (sinh có hạt giống để lần nào mở cũng giống nhau) ---------- */
   function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
@@ -179,11 +184,10 @@
   }
 
   /* ---------- Vai trò và phạm vi ---------- */
-  var WHO = { gv: ['Nguyễn Thị Lan', 'Giáo viên Toán'], gvcn: ['Nguyễn Thị Lan', 'Giáo viên Toán'], tt: ['Trần Văn Minh', 'Tổ trưởng Tổ Toán'], ht: ['Nguyễn Văn Thành', 'Hiệu trưởng'] };
-  function role() { return D.role(); }
+    function role() { return $('role').value; }
   function visibleClasses() {
     var r = role();
-    if (r === 'gv' || r === 'gvcn') return CLASSES.filter(function (c) { return c.teacher === 'Nguyễn Thị Lan'; });
+    if (r === 'gv') return CLASSES.filter(function (c) { return c.teacher === 'Nguyễn Thị Lan'; });
     if (r === 'tt' || r === 'ht') return CLASSES;
     return [];
   }
@@ -194,26 +198,24 @@
 
   /* ---------- Giao diện ---------- */
   function render() {
-    var w = WHO[role()] || ['—', (D.ROLES.filter(function (r) { return r[0] === role(); })[0] || ['', ''])[1]];
-    $('userName').textContent = w[0]; $('userTitle').textContent = w[1];
     var vis = visibleClasses();
-    if (!vis.length) { $('main').innerHTML = '<div class="lc-card lc-card--pad" style="max-width:640px"><b>Vai trò này không xem tiến độ khoá học.</b><p class="lc-secondary" style="margin:6px 0 0">Đổi ô "Vai trò (bản mẫu)" sang Giáo viên bộ môn, Tổ trưởng hoặc Hiệu trưởng.</p></div>'; renderDrawer(); return; }
+    
     if (!vis.some(function (c) { return c.id === S.cls; })) S.cls = vis[0].id;
-    var html = '<div class="bar-top"><div class="lc-tabs"><a href="04-detail-chapters.html">Nội dung</a><a href="#" class="is-active">Tiến độ học</a></div><span class="lc-spacer"></span>' +
-      '<label class="lc-secondary" style="font-size:13px" for="cls">Lớp</label><select class="lc-select lc-select--sm" id="cls">' + vis.map(function (x) { return '<option value="' + x.id + '"' + (x.id === S.cls ? ' selected' : '') + '>' + x.id + (vis.length > 3 ? ' · ' + x.teacher : '') + '</option>'; }).join('') + '</select>' +
-      '<select class="lc-select lc-select--sm" aria-label="Kỳ"><option>Học kỳ I · 2026–2027</option></select>' +
-      '<button class="lc-btn lc-btn--outline lc-btn--sm" data-act="export">Xuất Excel</button></div>' +
-      '<div class="lc-tabs">' + [['overview', 'Tổng quan'], ['lessons', 'Bài giảng'], ['tasks', 'Bài tập'], ['students', 'Theo học sinh']].map(function (t) { return '<a href="#" data-tab="' + t[0] + '" class="' + (S.tab === t[0] ? 'is-active' : '') + '">' + t[1] + '</a>'; }).join('') + '</div>';
+    var html = '<div class="bar-top"><div class="tv-seg"><button onclick="location.href=\'../../lcms-design-system/templates/04-detail-chapters.html\'">Nội dung</button><button class="is-active">Tiến độ học</button></div><span style="flex:1"></span>' +
+      '<label class="tv-small tv-muted" for="cls">Lớp</label><select class="tv-select" id="cls">' + vis.map(function (x) { return '<option value="' + x.id + '"' + (x.id === S.cls ? ' selected' : '') + '>' + x.id + (vis.length > 3 ? ' · ' + x.teacher : '') + '</option>'; }).join('') + '</select>' +
+      '<select class="tv-select" aria-label="Kỳ"><option>Học kỳ I · 2026–2027</option></select>' +
+      '<button class="tv-btn tv-btn--outline tv-btn--sm" data-act="export"><i data-lucide="sheet"></i>Xuất Excel</button></div>' +
+      '<nav class="tv-htabs" style="padding:0;border:0;background:none;margin-bottom:16px">' + [['overview', 'Tổng quan'], ['lessons', 'Bài giảng'], ['tasks', 'Bài tập'], ['students', 'Theo học sinh']].map(function (t) { return '<a href="#" data-tab="' + t[0] + '" class="' + (S.tab === t[0] ? 'is-active' : '') + '">' + t[1] + '</a>'; }).join('') + '</nav>';
     html += S.tab === 'overview' ? viewOverview() : S.tab === 'lessons' ? viewLessons() : S.tab === 'tasks' ? viewTasks() : viewStudents();
     $('main').innerHTML = html;
-    renderDrawer();
+    renderDrawer(); icons();
   }
   function table(head, rows, cls) {
-    return '<div class="lc-table-wrap' + (cls ? ' ' + cls : '') + '"><table class="lc-table lc-table--plain"><thead><tr>' + head.map(function (h, i) { return '<th' + (i ? ' class="c"' : '') + '>' + h + '</th>'; }).join('') + '</tr></thead><tbody>' +
+    return '<div class="tv-table-wrap' + (cls ? ' ' + cls : '') + '"><table class="tv-table"><thead><tr>' + head.map(function (h, i) { return '<th' + (i ? ' class="c"' : '') + '>' + h + '</th>'; }).join('') + '</tr></thead><tbody>' +
       rows.join('') + '</tbody></table></div>';
   }
   function tr(cells, attrs) { return '<tr' + (attrs || '') + '>' + cells.map(function (v, i) { return '<td' + (i ? ' class="c"' : '') + '>' + v + '</td>'; }).join('') + '</tr>'; }
-  function bar(v) { return '<div class="pcell"><span>' + v + '%</span><div class="lc-progress"><span style="width:' + v + '%"></span></div></div>'; }
+  function bar(v) { return '<div class="pcell"><span>' + v + '%</span><div class="tv-bar"><span style="width:' + v + '%"></span></div></div>'; }
   function hbars(items) {
     return '<div class="hbars">' + items.map(function (x) { return '<div class="hbar" data-tip="' + x.tip + '"><span>' + esc(x.label) + '</span><div class="track"><div class="fill" style="width:' + x.v + '%"></div></div><b>' + x.v + '%</b></div>'; }).join('') + '</div>';
   }
@@ -221,10 +223,10 @@
   function viewOverview() {
     var c = cur(), L = STUDENTS[c.id], st = classStats(c.id);
     var kpis = '<div class="kpis">' +
-      '<div class="lc-card kpi"><span>Hoàn thành bài giảng</span><b>' + st.lessons + '%</b><small>Trung bình lớp · ' + RELEASED.length + '/' + LESSONS.length + ' bài đã phát hành</small></div>' +
-      '<div class="lc-card kpi"><span>Bài tập đã nộp</span><b>' + st.sub + '%</b><small>Các bài đã hết hạn</small></div>' +
-      '<div class="lc-card kpi"><span>Nộp đúng hạn</span><b>' + st.ontime + '%</b><small>Các bài đã hết hạn</small></div>' +
-      '<div class="lc-card kpi"><span>Điểm trung bình bài tập</span><b>' + fmt(st.avg) + '</b><small>Các bài đã nộp</small></div></div>';
+      '<div class="tv-panel kpi"><span>Hoàn thành bài giảng</span><b>' + st.lessons + '%</b><small>Trung bình lớp · ' + RELEASED.length + '/' + LESSONS.length + ' bài đã phát hành</small></div>' +
+      '<div class="tv-panel kpi"><span>Bài tập đã nộp</span><b>' + st.sub + '%</b><small>Các bài đã hết hạn</small></div>' +
+      '<div class="tv-panel kpi"><span>Nộp đúng hạn</span><b>' + st.ontime + '%</b><small>Các bài đã hết hạn</small></div>' +
+      '<div class="tv-panel kpi"><span>Điểm trung bình bài tập</span><b>' + fmt(st.avg) + '</b><small>Các bài đã nộp</small></div></div>';
     var chap = CHAPTERS.map(function (ch, ci) {
       var rel = RELEASED.filter(function (l) { return l.ch === ci; });
       if (!rel.length) return null;
@@ -239,10 +241,10 @@
     var chartChap = S.chartTable ? table(['Chương', 'Hoàn thành TB'], chap.map(function (x) { return tr([esc(x.label), x.v + '%']); })) : hbars(chap);
     var chartTask = S.chartTable ? table(['Bài tập', 'Đã nộp', 'Điểm TB'], tasks.map(function (x) { return tr([esc(x.label), x.v + '%', fmt(x.avg)]); })) : hbars(tasks);
     var vis = visibleClasses();
-    var cmp = vis.length > 1 ? '<section class="lc-card"><div class="card-h"><h3>So sánh các lớp ' + (role() === 'gv' || role() === 'gvcn' ? 'tôi dạy' : 'học khoá này') + '</h3></div><div class="card-b">' +
+    var cmp = vis.length > 1 ? '<section class="tv-panel"><div class="card-h"><h3>So sánh các lớp ' + (role() === 'gv' ? 'tôi dạy' : 'học khoá này') + '</h3></div><div class="card-b">' +
       table(['Lớp', 'Giáo viên', 'Sĩ số', 'Hoàn thành bài giảng', 'Bài tập đã nộp', 'Nộp đúng hạn', 'Điểm TB bài tập'], vis.map(function (x) { var s = classStats(x.id); return tr(['<button class="linkbtn" data-cls="' + x.id + '">' + x.id + '</button>', esc(x.teacher), s.size, s.lessons + '%', s.sub + '%', s.ontime + '%', fmt(s.avg)]); })) + '</div></section>' : '';
-    return kpis + '<div class="grid2"><section class="lc-card"><div class="card-h"><h3>Hoàn thành bài giảng theo chương</h3>' + tog + '</div><div class="card-b">' + chartChap + '<p class="lc-caption" style="margin-top:10px">Chỉ tính các bài đã phát hành.</p></div></section>' +
-      '<section class="lc-card"><div class="card-h"><h3>Tỉ lệ nộp theo bài tập</h3>' + tog + '</div><div class="card-b">' + chartTask + '<p class="lc-caption" style="margin-top:10px">Rê chuột lên từng bài để xem điểm trung bình.</p></div></section></div>' + cmp;
+    return kpis + '<div class="grid2"><section class="tv-panel"><div class="card-h"><h3>Hoàn thành bài giảng theo chương</h3>' + tog + '</div><div class="card-b">' + chartChap + '<p class="tv-small tv-muted" style="margin-top:10px">Chỉ tính các bài đã phát hành.</p></div></section>' +
+      '<section class="tv-panel"><div class="card-h"><h3>Tỉ lệ nộp theo bài tập</h3>' + tog + '</div><div class="card-b">' + chartTask + '<p class="tv-small tv-muted" style="margin-top:10px">Rê chuột lên từng bài để xem điểm trung bình.</p></div></section></div>' + cmp;
   }
 
   function viewLessons() {
@@ -250,23 +252,23 @@
     CHAPTERS.forEach(function (ch, ci) {
       rows.push('<tr class="chap"><td colspan="6">' + esc(ch.name) + '</td></tr>');
       LESSONS.filter(function (l) { return l.ch === ci; }).forEach(function (l) {
-        if (!l.rel) { rows.push(tr([esc(l.name) + '<div class="lc-caption">' + esc(l.meta) + '</div>', '—', '—', '—', '—', '<span class="st st--none">Chưa phát hành</span>'], ' class="unrel"')); return; }
+        if (!l.rel) { rows.push(tr([esc(l.name) + '<div class="tv-small tv-muted">' + esc(l.meta) + '</div>', '—', '—', '—', '—', '<span class="st st--none">Chưa phát hành</span>'], ' class="unrel"')); return; }
         var o = lessonStat(L, l);
-        rows.push(tr([esc(l.name) + '<div class="lc-caption">' + esc(l.meta) + '</div>', bar(pct(o.done, L.length)), o.done, o.doing, o.none, o.watch + '%'], ' class="click" data-lesson="' + l.id + '"'));
+        rows.push(tr([esc(l.name) + '<div class="tv-small tv-muted">' + esc(l.meta) + '</div>', bar(pct(o.done, L.length)), o.done, o.doing, o.none, o.watch + '%'], ' class="click" data-lesson="' + l.id + '"'));
       });
     });
-    return '<div class="tbl-tools"><span class="lc-secondary" style="font-size:13px">Lớp ' + S.cls + ' · ' + L.length + ' học sinh · bấm một bài để xem từng học sinh</span></div>' +
+    return '<div class="tbl-tools"><span class="tv-muted" style="font-size:13px">Lớp ' + S.cls + ' · ' + L.length + ' học sinh · bấm một bài để xem từng học sinh</span></div>' +
       table(['Bài giảng', 'Hoàn thành', 'Hoàn thành (HS)', 'Đang học', 'Chưa học', 'Xem video TB'], rows);
   }
   function viewTasks() {
     var L = STUDENTS[S.cls];
-    return '<div class="tbl-tools"><span class="lc-secondary" style="font-size:13px">Lớp ' + S.cls + ' · ' + L.length + ' học sinh · bấm một bài để xem điểm từng học sinh</span></div>' +
+    return '<div class="tbl-tools"><span class="tv-muted" style="font-size:13px">Lớp ' + S.cls + ' · ' + L.length + ' học sinh · bấm một bài để xem điểm từng học sinh</span></div>' +
       table(['Bài tập', 'Hạn nộp', 'Đã nộp', 'Đúng hạn', 'Nộp muộn', 'Chưa nộp', 'Điểm TB', 'Dưới 5'], TASKS.map(function (t) {
         var o = taskStat(L, t);
-        return tr([esc(t.name) + '<div class="lc-caption">' + t.type + (t.open ? ' · đang mở' : '') + '</div>', t.due, bar(pct(o.done + o.late, L.length)), o.done, o.late, t.open ? o.open + ' <span class="lc-caption">(còn hạn)</span>' : o.miss, scoreHtml(o.avg), o.low], ' class="click" data-task="' + t.id + '"');
+        return tr([esc(t.name) + '<div class="tv-small tv-muted">' + t.type + (t.open ? ' · đang mở' : '') + '</div>', t.due, bar(pct(o.done + o.late, L.length)), o.done, o.late, t.open ? o.open + ' <span class="tv-small tv-muted">(còn hạn)</span>' : o.miss, scoreHtml(o.avg), o.low], ' class="click" data-task="' + t.id + '"');
       }));
   }
-  function stuCell(s) { return '<div class="stu" data-stu="' + s.id + '"><img class="lc-avatar" src="../assets/default-avatar.jpg" alt="" style="width:30px;height:30px"><div><b>' + esc(s.name) + '</b><small>' + s.cls + '</small></div></div>'; }
+  function stuCell(s) { return '<div class="stu" data-stu="' + s.id + '"><img class="tv-avatar" src="../assets/default-avatar.jpg" alt="" style="width:30px;height:30px"><div><b>' + esc(s.name) + '</b><small>' + s.cls + '</small></div></div>'; }
   function sortRows(rows) {
     var k = function (s) { var p = s.name.split(' '); return p[p.length - 1] + ' ' + s.name; };
     return rows.slice().sort(function (a, b) {
@@ -280,9 +282,9 @@
     var q = S.q.toLowerCase(), rows = sortRows(STUDENTS[S.cls].filter(function (s) { return !q || s.name.toLowerCase().indexOf(q) >= 0; }));
     var chs = CHAPTERS.map(function (ch, ci) { return ci; }).filter(function (ci) { return RELEASED.some(function (l) { return l.ch === ci; }); });
     var SORTS = [['name', 'Theo tên'], ['lesAsc', 'Ít bài giảng hoàn thành trước'], ['taskAsc', 'Ít bài tập đã nộp trước'], ['avgAsc', 'Điểm TB bài tập thấp trước']];
-    return '<div class="tbl-tools"><div class="lc-search--round"><input id="q" value="' + esc(S.q) + '" placeholder="Tìm học sinh…" aria-label="Tìm học sinh"></div>' +
-      '<select class="lc-select lc-select--sm" id="sort" style="width:230px" aria-label="Sắp xếp">' + SORTS.map(function (o) { return '<option value="' + o[0] + '"' + (S.sort === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>' +
-      '<span class="lc-spacer"></span><span class="lc-secondary" style="font-size:13px">' + rows.length + ' học sinh</span></div>' +
+    return '<div class="tbl-tools"><div class="tv-input tv-input--search"><input id="q" value="' + esc(S.q) + '" placeholder="Tìm học sinh…" aria-label="Tìm học sinh"></div>' +
+      '<select class="tv-select" id="sort" style="width:230px" aria-label="Sắp xếp">' + SORTS.map(function (o) { return '<option value="' + o[0] + '"' + (S.sort === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>' +
+      '<span class="tv-spacer"></span><span class="tv-muted" style="font-size:13px">' + rows.length + ' học sinh</span></div>' +
       table(['Học sinh', 'Bài giảng hoàn thành', 'Bài tập đã nộp', 'Điểm TB bài tập'].concat(chs.map(function (ci) { return esc(CHAPTERS[ci].name.split('.')[0]); })).concat(['Thời lượng', 'Lần học gần nhất']), rows.map(function (s) {
         return tr([stuCell(s), stuLessons(s) + '/' + RELEASED.length, stuTasks(s) + '/' + TASKS.length, scoreHtml(stuAvg(s))].concat(chs.map(function (ci) { return '<span data-tip="' + esc(CHAPTERS[ci].name) + ': ' + stuChap(s, ci) + '%">' + bar(stuChap(s, ci)) + '</span>'; }))
           .concat([Math.floor(s.minutes / 60) + ' giờ ' + (s.minutes % 60) + ' phút', s.idle === 0 ? 'Hôm nay' : s.idle + ' ngày trước']));
@@ -293,7 +295,7 @@
   function find(id) { return STUDENTS[id.split('-')[0]].filter(function (s) { return s.id === id; })[0]; }
   function renderDrawer() {
     var d = S.drawer;
-    if (!d) { $('drawer').innerHTML = ''; D.icons(); return; }
+    if (!d) { $('drawer').innerHTML = ''; icons(); return; }
     var title, sub, body;
     if (d.lesson || d.task) {
       var L = STUDENTS[S.cls], isL = !!d.lesson, it = isL ? LESSONS.filter(function (l) { return l.id === d.lesson; })[0] : TASKS.filter(function (t) { return t.id === d.task; })[0];
@@ -313,13 +315,13 @@
       var s = find(d.stu);
       title = esc(s.name); sub = s.cls;
       body = '<div class="dl2"><div><b>' + stuLessons(s) + '/' + RELEASED.length + '</b><span>Bài giảng hoàn thành</span></div><div><b>' + stuTasks(s) + '/' + TASKS.length + '</b><span>Bài tập đã nộp</span></div><div><b>' + fmt(stuAvg(s)) + '</b><span>Điểm TB bài tập</span></div></div>' +
-        '<p class="lc-secondary" style="font-size:13px;margin:-6px 0 12px">Lần học gần nhất: ' + (s.idle === 0 ? 'hôm nay' : s.idle + ' ngày trước') + ' · Thời lượng: ' + Math.floor(s.minutes / 60) + ' giờ ' + (s.minutes % 60) + ' phút</p>' +
-        '<div class="lc-sec-title">Bài tập</div><div class="rowlist">' + TASKS.map(function (t) { var x = s.task[t.id]; return '<div><span>' + esc(t.name) + '<br><small>' + t.type + ' · hạn ' + t.due + '</small></span><span class="st st--' + x + '">' + TSTATE[x] + '</span>' + scoreHtml(s.score[t.id]) + '</div>'; }).join('') + '</div>' +
-        '<div class="lc-sec-title">Bài giảng</div><div class="rowlist">' + RELEASED.map(function (l) { var x = s.les[l.id]; return '<div><span>' + esc(l.name) + '<br><small>' + esc(CHAPTERS[l.ch].name) + (x === 'doing' ? ' · đã xem ' + s.watch[l.id] + '%' : '') + '</small></span><span class="st st--' + x + '">' + LSTATE[x] + '</span></div>'; }).join('') + '</div>';
+        '<p class="tv-muted" style="font-size:13px;margin:-6px 0 12px">Lần học gần nhất: ' + (s.idle === 0 ? 'hôm nay' : s.idle + ' ngày trước') + ' · Thời lượng: ' + Math.floor(s.minutes / 60) + ' giờ ' + (s.minutes % 60) + ' phút</p>' +
+        '<div class="sec-title">Bài tập</div><div class="rowlist">' + TASKS.map(function (t) { var x = s.task[t.id]; return '<div><span>' + esc(t.name) + '<br><small>' + t.type + ' · hạn ' + t.due + '</small></span><span class="st st--' + x + '">' + TSTATE[x] + '</span>' + scoreHtml(s.score[t.id]) + '</div>'; }).join('') + '</div>' +
+        '<div class="sec-title">Bài giảng</div><div class="rowlist">' + RELEASED.map(function (l) { var x = s.les[l.id]; return '<div><span>' + esc(l.name) + '<br><small>' + esc(CHAPTERS[l.ch].name) + (x === 'doing' ? ' · đã xem ' + s.watch[l.id] + '%' : '') + '</small></span><span class="st st--' + x + '">' + LSTATE[x] + '</span></div>'; }).join('') + '</div>';
     }
-    $('drawer').innerHTML = '<div class="lc-drawer-mask" data-act="closeDrawer"></div><aside class="lc-drawer" role="dialog" aria-label="Chi tiết"><div class="lc-drawer__head"><div style="flex:1"><h3>' + title + '</h3><div class="lc-caption">' + sub + '</div></div><button class="lc-modal__close" data-act="closeDrawer" aria-label="Đóng">×</button></div>' +
-      '<div class="lc-drawer__body">' + body + '</div></aside>';
-    D.icons();
+    $('drawer').innerHTML = '<div class="tv-drawer-mask" data-act="closeDrawer"></div><aside class="tv-drawer" role="dialog" aria-label="Chi tiết"><div class="tv-drawer__head"><div style="flex:1"><h3>' + title + '</h3><div class="tv-small tv-muted">' + sub + '</div></div><button class="tv-icon-btn" data-act="closeDrawer" aria-label="Đóng"><i data-lucide="x"></i></button></div>' +
+      '<div class="tv-drawer__body">' + body + '</div></aside>';
+    icons();
   }
 
   function exportCsv() {
@@ -330,7 +332,7 @@
     var csv = '﻿' + rows.map(function (r) { return r.map(function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(','); }).join('\n');
     var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' })); a.download = 'tien-do-toan10-' + c.id + '.csv'; a.click();
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
-    D.toast('Đã xuất tiến độ lớp ' + c.id);
+    toast('Đã xuất tiến độ lớp ' + c.id);
   }
 
   document.addEventListener('click', function (e) {
@@ -365,7 +367,7 @@
     tip.style.left = x + 'px'; tip.style.top = y + 'px';
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && S.drawer) { S.drawer = null; renderDrawer(); } });
-  document.addEventListener('lcdemo:role', function () { S.drawer = null; render(); });
+  $('role').addEventListener('change', function () { S.drawer = null; render(); });
   render();
 })();
 </script>

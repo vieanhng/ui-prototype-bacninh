@@ -24,6 +24,12 @@ design-system/
 │   ├── 11-exam-kiosk.html         Máy thi: quy chế, toàn màn hình, cảnh báo, mất mạng (mục 5)
 │   ├── 12-my-tasks.html           Bài tập của tôi: mỗi loại bài mở đúng màn (kiểm tra → 10, thi phòng máy → 11, video → 08, đọc → 09, phiếu dạng file → trình xem trực tuyến, đã nộp → 06)
 │   ├── 15-shared-materials.html   Kho học liệu của học sinh: chỉ học liệu đã duyệt Kho Trường/Kho Sở, không có câu hỏi; đọc dữ liệu LCMS 09 lưu ở localStorage `bn-shared-materials`
+│   ├── 17-tien-do-khoa-hoc.html   Tiến độ khoá học (chuyển từ LCMS 18): tổng quan, theo bài giảng, theo bài tập (có điểm), theo học sinh; ngăn chi tiết, xuất CSV. Ô "Vai trò (bản mẫu)": GV bộ môn (chỉ lớp mình dạy), Tổ trưởng, Hiệu trưởng. `#tasks`, `#lessons`, `#students` mở đúng tab; LCMS 04 liên kết sang đây
+│   ├── 16-bao-cao.html            Dashboard quản lý 3 cấp (Sở, xã/phường, trường)
+│   ├── 16-bao-cao-trien-khai.html Báo cáo Mức độ triển khai: tham gia, sử dụng của đơn vị, GV, HS, phụ huynh
+│   ├── 16-bao-cao-khai-thac.html  Báo cáo Hiệu quả khai thác: xây dựng, chia sẻ, sử dụng học liệu, khoá học
+│   ├── 16-bao-cao-chat-luong.html Báo cáo Chất lượng dạy và học: kết quả học tập, khảo thí, hoàn thành hoạt động
+│   ├── 16-bao-cao-tieu-chi.html   Đánh giá theo tiêu chí: thiết lập tiêu chí, mức hoàn thành HS/GV/đơn vị theo giai đoạn
 │   └── 14-elibrary.html           Thư viện điện tử của học sinh; mở từ 02/03 (`?from=lms`) sẽ chạy giả lập xác thực tự động LMS → Thư viện. Sách thư viện là file (PDF) xem trực tuyến bằng `TvViewer` (tvet.js): lật trang, phóng to/thu nhỏ, không tương tác, không tải về
 └── assets/                ← Logo, avatar, ảnh khóa học, ảnh minh họa (tải từ site)
 ```
@@ -85,3 +91,7 @@ Thêm `<script src="tvet-dict.js"></script>` sau `tvet.js`, rồi gắn `data-di
 - Biểu đồ trong template 04 là SVG tĩnh minh họa. Khi làm thật nên dùng thư viện chart, màu line là `--tv-primary`.
 - Màn hình **đang làm bài thi** chưa được chụp: thao tác đó tạo lượt làm bài mới trên tài khoản. Template 06 dựng theo màn hình *xem lại bài*, vốn dùng cùng khung giao diện.
 - Trang `/tra-loi-comment` (Chatbox) dùng font Poppins và style khác, thuộc khu vực quản trị, nên không đưa vào hệ thống.
+
+## Báo cáo quản lý (template 16)
+
+QLĐT không còn dùng; dashboard và báo cáo nằm trong LMS, mỗi nhóm một trang: Dashboard, Mức độ triển khai, Hiệu quả khai thác, Chất lượng dạy và học, Đánh giá theo tiêu chí. Các trang dùng chung `bao-cao.js` (khung trang `BC.shell`, biểu đồ SVG, bảng, ô số liệu) và khối 12 của `tvet.css`. Biểu đồ dùng biến `--tv-*` nên đổi theo dark mode. Báo cáo tổng hợp định kỳ (không realtime). Ngưỡng cảnh báo, tiêu chí và cách tính % hoàn thành là đề xuất, cần Sở xác nhận; toàn bộ số liệu là minh hoạ. `qldt-design-system/` vẫn còn trong repo để tham chiếu, đã gỡ khỏi cổng.

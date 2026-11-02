@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mức độ triển khai</title>
+<link rel="icon" href="../assets/favicon_bn.png">
+<link rel="stylesheet" href="../tvet.css">
+</head>
+<body>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../tvet.js"></script>
+<script src="../bao-cao.js"></script>
+<script>
+BC.shell({ tab: 'trien-khai', title: 'Mức độ triển khai' });
+var ORG = [['THPT Hàn Thuyên', 94, 98, 71], ['THPT Lý Thái Tổ', 90, 96, 64], ['THPT Quế Võ 1', 84, 93, 58], ['THPT Gia Bình 1', 80, 90, 49], ['THPT Yên Phong 2', 67, 85, 38], ['THPT Lương Tài 2', 61, 80, 33]];
+BC.render = function () {
+  seed = 7; var hs = series(72, 10), gv = series(86, 6), ph = series(34, 8), cb = series(93, 3);
+  BC.draw({ html: head('Mức độ triển khai', null, 'Theo dõi mức độ tham gia và sử dụng của các đơn vị, giáo viên, học sinh và phụ huynh. Tỉ lệ hoạt động = tài khoản có ít nhất 1 phiên trong kỳ / tài khoản đã cấp.') +
+    kpis([['Đơn vị sử dụng hệ thống', '1.589 / 1.642', '96,8%', 'up'], ['Giáo viên hoạt động', '91,2%', '+0,9 điểm %', 'up'], ['Học sinh hoạt động', '86,7%', '+1,8 điểm %', 'up'], ['Phụ huynh tham gia', '34,6%', '+3,1 điểm %', 'up']]) +
+    grid(chartPanel('Tỉ lệ hoạt động theo ngày, theo vai trò (%)', 'a1', true, [['Học sinh', CAT[0]], ['Giáo viên', CAT[1]], ['Phụ huynh', CAT[2]], ['Cán bộ quản lý', '#7166ff']]) + chartPanel('Học sinh hoạt động theo cấp học (%)', 'a2') + chartPanel('Phụ huynh tham gia theo cấp học (%)', 'a3') + tablePanel('Mức độ sử dụng theo đơn vị', 'a-tbl', 'Đỏ: dưới 70%')),
+    after: function () {
+      line('a1', DAYS, [{ n: 'Học sinh', c: CAT[0], v: hs }, { n: 'Giáo viên', c: CAT[1], v: gv }, { n: 'Phụ huynh', c: CAT[2], v: ph }, { n: 'Cán bộ quản lý', c: '#7166ff', v: cb }], '%');
+      altTable('a1', ['Ngày', 'Học sinh', 'Giáo viên', 'Phụ huynh', 'Cán bộ QL'], DAYS.map(function (d, i) { return [d, hs[i], gv[i], ph[i], cb[i]]; }));
+      var h = [['Tiểu học', 88.2], ['THCS', 84.5], ['THPT', 79.1], ['GDTX', 61.3]], p = [['Tiểu học', 52.4], ['THCS', 37.8], ['THPT', 18.6], ['GDTX', 9.1]];
+      hbar('a2', h, '%'); altTable('a2', ['', 'Tỉ lệ (%)'], h); hbar('a3', p, '%'); altTable('a3', ['', 'Tỉ lệ (%)'], p);
+      fillTable('a-tbl', ['Đơn vị', 'Học sinh', 'Giáo viên', 'Phụ huynh'], ORG.map(function (u) { return [u[0], meter(u[1]), meter(u[2]), meter(u[3])]; }));
+    } });
+};
+BC.render();
+</script>
+</body>
+</html>

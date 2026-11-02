@@ -39,7 +39,7 @@
     </header>
 
     <main class="lc-content" style="padding-right:0">
-      <div style="padding-right:24px"><div class="lc-tabs lc-tabs--full" id="cTabs"><a href="#" class="is-active" data-pane="program">Chương trình học</a><a href="#" data-pane="tasks">Bài tập giao (7)</a><a href="18-course-results.html">Tiến độ học</a><a href="#">Tài liệu (6)</a><a href="05-form-settings.html">Cài đặt khoá học</a></div></div>
+      <div style="padding-right:24px"><div class="lc-tabs lc-tabs--full" id="cTabs"><a href="#" class="is-active" data-pane="program">Chương trình học</a><a href="#" data-pane="tasks">Bài tập giao (7)</a><a href="../../design-system/templates/17-tien-do-khoa-hoc.html">Tiến độ học</a><a href="#">Tài liệu (6)</a><a href="05-form-settings.html">Cài đặt khoá học</a></div></div>
 
       <div class="detail" id="paneTasks" hidden style="display:block;padding-right:24px"></div>
       <div class="detail" id="detail">
@@ -57,7 +57,7 @@
             <ul class="lc-lessons">
               <li class="lc-lesson"><span class="lc-num">01</span><span class="lc-lesson__type"></span><div class="lc-lesson__body"><b>Bài 1. Giá trị lượng giác của một góc từ 0° đến 180°</b><span>1 Video / 1 Tài liệu / 10 Câu hỏi</span><small>Phát hành: 07:00 26/10/2026</small></div></li>
               <li class="lc-lesson"><span class="lc-num">02</span><span class="lc-lesson__type"></span><div class="lc-lesson__body"><b>Bài 2. Định lí côsin và định lí sin</b><span>1 Video / 2 Tài liệu / 12 Câu hỏi</span><small>Phát hành: 07:00 02/11/2026</small></div></li>
-              <li class="lc-lesson task"><span class="lc-num lc-num--outline">BT</span><div class="lc-lesson__body"><b data-kind="Bài tập">Bài tập: Định lí côsin và định lí sin</b><span>10 câu · 2 lần làm · giao 10A1, 10A2, 10A5</span><small>Mở 07:00 03/11 · Hạn 22:00 06/11/2026</small></div><div class="task-st"><span class="lc-tag lc-tag--sm lc-tag--info">Đang mở</span><br>27/42 đã nộp (10A1)<br><a href="18-course-results.html#tasks" style="font-weight:600">Xem kết quả →</a></div></li>
+              <li class="lc-lesson task"><span class="lc-num lc-num--outline">BT</span><div class="lc-lesson__body"><b data-kind="Bài tập">Bài tập: Định lí côsin và định lí sin</b><span>10 câu · 2 lần làm · giao 10A1, 10A2, 10A5</span><small>Mở 07:00 03/11 · Hạn 22:00 06/11/2026</small></div><div class="task-st"><span class="lc-tag lc-tag--sm lc-tag--info">Đang mở</span><br>27/42 đã nộp (10A1)<br><a href="../../design-system/templates/17-tien-do-khoa-hoc.html#tasks" style="font-weight:600">Xem kết quả →</a></div></li>
               <li class="lc-lesson"><span class="lc-num">03</span><span class="lc-lesson__type"></span><div class="lc-lesson__body"><b>Bài 3. Giải tam giác và ứng dụng thực tế</b><span>1 Tài liệu / 8 Câu hỏi</span><small>Phát hành: 07:00 09/11/2026</small></div></li>
               <li class="lc-lesson task"><span class="lc-num lc-num--outline">BT</span><div class="lc-lesson__body"><b data-kind="Bài tập">Phiếu bài tập: Giải tam giác</b><span>4 trang · nộp ảnh bài làm · giao 10A1, 10A2, 10A5</span><small>Mở cùng bài học 09/11 · Hạn 22:00 13/11/2026</small></div><div class="task-st"><span class="lc-tag lc-tag--sm lc-tag--neutral">Sắp mở</span></div></li>
             </ul>
@@ -108,11 +108,11 @@
   var esc = LcDemo.esc;
   document.getElementById('paneTasks').innerHTML =
     '<div class="lc-row" style="margin:4px 0 14px;flex-wrap:wrap"><p class="lc-secondary" style="margin:0;flex:1;min-width:240px">Bài tập và bài kiểm tra giao cho học sinh trong khoá, gắn với bài giảng hoặc chương. Học sinh thấy trong <b>Bài tập của tôi</b> trên LMS.</p>' +
-    '<a class="lc-btn lc-btn--outline" href="18-course-results.html#tasks">Xem kết quả bài tập</a><a class="lc-btn lc-btn--primary" href="14-assignment.html?lop=10A1">+ Giao bài tập</a></div>' +
+    '<a class="lc-btn lc-btn--outline" href="../../design-system/templates/17-tien-do-khoa-hoc.html#tasks">Xem kết quả bài tập</a><a class="lc-btn lc-btn--primary" href="14-assignment.html?lop=10A1">+ Giao bài tập</a></div>' +
     '<div class="lc-table-wrap"><table class="lc-table lc-table--plain"><thead><tr><th>Bài tập</th><th>Gắn với</th><th class="c">Loại</th><th class="c">Mở</th><th class="c">Hạn nộp</th><th class="c">Đã nộp (10A1)</th><th class="c">Trạng thái</th><th class="c"></th></tr></thead><tbody>' +
     TASKS.map(function (t) {
       return '<tr><td><b style="font-weight:600">' + esc(t[2]) + '</b><div class="lc-caption">Giao 10A1, 10A2, 10A5</div></td><td>' + esc(t[1]) + '<div class="lc-caption">' + esc(t[0]) + '</div></td><td class="c">' + t[3] + '</td><td class="c">' + t[4] + '</td><td class="c">' + t[5] + '</td><td class="c">' + t[7] + '</td>' +
-        '<td class="c"><span class="lc-tag lc-tag--sm lc-tag--' + ST[t[6]][1] + '">' + ST[t[6]][0] + '</span></td><td class="c">' + (t[6] === 'soon' ? '' : '<a href="18-course-results.html#tasks" style="font-weight:600;white-space:nowrap">Kết quả</a>') + '</td></tr>';
+        '<td class="c"><span class="lc-tag lc-tag--sm lc-tag--' + ST[t[6]][1] + '">' + ST[t[6]][0] + '</span></td><td class="c">' + (t[6] === 'soon' ? '' : '<a href="../../design-system/templates/17-tien-do-khoa-hoc.html#tasks" style="font-weight:600;white-space:nowrap">Kết quả</a>') + '</td></tr>';
     }).join('') + '</tbody></table></div>';
   document.getElementById('cTabs').addEventListener('click', function (e) {
     var a = e.target.closest('[data-pane]'); if (!a) return;

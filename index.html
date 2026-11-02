@@ -11,12 +11,12 @@
   :root {
     --bg: #f4f7fb; --surface: #ffffff; --text: #344054; --muted: #667085; --heading: #17426a; --border: #e4e8ee; --soft: #eef4ff;
     --shadow: 0 6px 24px rgba(16, 24, 40, .07);
-    --lms: #0b6cfc; --lcms: #1579ad; --qldt: #1b3a60;
+    --lms: #0b6cfc; --lcms: #1579ad;
   }
   @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) { --bg: #12172b; --surface: #1b2138; --text: #d0d5dd; --muted: #98a2b3; --heading: #e6edf7; --border: #2c3450; --soft: #222a45; --shadow: 0 6px 24px rgba(0, 0, 0, .35); --qldt: #4b7bc4; }
+    :root:not([data-theme="light"]) { --bg: #12172b; --surface: #1b2138; --text: #d0d5dd; --muted: #98a2b3; --heading: #e6edf7; --border: #2c3450; --soft: #222a45; --shadow: 0 6px 24px rgba(0, 0, 0, .35); }
   }
-  :root[data-theme="dark"] { --bg: #12172b; --surface: #1b2138; --text: #d0d5dd; --muted: #98a2b3; --heading: #e6edf7; --border: #2c3450; --soft: #222a45; --shadow: 0 6px 24px rgba(0, 0, 0, .35); --qldt: #4b7bc4; }
+  :root[data-theme="dark"] { --bg: #12172b; --surface: #1b2138; --text: #d0d5dd; --muted: #98a2b3; --heading: #e6edf7; --border: #2c3450; --soft: #222a45; --shadow: 0 6px 24px rgba(0, 0, 0, .35); }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 Inter, system-ui, sans-serif; }
   a { color: inherit; text-decoration: none; }
@@ -99,7 +99,7 @@
 <main class="wrap">
   <section class="hero">
     <h1>Bạn là ai?</h1>
-    <p>Ba hệ thống dùng chung tài khoản và dữ liệu. Chọn vai trò để thấy các luồng thao tác chính (có thể đi xuyên hệ thống), hoặc xem theo hệ thống và tìm thẳng tên màn hình.</p>
+    <p>Hai hệ thống dùng chung tài khoản và dữ liệu. Chọn vai trò để thấy các luồng thao tác chính (có thể đi xuyên hệ thống), hoặc xem theo hệ thống và tìm thẳng tên màn hình.</p>
     <div class="roles" id="roles" role="tablist"></div>
   </section>
   <section id="view"></section>
@@ -110,9 +110,9 @@
 <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 <script>
 (function () {
-  var LMS = 'design-system/templates/', LC = 'lcms-design-system/templates/', QD = 'qldt-design-system/templates/';
-  var SYS = { lms: 'LMS', lcms: 'LCMS', qldt: 'QLĐT' };
-  function st(sys, label, href, note) { return { sys: sys, label: label, href: (sys === 'lms' ? LMS : sys === 'lcms' ? LC : QD) + href, note: note }; }
+  var LMS = 'design-system/templates/', LC = 'lcms-design-system/templates/';
+  var SYS = { lms: 'LMS', lcms: 'LCMS' };
+  function st(sys, label, href, note) { return { sys: sys, label: label, href: (sys === 'lms' ? LMS : LC) + href, note: note }; }
 
   // Vai trò → lối vào + kịch bản demo đánh số bước
   var ROLES = [
@@ -126,21 +126,21 @@
     { key: 'gv', name: 'Giáo viên', icon: 'presentation', sys: 'lcms', desc: 'Soạn bài, câu hỏi, gửi duyệt học liệu, giao bài cho lớp. Giáo viên chủ nhiệm và cán bộ coi thi dùng cùng LCMS với menu riêng.',
       entry: [LC + '01-login.html?role=gv', 'Đăng nhập LCMS'], direct: [LC + '02-list-grid-table.html?role=gv', 'Vào thẳng'],
       flows: [
-        { t: 'Soạn, giao bài, học sinh làm', d: 'Vòng dạy học chính, đi từ LCMS sang LMS.', s: [st('lcms', 'Khoá học', '02-list-grid-table.html?role=gv'), st('lcms', 'Chi tiết khoá, chương, bài', '04-detail-chapters.html'), st('lcms', 'Soạn bài · tab Tài liệu: thêm từ máy, kho học liệu, Thư viện điện tử', '06-editor-split.html'), st('lcms', 'Ngân hàng câu hỏi: thêm câu, sao chép từ kho Sở', '12-question-bank.html'), st('lcms', 'Giao bài từ khoá học cho nhiều lớp', '14-assignment.html'), st('lms', 'Học sinh thấy bài trong Bài tập của tôi', '12-my-tasks.html'), st('lcms', 'Xem tiến độ khoá học: bài giảng, bài tập, điểm', '18-course-results.html')] },
+        { t: 'Soạn, giao bài, học sinh làm', d: 'Vòng dạy học chính, đi từ LCMS sang LMS.', s: [st('lcms', 'Khoá học', '02-list-grid-table.html?role=gv'), st('lcms', 'Chi tiết khoá, chương, bài', '04-detail-chapters.html'), st('lcms', 'Soạn bài · tab Tài liệu: thêm từ máy, kho học liệu, Thư viện điện tử', '06-editor-split.html'), st('lcms', 'Ngân hàng câu hỏi: thêm câu, sao chép từ kho Sở', '12-question-bank.html'), st('lcms', 'Giao bài cho lớp học', '14-assignment.html'), st('lms', 'Học sinh thấy bài trong Bài tập của tôi', '12-my-tasks.html'), st('lms', 'Xem tiến độ khoá học: bài giảng, bài tập, điểm', '17-tien-do-khoa-hoc.html')] },
         { t: 'Gán nhãn và gửi duyệt học liệu', d: 'Theo khung CTGDPT 2018, gửi Kho Trường rồi Kho Sở.', s: [st('lcms', 'Tra cứu khung chương trình (chỉ xem)', '11-curriculum.html?role=gv'), st('lcms', 'Quét đề từ ảnh/PDF', '10-scan-import.html'), st('lcms', 'Học liệu của tôi: gán nhãn, gửi duyệt học liệu và ngân hàng câu hỏi', '09-content-approval.html?role=gv')] },
         { t: 'Giáo viên chủ nhiệm', d: 'Theo dõi lớp, cảnh báo từ lớp bộ môn, liên lạc phụ huynh.', s: [st('lcms', 'Đăng nhập vai GVCN', '01-login.html?role=gvcn'), st('lcms', 'Lớp chủ nhiệm', '15-homeroom.html?role=gvcn')] },
         { t: 'Cán bộ coi thi', d: 'Giám sát phòng máy và máy thi của học sinh.', s: [st('lcms', 'Giám sát phòng thi', '13-exam-proctoring.html?role=ct'), st('lms', 'Máy thi phía học sinh', '11-exam-kiosk.html')] }
       ] },
     { key: 'ht', name: 'Tổ trưởng · Hiệu trưởng', icon: 'school', sys: 'lcms', desc: 'Duyệt học liệu vào Kho Trường (Tổ trưởng → Hiệu trưởng, theo QĐ 4725 mục 1.4) và theo dõi số liệu nhà trường.',
-      entry: [LC + '01-login.html?role=tt', 'Đăng nhập LCMS'], direct: [QD + '01-login.html', 'Đăng nhập QLĐT'],
+      entry: [LC + '01-login.html?role=tt', 'Đăng nhập LCMS'], direct: [LMS + '16-bao-cao.html', 'Xem báo cáo trên LMS'],
       flows: [
         { t: 'Duyệt học liệu Kho Trường', d: 'Mở từng bước theo thứ tự; dữ liệu dùng chung trong một phiên của màn 09.', s: [st('lcms', 'Giáo viên gửi duyệt (bắt đầu lại dữ liệu mẫu)', '09-content-approval.html?role=gv&reset=1'), st('lcms', 'Tổ trưởng duyệt (bước 1/2)', '09-content-approval.html?role=tt'), st('lcms', 'Hiệu trưởng phê duyệt (bước 2/2)', '09-content-approval.html?role=ht'), st('lms', 'Học sinh thấy trong Kho học liệu', '15-shared-materials.html')] },
-        { t: 'Hiệu trưởng theo dõi nhà trường', d: 'Chọn vai trò "Hiệu trưởng" trên menu QLĐT để thu phạm vi về trường.', s: [st('qldt', 'Dashboard (cấp trường)', '08-management-dashboard.html'), st('qldt', 'Tần suất giảng dạy online của GV', '09-executive-report.html#tan-suat-gv'), st('lcms', 'Giao bài tập (nguồn số liệu)', '14-assignment.html?role=ht')] }
+        { t: 'Hiệu trưởng theo dõi nhà trường', d: 'Chọn vai trò "Hiệu trưởng" ở màn Báo cáo để thu phạm vi về trường.', s: [st('lms', 'Dashboard (cấp trường)', '16-bao-cao.html'), st('lms', 'Đánh giá theo tiêu chí (HS, GV, đơn vị)', '16-bao-cao-tieu-chi.html'), st('lcms', 'Giao bài tập (nguồn số liệu)', '14-assignment.html?role=ht')] }
       ] },
-    { key: 'so', name: 'Cán bộ Sở · xã/phường', icon: 'landmark', sys: 'qldt', desc: 'Dashboard các cấp và báo cáo điều hành định kỳ; thẩm định học liệu lên Kho Sở.',
-      entry: [QD + '01-login.html', 'Đăng nhập QLĐT'], direct: [QD + '08-management-dashboard.html', 'Vào Dashboard'],
+    { key: 'so', name: 'Cán bộ Sở · xã/phường', icon: 'landmark', sys: 'lms', desc: 'Dashboard các cấp và báo cáo điều hành định kỳ trên LMS; thẩm định học liệu lên Kho Sở.',
+      entry: [LMS + '07-form-modal.html#dang-nhap', 'Đăng nhập LMS'], direct: [LMS + '16-bao-cao.html', 'Vào Dashboard'],
       flows: [
-        { t: 'Điều hành theo cấp', d: 'Sở → xã/phường → trường, rồi báo cáo theo nhóm.', s: [st('qldt', 'Trang chủ quản lý', '02-home-modules.html'), st('qldt', 'Dashboard các cấp quản lý', '08-management-dashboard.html'), st('qldt', 'Báo cáo: Tổng quan', '09-executive-report.html#tong-quan'), st('qldt', 'Báo cáo: Kỳ thi chung', '09-executive-report.html#ky-thi'), st('qldt', 'Báo cáo: Học liệu', '09-executive-report.html#hoc-lieu')] },
+        { t: 'Điều hành theo cấp', d: 'Sở → xã/phường → trường, rồi báo cáo theo nhóm.', s: [st('lms', 'Dashboard các cấp quản lý', '16-bao-cao.html'), st('lms', 'Mức độ triển khai', '16-bao-cao-trien-khai.html'), st('lms', 'Hiệu quả khai thác', '16-bao-cao-khai-thac.html'), st('lms', 'Chất lượng dạy và học', '16-bao-cao-chat-luong.html'), st('lms', 'Đánh giá theo tiêu chí', '16-bao-cao-tieu-chi.html')] },
         { t: 'Soạn khung chương trình', d: 'Chỉ cấp Sở được soạn; trường tra cứu để gán nhãn học liệu.', s: [st('lcms', 'Đăng nhập LCMS vai Chuyên viên Sở', '01-login.html?role=so'), st('lcms', 'Soạn khung: môn, cấp, nút, YCCĐ', '11-curriculum.html?role=so'), st('lcms', 'Giáo viên tra cứu khung (chỉ xem)', '11-curriculum.html?role=gv')] },
         { t: 'Thẩm định Kho Sở', d: 'Học liệu đã qua Kho Trường được gửi lên Sở.', s: [st('lcms', 'Thẩm định viên Sở duyệt 2 bước', '09-content-approval.html?role=tdv'), st('lcms', 'Quản trị cấp Sở: cấu hình quy trình', '09-content-approval.html?role=admin'), st('lms', 'Học sinh thấy học liệu Kho Sở', '15-shared-materials.html')] }
       ] }
@@ -151,17 +151,12 @@
     { key: 'lms', code: 'LMS', name: 'Hệ thống học tập', icon: 'graduation-cap', who: ['Học sinh'],
       desc: 'Học trực tuyến theo môn, làm bài tập và bài kiểm tra, thi trên máy, kho học liệu, thư viện sách xem trực tuyến.',
       base: 'design-system/', main: ['templates/07-form-modal.html#dang-nhap', 'Đăng nhập LMS'], extra: ['templates/02-app-sidebar-list.html', 'Vào thẳng'],
-      screens: [['02', 'Góc học tập', '02-app-sidebar-list'], ['03', 'Chi tiết môn Tiếng Anh 10', '03-detail-two-column'], ['12', 'Bài tập của tôi', '12-my-tasks'], ['08', 'Học video tương tác', '08-video-lesson'], ['09', 'Bài đọc & tra từ', '09-reading-dictionary'], ['10', 'Kiểm tra Đúng/Sai', '10-true-false'], ['11', 'Máy thi', '11-exam-kiosk'], ['06', 'Kết quả và xem lại bài thi', '06-exam'], ['15', 'Kho học liệu', '15-shared-materials'], ['14', 'Thư viện điện tử: xem sách trực tuyến (qua xác thực tự động)', '14-elibrary', '?from=lms'], ['04', 'Kết quả học tập', '04-dashboard-report'], ['05', 'Bảng từ vựng', '05-table-list'], ['07', 'Thông tin tài khoản', '07-form-modal'], ['07', 'Đăng nhập', '07-form-modal', '#dang-nhap'], ['01', 'Trang giới thiệu', '01-landing']], samples: [] },
+      screens: [['02', 'Góc học tập', '02-app-sidebar-list'], ['03', 'Chi tiết môn Tiếng Anh 10', '03-detail-two-column'], ['12', 'Bài tập của tôi', '12-my-tasks'], ['08', 'Học video tương tác', '08-video-lesson'], ['09', 'Bài đọc & tra từ', '09-reading-dictionary'], ['10', 'Kiểm tra Đúng/Sai', '10-true-false'], ['11', 'Máy thi', '11-exam-kiosk'], ['06', 'Kết quả và xem lại bài thi', '06-exam'], ['15', 'Kho học liệu', '15-shared-materials'], ['14', 'Thư viện điện tử: xem sách trực tuyến (qua xác thực tự động)', '14-elibrary', '?from=lms'], ['17', 'Tiến độ khoá học (bài giảng, bài tập, điểm)', '17-tien-do-khoa-hoc'], ['16', 'Dashboard quản lý (Sở, xã/phường, trường)', '16-bao-cao'], ['16', 'Báo cáo: Mức độ triển khai', '16-bao-cao-trien-khai'], ['16', 'Báo cáo: Hiệu quả khai thác', '16-bao-cao-khai-thac'], ['16', 'Báo cáo: Chất lượng dạy và học', '16-bao-cao-chat-luong'], ['16', 'Báo cáo: Đánh giá theo tiêu chí', '16-bao-cao-tieu-chi'], ['04', 'Kết quả học tập', '04-dashboard-report'], ['05', 'Bảng từ vựng', '05-table-list'], ['07', 'Thông tin tài khoản', '07-form-modal'], ['07', 'Đăng nhập', '07-form-modal', '#dang-nhap'], ['01', 'Trang giới thiệu', '01-landing']], samples: [] },
     { key: 'lcms', code: 'LCMS', name: 'Quản lý nội dung học tập', icon: 'library-big', who: ['Giáo viên', 'GVCN', 'Tổ trưởng', 'Hiệu trưởng', 'Cán bộ coi thi'],
       desc: 'Soạn bài, câu hỏi, kho học liệu dùng chung, giao bài, giám sát phòng thi, lớp chủ nhiệm. Menu đổi theo vai trò.',
       base: 'lcms-design-system/', main: ['templates/01-login.html', 'Đăng nhập LCMS'], extra: ['templates/02-list-grid-table.html', 'Vào thẳng'],
-      screens: [['01', 'Đăng nhập', '01-login'], ['02', 'Khoá học', '02-list-grid-table'], ['04', 'Chi tiết khoá học', '04-detail-chapters'], ['05', 'Cài đặt khoá học', '05-form-settings'], ['06', 'Soạn bài và tài liệu của bài', '06-editor-split'], ['11', 'Khung chương trình', '11-curriculum'], ['12', 'Ngân hàng câu hỏi', '12-question-bank'], ['10', 'Quét đề từ ảnh/PDF', '10-scan-import'], ['08', 'Kịch bản video', '08-video-script'], ['09', 'Gán nhãn và duyệt kho dùng chung', '09-content-approval'], ['14', 'Giao bài tập', '14-assignment'], ['18', 'Tiến độ khoá học (bài giảng, bài tập)', '18-course-results'], ['13', 'Giám sát phòng thi', '13-exam-proctoring'], ['15', 'Lớp chủ nhiệm', '15-homeroom']],
+      screens: [['01', 'Đăng nhập', '01-login'], ['02', 'Khoá học', '02-list-grid-table'], ['04', 'Chi tiết khoá học', '04-detail-chapters'], ['05', 'Cài đặt khoá học', '05-form-settings'], ['06', 'Soạn bài và tài liệu của bài', '06-editor-split'], ['11', 'Khung chương trình', '11-curriculum'], ['12', 'Ngân hàng câu hỏi', '12-question-bank'], ['10', 'Quét đề từ ảnh/PDF', '10-scan-import'], ['08', 'Kịch bản video', '08-video-script'], ['09', 'Gán nhãn và duyệt kho dùng chung', '09-content-approval'], ['14', 'Giao bài tập', '14-assignment'], ['13', 'Giám sát phòng thi', '13-exam-proctoring'], ['15', 'Lớp chủ nhiệm', '15-homeroom']],
       samples: [['03', 'Bảng quản trị (Combo, Sự kiện)', '03-data-table'], ['07', 'Card, lịch tuần, empty state (từ màn Lộ trình cũ)', '07-cards-calendar'], ['17', 'Mô phỏng xác thực tự động LCMS → Thư viện điện tử', '17-elibrary']] },
-    { key: 'qldt', code: 'QLĐT', name: 'Quản trị đào tạo', icon: 'landmark', who: ['Sở GD&ĐT', 'Xã/phường', 'Hiệu trưởng'],
-      desc: 'Dashboard các cấp quản lý và báo cáo điều hành định kỳ cho Sở, UBND xã/phường, hiệu trưởng.',
-      base: 'qldt-design-system/', main: ['templates/01-login.html', 'Đăng nhập QLĐT'], extra: ['templates/08-management-dashboard.html', 'Vào Dashboard'],
-      screens: [['01', 'Đăng nhập', '01-login'], ['02', 'Trang chủ', '02-home-modules'], ['08', 'Dashboard các cấp quản lý', '08-management-dashboard'], ['09', 'Báo cáo điều hành', '09-executive-report']],
-      samples: [['03', 'Kế hoạch giáo dục', '03-plan-list'], ['04', 'Chi tiết kế hoạch giáo dục', '04-plan-detail'], ['05', 'Danh sách lớp học', '05-class-list'], ['06', 'Nhiệm vụ / Công việc', '06-task-dashboard'], ['07', 'Hồ sơ học sinh', '07-student-filters']] }
   ];
 
   var $ = function (id) { return document.getElementById(id); };
