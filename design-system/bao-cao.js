@@ -80,14 +80,26 @@ var seed = 7; function rnd() { seed = (seed * 16807) % 2147483647; return (seed 
 var DAYS = []; for (var i = 1; i <= 31; i++) DAYS.push(i + '/10');
 function series(base, amp) { return DAYS.map(function (d, i) { var dow = new Date(2026, 9, i + 1).getDay(), v = base + Math.sin(i / 3) * amp + (rnd() - .5) * amp; return Math.round((dow === 0 || dow === 6 ? v * .6 : v) * 10) / 10; }); }
 
+// Phạm vi báo cáo: so (toàn tỉnh) | xa (một xã/phường) | truong (một trường). Chọn bằng ?cap=xa|truong
+var KQROWS = [[62, 30, 7.5, .5], [38, 41, 18.6, 2.4], [41, 43, 14.8, 1.2], [48, 38, 13.2, .8]];
+var SCOPES = {
+  so: { cap: 'so', name: 'Toàn tỉnh Bắc Ninh', label: 'Cấp Sở', k: 1, unitName: 'Đơn vị', unitKpi: ['Đơn vị sử dụng hệ thống', '1.589 / 1.642', '96,8%'], groupName: 'cấp học', groups: ['Tiểu học', 'THCS', 'THPT', 'GDTX'], units: ['THPT Hàn Thuyên', 'THPT Lý Thái Tổ', 'THPT Quế Võ 1', 'THPT Gia Bình 1', 'THPT Yên Phong 2', 'THPT Lương Tài 2'], who: 'lớp 10A1 THPT Hàn Thuyên' },
+  xa: { cap: 'xa', name: 'Phường Kinh Bắc', label: 'Cấp xã/phường', k: .014, unitName: 'Trường', unitKpi: ['Trường sử dụng hệ thống', '18 / 18', '100%'], groupName: 'cấp học', groups: ['Mầm non', 'Tiểu học', 'THCS'], units: ['THCS Nguyễn Đăng Đạo', 'THCS Kinh Bắc', 'TH Kinh Bắc', 'TH Thị Cầu', 'MN Hoa Sen'], who: 'Phường Kinh Bắc' },
+  truong: { cap: 'truong', name: 'THCS Nguyễn Đăng Đạo', label: 'Cấp trường', k: .0012, unitName: 'Lớp', unitKpi: ['Lớp sử dụng hệ thống', '28 / 28', '100%'], groupName: 'khối', groups: ['Khối 6', 'Khối 7', 'Khối 8', 'Khối 9'], units: ['6A1', '6A3', '7A2', '7A5', '8A1', '9A2'], who: 'THCS Nguyễn Đăng Đạo' }
+};
+var CAPQ = new URLSearchParams(location.search).get('cap'), SC = SCOPES[CAPQ] || SCOPES.so;
+// Số lượng theo quy mô phạm vi; tỉ lệ theo đơn vị/nhóm tạo từ chỉ số để mỗi phạm vi có số riêng
+var nScale = function (x) { return Math.max(1, Math.round(x * SC.k)); };
+var pv = function (i, base) { return Math.max(5, Math.min(99, Math.round((base + ((i * 13 + SC.cap.length * 5) % 19) - 9) * 10) / 10)); };
+
 var BC = {
   pages: [['dashboard', 'Dashboard', '16-bao-cao.html'], ['trien-khai', 'Mức độ triển khai', '16-bao-cao-trien-khai.html'], ['khai-thac', 'Hiệu quả khai thác', '16-bao-cao-khai-thac.html'], ['chat-luong', 'Chất lượng dạy và học', '16-bao-cao-chat-luong.html'], ['tieu-chi', 'Đánh giá theo tiêu chí', '16-bao-cao-tieu-chi.html']],
   // o: { tab, title, role (HTML ô vai trò), extra (HTML thêm vào thanh lọc), crumb (bool), range (false để ẩn kỳ báo cáo) }
   shell: function (o) {
-    var tabs = BC.pages.map(function (p) { return '<a href="' + p[2] + '"' + (p[0] === o.tab ? ' class="is-active"' : '') + '>' + p[1] + '</a>'; }).join('');
+    var tabs = BC.pages.map(function (p) { return '<a href="' + p[2] + (SC.cap === 'so' ? '' : '?cap=' + SC.cap) + '"' + (p[0] === o.tab ? ' class="is-active"' : '') + '>' + p[1] + '</a>'; }).join('');
     document.body.insertAdjacentHTML('afterbegin',
       '<header class="tv-header" style="height:72px"><div class="tv-header__inner" style="padding:0 24px"><a class="tv-icon-btn" href="02-app-sidebar-list.html" aria-label="Góc học tập" style="width:38px;height:38px"><i data-lucide="house"></i></a>' +
-      '<h1 style="font-size:24px;font-weight:600;color:var(--tv-heading)">' + o.title + '</h1><div class="tv-header__actions" style="margin-left:auto">' + (o.role || '') + '<button class="tv-icon-btn" data-tv-theme-toggle></button><span class="tv-icon-btn tv-icon-btn--warn"><i data-lucide="bell"></i></span><img class="tv-avatar" src="../assets/default-avatar.jpg" alt=""></div></div>' +
+      '<h1 style="font-size:24px;font-weight:600;color:var(--tv-heading)">' + o.title + '</h1><span class="tv-chip tv-chip--info" style="padding:4px 10px;font-size:13px">' + ic('map-pin', 'width:14px;height:14px') + SC.label + ' · ' + SC.name + '</span><div class="tv-header__actions" style="margin-left:auto">' + (o.role || '') + '<button class="tv-icon-btn" data-tv-theme-toggle></button><span class="tv-icon-btn tv-icon-btn--warn"><i data-lucide="bell"></i></span><img class="tv-avatar" src="../assets/default-avatar.jpg" alt=""></div></div>' +
       '<nav class="tv-htabs" style="position:absolute;left:0;right:0;top:72px;z-index:1">' + tabs + '</nav></header>' +
       '<main style="padding:64px 24px 0"><div class="tv-filterbar" style="margin:16px 0">' + (o.extra || '') +
       (o.range === false ? '' : '<select class="tv-select" id="range" aria-label="Kỳ báo cáo"><optgroup label="Tháng"><option data-cmp="tháng 9/2026" data-end="31/10/2026">Tháng 10/2026</option><option data-cmp="tháng 8/2026" data-end="30/09/2026">Tháng 9/2026</option></optgroup><optgroup label="Học kỳ"><option data-cmp="HK II 2025-2026" data-end="02/11/2026">HK I 2026-2027 (đến tuần 9)</option></optgroup><optgroup label="Năm học"><option data-cmp="năm học 2024-2025" data-end="31/05/2026">Năm học 2025-2026</option></optgroup></select><span class="tv-small tv-muted" id="meta"></span>') +

@@ -13,11 +13,11 @@
 <script src="../bao-cao.js"></script>
 <script>
 BC.shell({ tab: 'khai-thac', title: 'Hiệu quả khai thác' });
-var MON = [['Toán', 14200, 2310, 912400, 30], ['Ngữ văn', 11800, 1980, 744100, 38], ['Tiếng Anh', 12500, 2105, 801300, 44], ['Vật lí', 8900, 1420, 402800, 33], ['Tin học', 6100, 980, 366900, 20]];
+var MON = [['Toán', 14200, 2310, 912400, 30], ['Ngữ văn', 11800, 1980, 744100, 38], ['Tiếng Anh', 12500, 2105, 801300, 44], ['Vật lí', 8900, 1420, 402800, 33], ['Tin học', 6100, 980, 366900, 20]].map(function (m, i) { return [m[0], nScale(m[1]), nScale(m[2]), nScale(m[3]), pv(i, m[4])]; });
 BC.render = function () {
-  var loai = [['Bài giảng điện tử', 46200], ['Video', 28900], ['Ngân hàng câu hỏi', 34100], ['Sách thư viện', 19200]], share = [['Kho Trường', [58, 30, 12]], ['Kho Sở', [34, 46, 20]], ['Thư viện điện tử', [62, 28, 10]]], SK = [['Đã duyệt', KQ[1][1]], ['Chờ duyệt', KQ[2][1]], ['Chưa gửi', KQ[3][1]]];
+  var loai = [['Bài giảng điện tử', 46200], ['Video', 28900], ['Ngân hàng câu hỏi', 34100], ['Sách thư viện', 19200]].map(function (x) { return [x[0], nScale(x[1])]; }), share = [['Kho Trường', [58, 30, 12]], ['Kho Sở', [34, 46, 20]], ['Thư viện điện tử', [62, 28, 10]]], SK = [['Đã duyệt', KQ[1][1]], ['Chờ duyệt', KQ[2][1]], ['Chưa gửi', KQ[3][1]]];
   BC.draw({ html: head('Hiệu quả khai thác', null, 'Thống kê tình hình xây dựng, chia sẻ và sử dụng học liệu, khoá học và các tài nguyên giáo dục.') +
-    kpis([['Khoá học', 18420, '+6,1%', 'up'], ['Học liệu', 128400, '+7,3%', 'up'], ['Học liệu đã chia sẻ (Kho Trường, Kho Sở)', '84,6%', '+2,0 điểm %', 'up'], ['Lượt sử dụng học liệu', 3226000, '+11%', 'up']]) +
+    kpis([['Khoá học', nScale(18420), '+6,1%', 'up'], ['Học liệu', nScale(128400), '+7,3%', 'up'], ['Học liệu đã chia sẻ (Kho Trường, Kho Sở)', '84,6%', '+2,0 điểm %', 'up'], ['Lượt sử dụng học liệu', nScale(3226000), '+11%', 'up']]) +
     grid(chartPanel('Số học liệu theo loại', 'k1') + chartPanel('Tình trạng chia sẻ theo kho (%)', 'k2', 0, SK) + tablePanel('Xây dựng và sử dụng theo môn', 'k-tbl', 'Đỏ: hơn 40% học liệu không được dùng trong kỳ')),
     after: function () {
       hbar('k1', loai); altTable('k1', ['', 'Số lượng'], loai);

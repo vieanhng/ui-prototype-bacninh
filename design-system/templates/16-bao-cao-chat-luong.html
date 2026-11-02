@@ -14,12 +14,12 @@
 <script>
 BC.shell({ tab: 'chat-luong', title: 'Chất lượng dạy và học' });
 BC.render = function () {
-  var kq = [['Tiểu học', [62, 30, 7.5, .5]], ['THCS', [38, 41, 18.6, 2.4]], ['THPT', [41, 43, 14.8, 1.2]]];
-  var lb = [], v = []; for (var k = 0; k < 20; k++) { lb.push(fmt(k * .5 + .5).replace('.', ',')); v.push(Math.round(Math.exp(-Math.pow(k - 12, 2) / 30) * 1900 + (k * 37 % 80))); }
-  var HD = [['Cấp học', 'Bài giảng', 'Bài tập', 'Bài kiểm tra'], ['Tiểu học', 84, 79, 88], ['THCS', 78, 72, 81], ['THPT', 71, 66, 76]];
+  var kq = SC.groups.slice(0, 4).map(function (g, i) { return [g, KQROWS[i % 4]]; });
+  var lb = [], v = []; for (var k = 0; k < 20; k++) { lb.push(fmt(k * .5 + .5).replace('.', ',')); v.push(Math.max(1, Math.round((Math.exp(-Math.pow(k - 12, 2) / 30) * 1900 + (k * 37 % 80)) * SC.k))); }
+  var HD = [[SC.groupName.charAt(0).toUpperCase() + SC.groupName.slice(1), 'Bài giảng', 'Bài tập', 'Bài kiểm tra']].concat(SC.groups.map(function (g, i) { return [g, Math.round(pv(i, 78)), Math.round(pv(i + 4, 72)), Math.round(pv(i + 8, 81))]; }));
   BC.draw({ html: head('Chất lượng dạy và học', null, 'Theo dõi kết quả học tập, kết quả khảo thí và mức độ hoàn thành các hoạt động dạy học.') +
     kpis([['Học sinh đạt trở lên HK gần nhất', '97,2%', '+0,4 điểm %', 'up'], ['Điểm TB kỳ thi chung', '6,42', '+0,18 so với kỳ trước', 'up'], ['Hoàn thành bài giảng', '78,4%', '+1,2 điểm %', 'up'], ['Nộp bài tập đúng hạn', '92,0%', '-0,5 điểm %', 'down']]) +
-    grid(chartPanel('Kết quả học tập HK gần nhất theo cấp học (%)', 'c1', 0, KQ) + chartPanel('Phổ điểm kỳ thi chung (số thí sinh theo khoảng điểm 0,5)', 'c2') + tablePanel('Mức độ hoàn thành các hoạt động dạy học (%)', 'c-tbl', 'Đỏ: dưới 70%')),
+    grid(chartPanel('Kết quả học tập HK gần nhất theo ' + SC.groupName + ' (%)', 'c1', 0, KQ) + chartPanel('Phổ điểm kỳ thi chung (số thí sinh theo khoảng điểm 0,5)', 'c2') + tablePanel('Mức độ hoàn thành các hoạt động dạy học (%)', 'c-tbl', 'Đỏ: dưới 70%')),
     after: function () {
       stack('c1', kq, KQ); altTable('c1', ['', 'Tốt', 'Khá', 'Đạt', 'Chưa đạt'], kq.map(function (r) { return [r[0]].concat(r[1]); }));
       vbar('c2', lb, v, 6.42); altTable('c2', ['Điểm', 'Thí sinh'], lb.map(function (l, i) { return [l, v[i]]; }));

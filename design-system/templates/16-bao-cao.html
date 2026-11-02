@@ -36,9 +36,11 @@ var COMMUNES = ['Phường Kinh Bắc', 'Phường Từ Sơn', 'Xã Gia Bình', 
 var S = { level: 'province', commune: COMMUNES[0], school: SCHOOLS[0], };
 
 
+var LOCK = SC.cap !== 'so';
+if (LOCK) { S.level = SC.cap === 'xa' ? 'commune' : 'school'; if (SC.cap === 'xa') S.commune = SC.name; else S.school = SC.name; }
 BC.shell({ tab: 'dashboard', title: 'Báo cáo và Dashboard', crumb: true,
-  role: '<select class="tv-select" id="role" aria-label="Vai trò (bản mẫu)"><option value="province">Chuyên viên Sở</option><option value="commune">Cán bộ xã/phường</option><option value="school">Hiệu trưởng</option></select>',
-  extra: '<div class="tv-seg" id="scope" role="tablist" aria-label="Cấp quản lý"><button data-level="province">Cấp Sở</button><button data-level="commune">Cấp xã/phường</button><button data-level="school">Cấp trường</button></div><select class="tv-select" id="commune-sel" aria-label="Xã/phường" hidden></select><select class="tv-select" id="school-sel" aria-label="Trường" hidden></select>' });
+  role: LOCK ? '' : '<select class="tv-select" id="role" aria-label="Vai trò (bản mẫu)"><option value="province">Chuyên viên Sở</option><option value="commune">Cán bộ xã/phường</option><option value="school">Hiệu trưởng</option></select>',
+  extra: LOCK ? '' : '<div class="tv-seg" id="scope" role="tablist" aria-label="Cấp quản lý"><button data-level="province">Cấp Sở</button><button data-level="commune">Cấp xã/phường</button><button data-level="school">Cấp trường</button></div><select class="tv-select" id="commune-sel" aria-label="Xã/phường" hidden></select><select class="tv-select" id="school-sel" aria-label="Trường" hidden></select>' });
 var V = {
   dashboard: function () {
     var d = S.level === 'province' ? D.province : D[S.level], t = d.t, lv = S.level;
@@ -51,22 +53,28 @@ var V = {
   }
 };
 BC.render = function () {
-  $('scope').querySelectorAll('button').forEach(function (b) { b.classList.toggle('is-active', b.dataset.level === S.level); });
-  $('commune-sel').hidden = S.level === 'province'; $('school-sel').hidden = S.level !== 'school';
-  $('commune-sel').value = S.commune; $('school-sel').value = S.school; $('role').value = S.level;
-  var c = ['<a href="#" data-go="province">Toàn tỉnh Bắc Ninh</a>'];
-  if (S.level !== 'province') c.push(ic('chevron-right') + (S.level === 'commune' ? '<span class="is-current">' + esc(S.commune) + '</span>' : '<a href="#" data-go="commune">' + esc(S.commune) + '</a>'));
-  if (S.level === 'school') c.push(ic('chevron-right') + '<span class="is-current">' + esc(S.school) + '</span>');
-  if (S.level === 'province') c[0] = '<span class="is-current">Toàn tỉnh Bắc Ninh</span>';
+  var c;
+  if (!LOCK) {
+    $('scope').querySelectorAll('button').forEach(function (b) { b.classList.toggle('is-active', b.dataset.level === S.level); });
+    $('commune-sel').hidden = S.level === 'province'; $('school-sel').hidden = S.level !== 'school';
+    $('commune-sel').value = S.commune; $('school-sel').value = S.school; $('role').value = S.level;
+    c = ['<a href="#" data-go="province">Toàn tỉnh Bắc Ninh</a>'];
+    if (S.level !== 'province') c.push(ic('chevron-right') + (S.level === 'commune' ? '<span class="is-current">' + esc(S.commune) + '</span>' : '<a href="#" data-go="commune">' + esc(S.commune) + '</a>'));
+    if (S.level === 'school') c.push(ic('chevron-right') + '<span class="is-current">' + esc(S.school) + '</span>');
+    if (S.level === 'province') c[0] = '<span class="is-current">Toàn tỉnh Bắc Ninh</span>';
+  } else if (SC.cap === 'xa') {
+    c = S.level === 'commune' ? ['<span class="is-current">' + esc(S.commune) + '</span>'] : ['<a href="#" data-go="commune">' + esc(S.commune) + '</a>', ic('chevron-right'), '<span class="is-current">' + esc(S.school) + '</span>'];
+  } else c = ['<span class="is-current">' + esc(S.school) + '</span>'];
   $('crumb').innerHTML = c.join(' ');
   BC.draw(V.dashboard());
 };
-$('commune-sel').innerHTML = COMMUNES.map(function (k) { return '<option>' + k + '</option>'; }).join('');
+if (!LOCK) { $('commune-sel').innerHTML = COMMUNES.map(function (k) { return '<option>' + k + '</option>'; }).join('');
 $('school-sel').innerHTML = SCHOOLS.map(function (k) { return '<option>' + k + '</option>'; }).join('');
 $('commune-sel').onchange = function () { S.commune = this.value; BC.render(); };
 $('school-sel').onchange = function () { S.school = this.value; BC.render(); };
 $('role').onchange = function () { S.level = this.value; BC.render(); };
 $('scope').onclick = function (e) { var b = e.target.closest('button'); if (b) { S.level = b.dataset.level; BC.render(); } };
+}
 document.addEventListener('click', function (e) {
   var go = e.target.closest('[data-go]'); if (go) { e.preventDefault(); S.level = go.dataset.go; BC.render(); return; }
   var row = e.target.closest('.is-drill'); if (row) { S[row.dataset.child] = row.dataset.name; S.level = row.dataset.child; BC.render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
